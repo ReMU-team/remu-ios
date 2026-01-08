@@ -1,5 +1,6 @@
 # 🚀 ReMU
-<img width="1024" height="1024" alt="LOGO2" src="https://github.com/user-attachments/assets/eb819b70-7f0d-42e5-a320-2231ca10412f" />
+<img width="257" height="136" alt="스크린샷 2026-01-09 오전 12 29 23" src="https://github.com/user-attachments/assets/b43ab4ef-564e-4f16-b2d7-0b3b5224af8d" />
+
 
 > ReMU: 감정 중심 여행 저널 서비스
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)]()
