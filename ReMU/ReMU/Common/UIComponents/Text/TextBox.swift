@@ -1,16 +1,18 @@
 //
-//  SwiftUIView.swift
+//  TextBox.swift
 //  ReMU
 //
 //  Created by 김진서 on 1/10/26.
 //
 
+import Foundation
 import SwiftUI
 
-struct NextView: View {
+struct TextBox: View {
+    let text: String
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        Text("기대1") //Text(text) 이런식으로 받아와야함! UI 테스트용으로 기대1 적어놓음
+        Text(text)
             .font(.pt16)
             .foregroundStyle(.grayScale8) // TODO: 색 변경 필요
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -20,6 +22,3 @@ struct NextView: View {
     }
 }
 
-#Preview {
-    NextView()
-}

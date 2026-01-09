@@ -9,6 +9,7 @@
 import SwiftUI
 
 /// PrimaryButton
+/// : 완료, 다음 버튼 등 기본 버튼입니다.
 /// - Note:
 ///   - Navigation / 조건 제어는 View에서 처리합니다.
 ///   - 버튼은 action 트리거 역할만 합니다.
@@ -22,7 +23,7 @@ struct PrimaryButton: View {
 
     init(
         title: String,
-        backgroundColor: Color = .secondaryBlue,
+        backgroundColor: Color = .blue505083,
         textColor: Color = .white,
         isDisabled: Bool = false,
         action: @escaping () -> Void
@@ -42,7 +43,7 @@ struct PrimaryButton: View {
             Text(title)
                 .font(.pt16)
                 .foregroundColor(textColor)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity) // View에서 패딩을 이용해서 가로 길이 설정!
                 .padding(.vertical, 16)
                 .background(isDisabled ? Color.gray : backgroundColor)
                 .cornerRadius(12)
