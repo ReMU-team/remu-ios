@@ -88,10 +88,10 @@ Swift 6.2
       <img width="393" height="852" alt="0_진입 시" src="https://github.com/user-attachments/assets/60a68880-00d9-4fa4-9c44-c7efa8c9789b" />
     </td>
     <td>
-      <img width="393" height="852" alt="0  프로필 생성-fail1" src="https://github.com/user-attachments/assets/6dd08e85-a7c8-4fc5-9cdb-b52e7b8a7b95" />
+      <img width="393" height="852" alt="1-1_ 은하 생성 후, Home (기본)" src="https://github.com/user-attachments/assets/7e4d32ec-aad7-4f1e-8cf2-f0d35cea27e4" />
     </td>
     <td>
-      <img width="393" height="852" alt="1-1_ 은하 생성 후, Home (기본)" src="https://github.com/user-attachments/assets/7e4d32ec-aad7-4f1e-8cf2-f0d35cea27e4" />
+      <img width="393" height="852" alt="1-1-2_ 여행 다짐 카드 조회 (앞면)" src="https://github.com/user-attachments/assets/a50b7615-6297-417b-a70b-c99ba8f2f794" />
     </td>
    
   </tr>
