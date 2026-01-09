@@ -14,7 +14,7 @@
 ## 👥 멤버
 | 나래 | 티모 | 벨라 |  
 |:------:|:------:|:------:|  
-| <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
+| <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/191358468/533741254-eaa9c875-5cb5-4da1-8944-e8dc9bf7fda3.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260109%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260109T055308Z&X-Amz-Expires=300&X-Amz-Signature=d1840a77c58392f7523b2854f6664137b9b2773f7dd40f262bf38099b7bd4dcb&X-Amz-SignedHeaders=host" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
 | FE | FE | FE |  
 | [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/bella411) |
 
@@ -291,22 +291,33 @@ let value: Int
 
 ## 🗂️ 폴더 컨벤션
 ```
-MyProject/
-├── App/          # 앱 진입점
-├── Root/         # 앱 시작 흐름 및 화면
-분기
-├── Model/        # 데이터 모델 계층 (뷰모델&뷰)
-│   ├── Entity/
-│   ├── DTO/
-│   └── Realm/
-├── Module/       # 기능 단위 모듈
-├── Service/      # 비즈니스 로직
-├── Network/      # 네트워크 통신
-├── Storage/      # 로컬 저장소
-├── Component/    # 재사용 UI 컴포넌트
-├── Resource/     # 앱 리소스
-├── Config/       # 앱 환경 설정
-├── Enum/         # 공통 Enum
-└── Util/         # 공통 유틸리티
+.
+├── App/ # 앱 진입점 및 생명주기 관리
+├── Common/ # 공통 공유 자원
+│   ├── Enum/ # 상수 및 상태 타입
+│   ├── Protocol/ # 인터페이스 규격
+│   └── UIComponents/ # 재사용 UI 컴포넌트
+├── Core/ # 앱 핵심 인프라
+│   ├── Actor/ # 데이터 관리 및 동시성 제어
+│   ├── DIContainer/ # 의존성 주입 관리
+│   ├── Navigation/ # 화면 전환 및 라우팅
+│   └── Utils/ # 설정 및 유틸리티
+├── Models/ # 데이터 모델링
+│   ├── Domain/ # 비즈니스 로직용 모델
+│   └── DTO/ # API 통신용 데이터 객체
+├── Modules/ # 기능 단위 모듈 (View/VM)
+│   ├── AppFlow/ # 초기 진입 흐름 (로그인 등)
+│   └── Tab/ # 메인 기능별 화면 (홈, 주문 등)
+├── Resource/ # 정적 자원 및 기능 확장
+│   ├── Assets/ # 이미지 및 컬러 에셋
+│   ├── Extension/ # 기본 타입 기능 확장
+│   ├── Font/ # 커스텀 폰트
+│   ├── Keychain/ # 보안 데이터 저장
+│   ├── Modifier/ # SwiftUI 커스텀 수식어
+│   └── UIConstants/ # UI 수치 상수
+└── Service/ # 외부 연동 계층
+    ├── MoyaRouter/ # API 경로 정의
+    ├── MoyaService/ # 네트워크 통신 실행
+    └── Social/ # 소셜 로그인 및 외부 SDK
 ```
 # ReMU-Frontend
