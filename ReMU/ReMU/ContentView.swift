@@ -32,14 +32,8 @@ struct ContentView: View {
                     NextView()
                 }
                 
-                // TextBox
-                Text("기대1") //Text(text) 이런식으로 받아와야함! UI 테스트용으로 기대1 적어놓음
-                    .font(.pt16)
-                    .foregroundStyle(.grayScale8) // TODO: 색 변경 필요
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(15)
-                    .background(.purpleD9BCEA50)
-                    .cornerRadius(10)
+                TextBox(text: "텍스트")
+                
             }
             .padding(.horizontal, 40)
         }

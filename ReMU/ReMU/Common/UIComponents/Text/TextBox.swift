@@ -21,4 +21,3 @@ struct TextBox: View {
             .cornerRadius(10)
     }
 }
-
