@@ -10,9 +10,48 @@
 		696FDA362F102DC100F3678F /* ReMU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReMU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		696FDAA42F11652400F3678F /* Exceptions for "ReMU" folder in "ReMU" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				.gitkeep,
+				App/.gitkeep,
+				Common/.gitkeep,
+				Common/Enum/.gitkeep,
+				Common/Protocol/.gitkeep,
+				Common/UIComponents/.gitkeep,
+				Core/.gitkeep,
+				Core/Actor/.gitkeep,
+				Core/DIContainer/.gitkeep,
+				Core/Navigation/.gitkeep,
+				Core/Utils/.gitkeep,
+				Models/.gitkeep,
+				Models/Domain/.gitkeep,
+				Models/DTO/.gitkeep,
+				Modules/.gitkeep,
+				Modules/AppFlow/.gitkeep,
+				Modules/Tab/.gitkeep,
+				Resource/.gitkeep,
+				Resource/Extension/.gitkeep,
+				Resource/Font/.gitkeep,
+				Resource/Keychain/.gitkeep,
+				Resource/Modifier/.gitkeep,
+				Resource/UIConstants/.gitkeep,
+				Service/.gitkeep,
+				Service/MoyaRouter/.gitkeep,
+				Service/MoyaService/.gitkeep,
+				Service/Social/.gitkeep,
+			);
+			target = 696FDA352F102DC100F3678F /* ReMU */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		696FDA382F102DC100F3678F /* ReMU */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				696FDAA42F11652400F3678F /* Exceptions for "ReMU" folder in "ReMU" target */,
+			);
 			path = ReMU;
 			sourceTree = "<group>";
 		};
@@ -266,12 +305,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jinseo.ReMU;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -297,12 +340,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jinseo.ReMU;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

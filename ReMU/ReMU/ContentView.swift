@@ -8,15 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    
+    
+    @State private var goNext = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.primaryPurple)
-            Text("Hello, world!")
-                .font(.pt32)
+        NavigationStack {
+            VStack {
+                
+                Image(systemName: "globe")
+                    .imageScale(.large)
+                    .foregroundStyle(.blue333368)
+                Text("Hello, world!")
+                    .font(.pt32)
+                
+                // PrimaryButton
+                PrimaryButton(title: "다음") {
+                    goNext = true
+                    print("다음 버튼 클릭")
+                }
+                .navigationDestination(isPresented: $goNext) {
+                    NextView()
+                }
+                
+                TextBox(text: "텍스트")
+                
+            }
+            .padding(.horizontal, 40)
         }
-        .padding()
     }
 }
 
