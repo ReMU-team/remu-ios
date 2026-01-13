@@ -13,7 +13,9 @@ struct ReMUApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+            //ComponentExample()
+            //CreateProfileView()
         }
     }
 }

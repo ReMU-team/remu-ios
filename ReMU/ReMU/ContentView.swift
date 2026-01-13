@@ -16,13 +16,6 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(.blue333368)
-                Text("Hello, world!")
-                    .font(.pt32)
-                
                 // PrimaryButton
                 PrimaryButton(title: "다음") {
                     goNext = true
