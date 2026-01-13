@@ -11,15 +11,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		98A502542F1294A000E98548 /* Exceptions for "ReMU" folder in "ReMU" target */ = {
+		4D1B02422F12AB24001171F2 /* Exceptions for "ReMU" folder in "ReMU" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				.gitkeep,
+				App/.gitkeep,
 				Common/.gitkeep,
+				Common/Enum/.gitkeep,
 				Common/Protocol/.gitkeep,
 				Common/UIComponents/.gitkeep,
 				Core/.gitkeep,
 				Core/Actor/.gitkeep,
 				Core/DIContainer/.gitkeep,
+				Core/Navigation/.gitkeep,
 				Core/Utils/.gitkeep,
 				Models/.gitkeep,
 				Models/Domain/.gitkeep,
@@ -31,6 +35,7 @@
 				Resource/Extension/.gitkeep,
 				Resource/Font/.gitkeep,
 				Resource/Keychain/.gitkeep,
+				Resource/Modifier/.gitkeep,
 				Resource/UIConstants/.gitkeep,
 				Service/.gitkeep,
 				Service/MoyaRouter/.gitkeep,
@@ -45,7 +50,7 @@
 		696FDA382F102DC100F3678F /* ReMU */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				98A502542F1294A000E98548 /* Exceptions for "ReMU" folder in "ReMU" target */,
+				4D1B02422F12AB24001171F2 /* Exceptions for "ReMU" folder in "ReMU" target */,
 			);
 			path = ReMU;
 			sourceTree = "<group>";

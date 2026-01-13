@@ -22,7 +22,7 @@ struct ProfileImage: View {
                         .scaledToFit()
                         .frame(width: 132, height: 132)
                         .clipShape(Circle())
-                        .foregroundColor(.gray)
+                        .foregroundColor(.purpleD9BCEA)
                 }
             }
         }
