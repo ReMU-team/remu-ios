@@ -10,12 +10,10 @@ import SwiftUI
 struct AuthFlowView: View {
     @State private var showOnboarding = false
     @State private var showCreateProfile = false
-    @State private var isLoggedIn = false
 
+    let onAuthFinished: () -> Void
     var body: some View {
-        if isLoggedIn { // 로그인 상태일 때는 바로 메인화면으로 이동
-            AppFlowView()
-        } else if showCreateProfile {
+        if showCreateProfile {
             CreateProfileView(
                 onBack: {
                     // 온보딩으로 되돌림
@@ -23,7 +21,7 @@ struct AuthFlowView: View {
                     showOnboarding = true
                 },
                 onFinish: {
-                    isLoggedIn = true
+                    onAuthFinished()
                 }
             )
         } else if showOnboarding {

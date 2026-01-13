@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct CreateProfileView: View {
-    @State private var name: String = ""
-    @State private var introduction_one_line: String = ""
+    @StateObject private var viewModel = ProfileViewModel()
     
     let onBack: () -> Void // 뒤로가기 콜백 (온보딩 첫화면으로 이동)
     let onFinish: () -> Void // 완료 콜백 (메인 화면으로 이동)
@@ -19,15 +18,20 @@ struct CreateProfileView: View {
             navigationBar
                 .padding(.horizontal, -40)
             
-            Image("logo_primary") // TODO: photopicker로 변경 해야됨
+            // 포토피커
+            ProfileImage(selectedImageData: $viewModel.selectedImageData)
             
-            ReMUTextField(placeholder: "15자 이내로 입력해주세요", text: $name)
+            // 이름 적기
+            ReMUTextField(placeholder: "15자 이내로 입력해주세요", text: $viewModel.username)
             
-            ReMUTextField(placeholder: "나에 대한 이야기 소개를 적어주세요", text: $introduction_one_line)
+            // 한 줄 소개
+            ReMUTextField(placeholder: "나에 대한 이야기 소개를 적어주세요", text: $viewModel.description)
             
+            // 시작 버튼
             PrimaryButton(
                 title: "시작하기", backgroundColor: .purpleC495E0
             ) {
+                viewModel.updateProfile()
                 onFinish()
                 print("시작 버튼 클릭")
             }

@@ -8,17 +8,27 @@
 import SwiftUI
 
 struct RootView: View {
-    @State private var isLoggedIn = false
+    @StateObject private var appState = AppState()
 
     var body: some View {
-        if isLoggedIn {
-            AppFlowView()
-        } else {
-            AuthFlowView()
+        switch appState.route {
+        case .splash:
+            SplashView()
+                .task {
+                    await appState.checkLoginStatus()
+                }
 
+        case .auth:
+            AuthFlowView {
+                appState.route = .main
+            }
+
+        case .main:
+            AppFlowView()
         }
     }
 }
+
 
 
 #Preview {
