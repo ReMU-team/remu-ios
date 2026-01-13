@@ -9,6 +9,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
+
             ScrollView { // 내용이 많아질 수 있으므로 ScrollView 권장
                 VStack(spacing: 30) {
                     
