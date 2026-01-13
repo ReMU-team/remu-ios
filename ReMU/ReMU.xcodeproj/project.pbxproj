@@ -10,9 +10,43 @@
 		696FDA362F102DC100F3678F /* ReMU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReMU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		98A502542F1294A000E98548 /* Exceptions for "ReMU" folder in "ReMU" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Common/.gitkeep,
+				Common/Protocol/.gitkeep,
+				Common/UIComponents/.gitkeep,
+				Core/.gitkeep,
+				Core/Actor/.gitkeep,
+				Core/DIContainer/.gitkeep,
+				Core/Utils/.gitkeep,
+				Models/.gitkeep,
+				Models/Domain/.gitkeep,
+				Models/DTO/.gitkeep,
+				Modules/.gitkeep,
+				Modules/AppFlow/.gitkeep,
+				Modules/Tab/.gitkeep,
+				Resource/.gitkeep,
+				Resource/Extension/.gitkeep,
+				Resource/Font/.gitkeep,
+				Resource/Keychain/.gitkeep,
+				Resource/UIConstants/.gitkeep,
+				Service/.gitkeep,
+				Service/MoyaRouter/.gitkeep,
+				Service/MoyaService/.gitkeep,
+				Service/Social/.gitkeep,
+			);
+			target = 696FDA352F102DC100F3678F /* ReMU */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		696FDA382F102DC100F3678F /* ReMU */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				98A502542F1294A000E98548 /* Exceptions for "ReMU" folder in "ReMU" target */,
+			);
 			path = ReMU;
 			sourceTree = "<group>";
 		};
@@ -253,6 +287,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +319,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
