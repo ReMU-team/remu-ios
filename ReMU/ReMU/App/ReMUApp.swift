@@ -13,9 +13,10 @@ struct ReMUApp: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView()
+            //RootView()
             //ComponentExample()
             //CreateProfileView()
+            WritePledgeView()
         }
     }
 }
