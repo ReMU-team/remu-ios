@@ -14,8 +14,6 @@ struct WritePledgeView: View {
     // 뷰모델 연결
     @StateObject private var viewModel = PledgeViewModel()
     
-    @State private var pledge: String = ""
-    
     // 다음 버튼
     @State private var goNext = false
     
@@ -76,23 +74,35 @@ struct WritePledgeView: View {
     // MARK: - writingPledge
     private var writingPledge: some View {
         VStack (alignment: .leading) {
-            ReMUTextField(placeholder: "떠나기 전의 마음을 남겨주세요", text: $pledge) // TODO: text 수정 필요 (viewmodel 관련)
-                .padding(.top, 32)
-                .padding(.bottom, 8)
             
-            Text("예시: 외국인이랑 스몰토킹하기")
-                .font(.pt12)
-                .foregroundStyle(.grayScale5)
-                .padding(.bottom, 2)
+            // 다짐 작성칸
+            ForEach($viewModel.pledges) { $pledge in
+                PledgeInputView(
+                    text: $pledge.content,
+                    example: pledge.example
+                )
+            }
+            .padding(.top, 32)
             
             
-            // TODO: 다짐 삭제, 추가 버튼 만들기
+            
+            // 다짐 삭제/추가 버튼
             HStack {
                 Spacer()
+                // 다짐 삭제하기
+                Button(action: {
+                    viewModel.removePledge(at: viewModel.pledges.count - 1)
+                }) {
+                    Image("minus_icon")
+                }
+                .disabled(!viewModel.canRemove)
                 
-                Image("minus_icon")
+                // 다짐 추가하기
+                Button(action: viewModel.addPledge) {
+                    Image("plus_icon")
+                }
+                .disabled(!viewModel.canAdd)
 
-                Image("plus_icon")
                 
             }
         }
@@ -117,9 +127,13 @@ struct WritePledgeView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "다음", backgroundColor: .purpleC495E0) {
+            // 다짐 1개 이상 작성 시 클릭 가능
+            PrimaryButton(title: "다음",
+                          backgroundColor: viewModel.isNextEnabled ? .purpleC495E0 : .grayScale3
+            ) {
                 goNext = true
             }
+            .disabled(!viewModel.isNextEnabled)
             .navigationDestination(isPresented: $goNext) {
                 CreatePledgeCardView()
             }
