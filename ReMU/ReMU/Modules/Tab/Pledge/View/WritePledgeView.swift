@@ -75,7 +75,7 @@ struct WritePledgeView: View {
     private var writingPledge: some View {
         VStack (alignment: .leading) {
             
-            // 다짐 작성칸
+            // 다짐 작성칸 // TODO: 텍스트필드 UI 수정 필요
             ForEach($viewModel.pledges) { $pledge in
                 PledgeInputView(
                     text: $pledge.content,
@@ -89,13 +89,15 @@ struct WritePledgeView: View {
             // 다짐 삭제/추가 버튼
             HStack {
                 Spacer()
+                
                 // 다짐 삭제하기
-                Button(action: {
-                    viewModel.removePledge(at: viewModel.pledges.count - 1)
-                }) {
+                Button {
+                    viewModel.removeLastPledge()
+                } label: {
                     Image("minus_icon")
                 }
                 .disabled(!viewModel.canRemove)
+
                 
                 // 다짐 추가하기
                 Button(action: viewModel.addPledge) {
