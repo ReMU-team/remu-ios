@@ -5,64 +5,6 @@
 //  Created by 김진서 on 1/15/26.
 //
 
-//import Foundation
-//import Combine
-//
-//final class PledgeViewModel: ObservableObject {
-//    
-//    private let examples = [
-//            "예시: 외국인이랑 스몰토킹하기",
-//            "예시: 친구랑 진지한 대화 나누고 오기",
-//            "예시: 하루가 끝나면 한 줄씩 그날 기록하기",
-//            "예시: 현지인 맛집 찾아가기",
-//            "예시: 베스트컷 한 장 찍기"
-//        ]
-//    
-//    @Published var pledges: [Pledge] = [
-//        Pledge(
-//            content: "",
-//            example: "예시: 외국인이랑 스몰토킹하기")
-//    ]
-//
-//    // 다짐 최소값, 최대값
-//    let minCount = 1
-//    let maxCount = 5
-//
-//    var canAdd: Bool {
-//        pledges.count < maxCount
-//    }
-//
-//    var canRemove: Bool {
-//        pledges.count > minCount
-//    }
-//
-//    func addPledge() {
-//        guard canAdd else { return }
-//        
-//        let index = pledges.count % examples.count
-//        pledges.append(
-//            Pledge(content: "", example: examples[index])
-//        )
-//    }
-//
-//    func removePledge(at index: Int) {
-//        guard canRemove else { return }
-//        pledges.remove(at: index)
-//    }
-//
-//    func updateContent(_ text: String, at index: Int) {
-//        pledges[index].content = text
-//    }
-//
-//    func updateEmoji(_ emoji: String, at index: Int) {
-//        pledges[index].emoji = emoji
-//    }
-//
-//    var isNextEnabled: Bool {
-//        pledges.allSatisfy { !$0.content.trimmingCharacters(in: .whitespaces).isEmpty }
-//    }
-//}
-
 import Foundation
 import Combine
 
@@ -94,8 +36,14 @@ final class PledgeViewModel: ObservableObject {
     ]
 
     // MARK: - Emoji
-    @Published var selectedEmoji: String? = nil
+    /// Sheet 표시 여부
     @Published var isEmojiSheetPresented: Bool = false
+    /// Sheet 안에서 "지금 선택 중인 이모지"
+    @Published var tempSelectedEmoji: EmojiItem? = nil
+    /// 최종 확정된 이모지 (카드에 들어갈 값)
+    @Published var selectedEmoji: EmojiItem? = nil
+    
+    let emojis = EmojiCatalog.all
 
     // MARK: - Computed States
     /// 다짐 추가 가능 여부
@@ -138,10 +86,12 @@ final class PledgeViewModel: ObservableObject {
     }
 
     /// 이모지 선택
-    func selectEmoji(_ emoji: String) {
-        selectedEmoji = emoji
+    func confirmEmojiSelection() {
+        selectedEmoji = tempSelectedEmoji
+        tempSelectedEmoji = nil
         isEmojiSheetPresented = false
     }
+
 
     // MARK: - Convert Draft -> Card
     /// 다짐 작성 완료 시 호출
@@ -153,7 +103,7 @@ final class PledgeViewModel: ObservableObject {
 
         return PledgeCard(
             tripId: tripId,
-            emoji: selectedEmoji ?? "✨", // TODO: 기본 이모지 수정 필요
+            emojiId: selectedEmoji?.id ?? "DEFAULT", // TODO: 기본 이모지 수정 필요
             pledges: resultPledges
         )
     }

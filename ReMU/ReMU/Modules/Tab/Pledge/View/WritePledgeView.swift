@@ -117,8 +117,30 @@ struct WritePledgeView: View {
                 Text("이모지")
                     .font(.pt12)
                     .foregroundStyle(.grayScale9)
-                Image("plus_emoji_icon") // TODO: 버튼으로 교체 후 시트 보이게
-                    .padding(.horizontal, 14)
+                
+                
+                Button {
+                    viewModel.isEmojiSheetPresented = true
+                } label: {
+                    if let emoji = viewModel.selectedEmoji {
+                                        Image(emoji.assetName)
+                                    } else {
+                                        Image("plus_emoji_icon")
+                                    }
+                }
+                .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
+                    EmojiPickerSheet(
+                        emojis: viewModel.emojis,
+                        selectedEmoji: $viewModel.tempSelectedEmoji,
+                        onConfirm: {
+                            viewModel.confirmEmojiSelection()
+                        },
+                        onClose: {
+                            viewModel.isEmojiSheetPresented = false
+                        }
+                    )
+                }
+
             }
             Spacer()
         }
