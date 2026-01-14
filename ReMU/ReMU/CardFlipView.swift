@@ -24,7 +24,8 @@ struct CardFlip: View {
             flip.toggle()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 40/255, green: 40/255, blue: 40/255))
+        //.background(Color(red: 40/255, green: 40/255, blue: 40/255))
+        .background(.white) // 배경색 수정
     }
 }
 
