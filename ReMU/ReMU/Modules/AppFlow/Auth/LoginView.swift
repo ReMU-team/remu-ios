@@ -66,3 +66,37 @@ struct LoginView: View {
     )
 }
 
+//import SwiftUI
+//
+//struct LoginView: View {
+//    @State private var loginResult: String = "로그인 대기 중..."
+//    
+//    var body: some View {
+//        VStack(spacing: 20) {
+//            Text(loginResult)
+//                .font(.headline)
+//            
+//            Button("카카오 로그인 테스트") {
+//                // 통신 요청
+//                NetworkManager.shared.login(providerName: "kakao", token: "dummy_token") { result in
+//                    switch result {
+//                    case .success(let data):
+//                        // 성공 시 DTO가 넘어옴
+//                        self.loginResult = "성공! 토큰: \(data.accessToken), 신규유저: \(data.isNewUser)"
+//                        print("로그인 성공: \(data)")
+//                        
+//                    case .failure(let error):
+//                        self.loginResult = "실패: \(error.localizedDescription)"
+//                    }
+//                }
+//            }
+//            .padding()
+//            .background(Color.yellow)
+//            .cornerRadius(10)
+//        }
+//    }
+//}
+//
+//#Preview {
+//    LoginView()
+//}
