@@ -10,10 +10,13 @@ import SwiftUI
 struct MenuView: View {
     @State private var isOn = false
     
+    // 뒤로가기
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         VStack(alignment: .leading){
             HStack{
-                Button(action:{}){
+                Button(action:{dismiss()}){
                     Image("leftArrow")
                 }
                 
