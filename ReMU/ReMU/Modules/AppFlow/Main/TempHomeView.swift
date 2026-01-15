@@ -40,7 +40,6 @@ struct TempHomeView: View {
                 )
             }
         }
-
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
                 WriteRecordView(
