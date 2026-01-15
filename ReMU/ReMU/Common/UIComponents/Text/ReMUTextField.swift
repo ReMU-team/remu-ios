@@ -37,7 +37,7 @@ struct ReMUTextField: View {
     }
 }
 
-//사용예시
+// MARK: 사용예시
 //    @State private var id: String = ""
 //    @State private var password: String = ""
 //

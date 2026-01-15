@@ -42,11 +42,44 @@ struct CardOneView: View {
                 .fill(.white)
                 .cornerRadius(12)
                 .shadow(radius: 8)
-            Text("Back Side")
-                .foregroundStyle(.black)
-                .font(.largeTitle)
+            VStack {
+                top
+                middle
+            }
+            .padding(.horizontal, 24)
         }
-        .frame(width: 270, height: 400)
+        .frame(width: 297, height: 419)
+    }
+    
+    var top: some View {
+        HStack {
+            Circle()
+                .fill(.blue5050AE)
+                .frame(width: 45, height: 45)
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("6인팟 스위스")
+                        .foregroundStyle(.grayScale9)
+                        .font(.pt20)
+                    Spacer()
+                    Image(systemName: "pencil.line")
+                    Image(systemName: "xmark.app")
+                }
+                Text("25/10/29-25/11/10")
+                    .foregroundStyle(.grayScale5)
+                    .font(.pt12)
+            }
+            Spacer()
+        }
+        .padding(.top, 32)
+        .padding(.bottom, 22)
+    }
+    
+    var middle: some View {
+        VStack {
+            TextBox(isExpanded: true)
+        }
+        .padding(.bottom, 32)
     }
 }
 
@@ -56,14 +89,52 @@ struct CardTwoView: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(.black)
+                .fill(.white)
                 .cornerRadius(12)
                 .shadow(radius: 8)
-            Text("Front Side")
-                .foregroundStyle(.white)
-                .font(.largeTitle)
+            VStack {
+                top
+                middle
+                Spacer()
+            }
+            .padding(.horizontal, 24)
         }
-        .frame(width: 270, height: 400)
+        .frame(width: 297, height: 419)
+    }
+    
+    var top: some View {
+        HStack {
+            Circle()
+                .fill(.blue5050AE)
+                .frame(width: 45, height: 45)
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("6인팟 스위스")
+                        .foregroundStyle(.grayScale9)
+                        .font(.pt20)
+                    Spacer()
+                    Image(systemName: "pencil.line")
+                    Image(systemName: "xmark.app")
+                }
+                Text("25/10/29-25/11/10")
+                    .foregroundStyle(.grayScale5)
+                    .font(.pt12)
+            }
+            Spacer()
+        }
+        .padding(.top, 32)
+        .padding(.bottom, 22)
+    }
+    
+    var middle: some View {
+        VStack(alignment: .leading) {
+            Text("나의 다짐카드")
+                .foregroundStyle(.grayScale5)
+                .font(.pt12)
+            TextBox(text: "다짐 1")
+            TextBox(text: "다짐 2")
+            TextBox(text: "다짐 3")
+        }
     }
 }
 
