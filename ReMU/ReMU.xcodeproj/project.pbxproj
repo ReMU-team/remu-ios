@@ -26,12 +26,16 @@
 				Core/DIContainer/.gitkeep,
 				Core/Utils/.gitkeep,
 				Models/.gitkeep,
+				Models/Domain/.gitkeep,
 				Models/DTO/.gitkeep,
 				Resource/.gitkeep,
 				Resource/Extension/.gitkeep,
-				Resource/Font/.gitkeep,
 				Resource/Keychain/.gitkeep,
 				Resource/UIConstants/.gitkeep,
+				Service/.gitkeep,
+				Service/MoyaRouter/.gitkeep,
+				Service/MoyaService/.gitkeep,
+				Service/Social/.gitkeep,
 			);
 			target = 696FDA352F102DC100F3678F /* ReMU */;
 		};
