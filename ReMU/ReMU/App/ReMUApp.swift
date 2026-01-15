@@ -16,7 +16,8 @@ struct ReMUApp: App {
             //RootView()
             //ComponentExample()
             //CreateProfileView()
-            WritePledgeView()
+            //WritePledgeView()
+            WriteRecordView()
         }
     }
 }
