@@ -17,7 +17,7 @@ struct InputSelectRow: View {
         VStack(alignment: .leading, spacing: 8) {
             // 제목
             Text(title)
-                .font(.pt20)
+                .font(.pt18)
                 .foregroundStyle(.grayScale9)
 
             // 선택 영역

@@ -56,7 +56,7 @@ struct CreatePledgeCardView: View {
                 goNext = true
             }
             .navigationDestination(isPresented: $goNext) {
-                CreatePledgeCardView()
+                CreateGalaxyView() // TODO: 메인으로 변경 필요
             }
             .padding(.bottom, 54)
             
