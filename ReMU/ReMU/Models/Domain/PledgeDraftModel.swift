@@ -9,7 +9,7 @@ import Foundation
 
 /// 다짐 작성 단계에서 사용하는 임시 모델
 /// - UI 상태 전용
-/// - example은 입력 힌트용 (카드/서버 ❌)
+/// - example은 입력 힌트용 (카드/서버 X)
 struct PledgeDraft: Identifiable, Equatable {
     let id = UUID()
     var content: String
