@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WritePledgeView: View {
+    let onFinish: () -> Void
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
@@ -20,25 +21,26 @@ struct WritePledgeView: View {
     
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                navigationBar
-                ScrollView {
-                    
-                    Group {
-                        description
-                        writingPledge
-                        emoji
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 100)
-                    
+        VStack {
+            navigationBar
+            ScrollView {
+                
+                Group {
+                    description
+                    writingPledge
+                    emoji
                 }
-                .safeAreaInset(edge: .bottom) {
-                            nextButton // 버튼 뒤로도 내용이 보이게 설정해놓음
-                        }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 100)
+                
+            }
+            .safeAreaInset(edge: .bottom) {
+                nextButton // 버튼 뒤로도 내용이 보이게 설정해놓음
             }
         }
+        .navigationDestination(isPresented: $goNext) {
+                    CreatePledgeCardView(onFinish: onFinish)
+                }
         .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
         
     }
@@ -158,9 +160,6 @@ struct WritePledgeView: View {
                 goNext = true
             }
             .disabled(!viewModel.isNextEnabled)
-            .navigationDestination(isPresented: $goNext) {
-                CreatePledgeCardView()
-            }
             .padding(.bottom, 54)
             
         }
@@ -170,5 +169,5 @@ struct WritePledgeView: View {
 }
 
 #Preview {
-    WritePledgeView()
+    //WritePledgeView()
 }

@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct WriteRecordView: View {
+    
+    let onFinish: () -> Void
+    
+    // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
     // 제목 TODO: 뷰모델 제작 후 변경
@@ -32,6 +36,9 @@ struct WriteRecordView: View {
             .padding(.horizontal, 32)
             nextButton
         }
+        .navigationDestination(isPresented: $goNext) {
+                    CreateRecordCardView(onFinish: onFinish)
+                }
         
     }
     // MARK: - navigationBar
@@ -119,9 +126,6 @@ struct WriteRecordView: View {
             PrimaryButton(title: "분석하기", backgroundColor: .purpleC495E0) {
                 goNext = true
             }
-            .navigationDestination(isPresented: $goNext) {
-                CreatePledgeCardView()
-            }
             .padding(.bottom, 54)
             
         }
@@ -131,5 +135,5 @@ struct WriteRecordView: View {
 }
 
 #Preview {
-    WriteRecordView()
+    //WriteRecordView()
 }

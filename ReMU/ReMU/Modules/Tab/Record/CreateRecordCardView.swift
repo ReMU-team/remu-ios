@@ -10,11 +10,13 @@ import SwiftUI
 struct CreateRecordCardView: View {
     @Environment(\.dismiss) private var dismiss
     
+    let onFinish: () -> Void
+    
     // 완료 버튼
     @State private var goNext = false
     
     var body: some View {
-        NavigationStack {
+        VStack {
             navigationBar
             recordCardView
             finishButton
@@ -52,11 +54,16 @@ struct CreateRecordCardView: View {
     private var finishButton: some View {
         VStack {
             Spacer()
+//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+//                goNext = true
+//            }
+//            .navigationDestination(isPresented: $goNext) {
+//                TempHomeView() // TODO: 메인으로 변경 필요
+//            }
+//            .padding(.bottom, 54)
+            
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-                goNext = true
-            }
-            .navigationDestination(isPresented: $goNext) {
-                CreateGalaxyView() // TODO: 메인으로 변경 필요
+                onFinish() // 홈으로 복귀
             }
             .padding(.bottom, 54)
             
@@ -67,6 +74,6 @@ struct CreateRecordCardView: View {
 }
 
 #Preview {
-    CreateRecordCardView()
+    //CreateRecordCardView()
 }
 

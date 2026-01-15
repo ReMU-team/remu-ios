@@ -8,13 +8,18 @@
 import SwiftUI
 
 struct CreatePledgeCardView: View {
+    // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
+    let onFinish: () -> Void
+    
+    
     // 완료 버튼
-    @State private var goNext = false
+    //@State private var goNext = false
+    //@Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
-        NavigationStack {
+        VStack{
             navigationBar
             pledgeCardView
             finishButton
@@ -52,13 +57,17 @@ struct CreatePledgeCardView: View {
     private var finishButton: some View {
         VStack {
             Spacer()
+            //            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+            //                goNext = true
+            //            }
+            //            .navigationDestination(isPresented: $goNext) {
+            //                TempHomeView() // TODO: 메인으로 변경 필요
+            //            }
+            //            .padding(.bottom, 54)
+            
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-                goNext = true
+                onFinish() // 홈으로 복귀
             }
-            .navigationDestination(isPresented: $goNext) {
-                CreateGalaxyView() // TODO: 메인으로 변경 필요
-            }
-            .padding(.bottom, 54)
             
         }
         .padding(.horizontal, 40)
@@ -67,5 +76,5 @@ struct CreatePledgeCardView: View {
 }
 
 #Preview {
-    CreatePledgeCardView()
+    //CreatePledgeCardView()
 }

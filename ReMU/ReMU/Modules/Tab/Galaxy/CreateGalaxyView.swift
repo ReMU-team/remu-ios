@@ -28,20 +28,18 @@ struct CreateGalaxyView: View {
     
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                navigationBar
-                Group {
-                    writeGalaxy
-                    Spacer()
-                    galaxyImageSelection
-                }
-                .padding(.horizontal, 22)
+        VStack {
+            navigationBar
+            Group {
+                writeGalaxy
                 Spacer()
-                finishButton
+                galaxyImageSelection
             }
+            .padding(.horizontal, 22)
+            Spacer()
+            finishButton
         }
-        .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
+        
     }
     
     // MARK: - navigationBar
@@ -119,13 +117,21 @@ struct CreateGalaxyView: View {
     // MARK: - 완료 버튼
     private var finishButton: some View {
         VStack {
-            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0)
-            {
-                goNext = true
+            
+            // 수정 전
+//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0)
+//            {
+//                goNext = true
+//            }
+//            .navigationDestination(isPresented: $goNext) {
+//                TempHomeView() // TODO: 메인으로 변경 필요
+//            }
+            
+            // 수정 후
+            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+                dismiss() // 홈으로 복귀
             }
-            .navigationDestination(isPresented: $goNext) {
-                WritePledgeView() // TODO: 메인으로 변경 필요
-            }
+            
         }
         .padding(.horizontal, 40)
     }
