@@ -20,7 +20,7 @@ struct RootView: View {
 
         case .auth:
             AuthFlowView {
-                appState.route = .main
+                appState.route = .main // 인증/온보딩 끝
             }
 
         case .main:

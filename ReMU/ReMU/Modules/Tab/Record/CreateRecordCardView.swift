@@ -1,5 +1,5 @@
 //
-//  CreatePledgeCardView.swift
+//  CreateRecordCardView.swift
 //  ReMU
 //
 //  Created by 김진서 on 1/15/26.
@@ -7,21 +7,18 @@
 
 import SwiftUI
 
-struct CreatePledgeCardView: View {
-    // 뒤로가기
+struct CreateRecordCardView: View {
     @Environment(\.dismiss) private var dismiss
     
     let onFinish: () -> Void
     
-    
     // 완료 버튼
-    //@State private var goNext = false
-    //@Environment(\.presentationMode) private var presentationMode
+    @State private var goNext = false
     
     var body: some View {
-        VStack{
+        VStack {
             navigationBar
-            pledgeCardView
+            recordCardView
             finishButton
         }
         .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
@@ -37,10 +34,10 @@ struct CreatePledgeCardView: View {
                     )
     }
     
-    // MARK: - pledgeCardView
-    private var pledgeCardView: some View {
+    // MARK: - recordCardView
+    private var recordCardView: some View {
         VStack {
-            Text("다짐 카드가 생성되었어요!")
+            Text("기록 카드가 생성되었어요!")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
             CardFlip()
@@ -57,17 +54,18 @@ struct CreatePledgeCardView: View {
     private var finishButton: some View {
         VStack {
             Spacer()
-            //            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-            //                goNext = true
-            //            }
-            //            .navigationDestination(isPresented: $goNext) {
-            //                TempHomeView() // TODO: 메인으로 변경 필요
-            //            }
-            //            .padding(.bottom, 54)
+//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+//                goNext = true
+//            }
+//            .navigationDestination(isPresented: $goNext) {
+//                TempHomeView() // TODO: 메인으로 변경 필요
+//            }
+//            .padding(.bottom, 54)
             
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
                 onFinish() // 홈으로 복귀
             }
+            .padding(.bottom, 54)
             
         }
         .padding(.horizontal, 40)
@@ -76,5 +74,6 @@ struct CreatePledgeCardView: View {
 }
 
 #Preview {
-    //CreatePledgeCardView()
+    //CreateRecordCardView()
 }
+

@@ -13,10 +13,13 @@ struct ReMUApp: App {
     
     var body: some Scene {
         WindowGroup {
-            //RootView()
+            RootView() // 앱 시작 진입점
             //ComponentExample()
             //CreateProfileView()
-            WritePledgeView()
+            //WritePledgeView()
+            //WriteRecordView()
+            //TempHomeView()
+            
         }
     }
 }
