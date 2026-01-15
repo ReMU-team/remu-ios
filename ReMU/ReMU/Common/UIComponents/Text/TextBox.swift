@@ -9,14 +9,17 @@ import Foundation
 import SwiftUI
 
 struct TextBox: View {
-    let text: String
+    var text: String? = nil
+    var isExpanded: Bool = false
 
     var body: some View {
-        Text(text)
+        Text(text ?? "")
             .font(.pt16)
-            .foregroundStyle(.grayScale8) // TODO: 색 변경 필요
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(.grayScale8)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
             .padding(15)
+            // 크기 확장 여부
+            .frame(maxHeight: isExpanded ? .infinity : nil)
             .background(.purpleD9BCEA50)
             .cornerRadius(10)
     }
