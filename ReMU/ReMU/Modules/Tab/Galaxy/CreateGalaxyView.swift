@@ -93,7 +93,7 @@ struct CreateGalaxyView: View {
             Text("은하의 이름을 입력해주세요")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            ReMUTextField(placeholder: "이름을 입력해주세요", text: $galaxyName)
+            ReMUTextField(text: $galaxyName, placeholder: "이름을 입력해주세요", height: 55)
                 .padding(.top, -15) // TODO: 텍스트 필드 패딩 값 설정 필요
             
             
