@@ -22,10 +22,10 @@ struct CreateProfileView: View {
             ProfileImage(selectedImageData: $viewModel.selectedImageData)
             
             // 이름 적기
-            ReMUTextField(placeholder: "15자 이내로 입력해주세요", text: $viewModel.username)
+            ReMUTextField(text: $viewModel.username, placeholder: "15자 이내로 입력해주세요", height: 40)
             
             // 한 줄 소개
-            ReMUTextField(placeholder: "나에 대한 이야기 소개를 적어주세요", text: $viewModel.description)
+            ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 40)
             
             // 시작 버튼
             PrimaryButton(
