@@ -43,7 +43,7 @@ struct CreatePledgeCardView: View {
             Text("다짐 카드가 생성되었어요!")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            CardFlip()
+            PledgeCardFlip()
                 .padding(.top, 50)
                 .padding(.bottom, 20)
             Text("카드를 클릭하면 뒷면이 보여요!")
