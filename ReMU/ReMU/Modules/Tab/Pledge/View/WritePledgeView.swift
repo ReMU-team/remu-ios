@@ -169,5 +169,5 @@ struct WritePledgeView: View {
 }
 
 #Preview {
-    //WritePledgeView()
+//    WritePledgeView()
 }
