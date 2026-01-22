@@ -25,7 +25,7 @@ struct InputSelectRow: View {
                 HStack {
                     Text(value ?? placeholder)
                         .font(.pt16)
-                        .foregroundStyle(value == nil ? .grayScale5 : .grayScale9) // 선택해주세요 -> 결과 글 색
+                        .foregroundStyle(value == nil ? .purpleC495E0 : .grayScale9) // 선택해주세요 -> 결과 글 색
 
                     Spacer()
 

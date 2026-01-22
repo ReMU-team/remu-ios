@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Review {
+struct Result {
     let galaxyId: Int
 
     let travelEmojiImageName: String   // 여행 후 이모지 (asset name)

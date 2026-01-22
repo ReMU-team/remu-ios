@@ -18,7 +18,8 @@ struct ReMUTextField: View {
             // 1. Placeholder (텍스트가 비었을 때만 표시)
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundStyle(Color.grayScale5)
+                    .font(.pt16)
+                    .foregroundStyle(.grayScale5)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)

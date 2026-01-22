@@ -20,7 +20,7 @@ struct PledgeCard: Identifiable {
     let id: UUID = UUID()
     let galaxyId: Int
 
-    let emojiAssetName: String   // 대표 이모지 (asset name)
+    let emojiImageName: String   // 다짐 이모지 (asset name)
     let pledges: [Pledge]        // 다짐 목록 (1~5)
 
     // 회고 단계에서 채워짐

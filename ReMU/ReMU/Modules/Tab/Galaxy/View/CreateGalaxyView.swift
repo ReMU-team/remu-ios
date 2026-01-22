@@ -8,24 +8,12 @@
 import SwiftUI
 
 struct CreateGalaxyView: View {
+    
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
-    // 장소 관련 TODO: 뷰모델 생성 후 수정 예정
-    @State private var destination: String?
-    @State private var showPlaceSearch = false
-    
-    // 캘린더 관련 TODO: 뷰모델 생성 후 수정 예정
-    @State private var showCalendar = false
-    @State private var startDate: Date?
-    @State private var endDate: Date?
-    
-    // 은하 이름 TODO: 뷰모델 생성 후 수정 예정
-    @State private var galaxyName: String = ""
-    
-    // 완료 버튼
-    @State private var goNext = false
-    
+    // 뷰모델
+    @StateObject private var viewModel = CreateGalaxyViewModel()
     
     var body: some View {
         VStack {
@@ -34,9 +22,10 @@ struct CreateGalaxyView: View {
                 writeGalaxy
                 Spacer()
                 galaxyImageSelection
+                Spacer()
             }
             .padding(.horizontal, 22)
-            Spacer()
+            
             finishButton
         }
         
@@ -46,7 +35,7 @@ struct CreateGalaxyView: View {
     private var navigationBar: some View {
         VStack {
             CustomNavigationBar(
-                title: "여행 은하 생성",
+                title: "은하 생성",
                 onBack: {
                     dismiss() // 뒤로가기 (home)
                 }
@@ -63,29 +52,32 @@ struct CreateGalaxyView: View {
             // 장소 선택
             InputSelectRow(
                 title: "어디로 떠날까요?",
-                value: destination,
+                value: viewModel.destination,
                 placeholder: "클릭하여 장소를 검색해주세요"
             ) {
-                showPlaceSearch = true
+                viewModel.showPlaceSearch = true
             }
-            .sheet(isPresented: $showPlaceSearch) {
+            .sheet(isPresented: $viewModel.showPlaceSearch) {
                 PlaceSearchSheet(
-                    selectedPlace: $destination
+                    selectedPlace: $viewModel.destination
                 )
             }
             
             // 여행 기간 선택
             InputSelectRow(
                 title: "언제 떠날까요?",
-                value: dateRangeText(start: startDate, end: endDate),
+                value: dateRangeText(
+                    start: viewModel.startDate,
+                    end: viewModel.endDate
+                ),
                 placeholder: "클릭하여 날짜를 입력해주세요"
             ) {
-                showCalendar = true
+                viewModel.showCalendar = true
             }
-            .sheet(isPresented: $showCalendar) {
+            .sheet(isPresented: $viewModel.showCalendar) {
                 CalendarSheet(
-                    startDate: $startDate,
-                    endDate: $endDate
+                    startDate: $viewModel.startDate,
+                    endDate: $viewModel.endDate
                 )
             }
             
@@ -93,7 +85,8 @@ struct CreateGalaxyView: View {
             Text("은하의 이름을 입력해주세요")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            ReMUTextField(text: $galaxyName, placeholder: "이름을 입력해주세요", height: 55)
+            ReMUTextField(text: $viewModel.galaxyName,
+                          placeholder: "이름을 입력해주세요", height: 46)
                 .padding(.top, -15) // TODO: 텍스트 필드 패딩 값 설정 필요
             
             
@@ -101,42 +94,75 @@ struct CreateGalaxyView: View {
     }
     
     // MARK: - 은하 이미지 선택
+    private let galaxies = GalaxyImageCatalog.all
+
+    private let columns = Array(
+        repeating: GridItem(.flexible(), spacing: 16),
+        count: 5
+    )
+    
     private var galaxyImageSelection: some View {
-        VStack (alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("당신의 은하는 어떤 모습인가요?")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            Text("은하 이미지")
-                .frame(maxWidth: .infinity, minHeight: 162, maxHeight: 162, alignment: .center)
-                .background(Color(red: 0.31, green: 0.31, blue: 0.51))
 
-                .cornerRadius(12)
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(galaxies) { galaxy in
+                    GalaxySelectableItem(
+                        galaxy: galaxy,
+                        isSelected: viewModel.selectedGalaxyImageName == galaxy.id
+                    )
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                            viewModel.selectedGalaxyImageName = galaxy.id
+                        }
+                    }
+                }
+            }
+            .padding(20)
+            .frame(maxWidth: .infinity, minHeight: 162, maxHeight: 162, alignment: .top)
+            .background(.blue505083)
+            .cornerRadius(12)
+            
+            
         }
     }
     
     // MARK: - 완료 버튼
     private var finishButton: some View {
         VStack {
-            
-            // 수정 전
-//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0)
-//            {
-//                goNext = true
-//            }
-//            .navigationDestination(isPresented: $goNext) {
-//                TempHomeView() // TODO: 메인으로 변경 필요
-//            }
-            
-            // 수정 후
-            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+            PrimaryButton(title: "완료",
+                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .grayScale3,
+                          isDisabled: !viewModel.isFinishEnabled
+            ) {
                 dismiss() // 홈으로 복귀
             }
-            
         }
         .padding(.horizontal, 40)
     }
-        
 }
+
+
+struct GalaxySelectableItem: View {
+
+    let galaxy: GalaxyImageItem
+    let isSelected: Bool
+
+    var body: some View {
+        Image(galaxy.id)
+            .resizable()
+            .frame(
+                width: isSelected ? 80 : 65,
+                height: isSelected ? 80 : 65
+            )
+            .scaleEffect(isSelected ? 1.15 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
+    }
+}
+
+
+
 #Preview {
     CreateGalaxyView()
 }

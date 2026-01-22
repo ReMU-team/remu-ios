@@ -75,6 +75,4 @@ struct CreatePledgeCardView: View {
     }
 }
 
-#Preview {
-    //CreatePledgeCardView()
-}
+
