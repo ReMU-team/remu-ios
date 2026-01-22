@@ -13,11 +13,11 @@ struct EmojiSelectableItem: View {
     let isSelected: Bool
 
     var body: some View {
-        Image(emoji.assetName)
+        Image(emoji.id)
             .resizable()
             .frame(
-                width: isSelected ? 64 : 48,
-                height: isSelected ? 64 : 48
+                width: isSelected ? 65 : 50,
+                height: isSelected ? 65 : 50
             )
             .scaleEffect(isSelected ? 1.15 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)

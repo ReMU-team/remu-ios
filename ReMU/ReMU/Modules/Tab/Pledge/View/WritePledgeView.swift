@@ -125,7 +125,7 @@ struct WritePledgeView: View {
                     viewModel.isEmojiSheetPresented = true
                 } label: {
                     if let emoji = viewModel.selectedEmoji {
-                                        Image(emoji.assetName)
+                                        Image(emoji.id)
                                     } else {
                                         Image("plus_emoji_icon")
                                     }

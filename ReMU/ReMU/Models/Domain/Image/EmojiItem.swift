@@ -8,6 +8,5 @@
 import Foundation
 
 struct EmojiItem: Identifiable {
-    let id: String        // 서버로 보낼 값
-    let assetName: String // Assets 이름
+    let id: String        // 서버로 보낼 Assets 이름
 }
