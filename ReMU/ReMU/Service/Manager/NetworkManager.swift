@@ -21,7 +21,7 @@ class NetworkManager {
     private init() { }
     
     // 3. 로그인 요청 함수
-    func login(providerName: String, token: String, completion: @escaping (Result<LoginResponse, Error>) -> Void) {
+    func login(providerName: String, token: String, completion: @escaping (Swift.Result<LoginResponse, Error>) -> Void) {
         
         provider.request(.socialLogin(provider: providerName, token: token)) { result in
             switch result {
@@ -43,7 +43,7 @@ class NetworkManager {
     }
     
     // 4. 프로필 가져오기 함수
-    func fetchProfile(completion: @escaping (Result<UserResponse, Error>) -> Void) {
+    func fetchProfile(completion: @escaping (Swift.Result<UserResponse, Error>) -> Void) {
         
         provider.request(.getMyProfile) { result in
             switch result {

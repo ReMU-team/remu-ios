@@ -17,7 +17,7 @@ struct CreateProfileView: View {
         VStack {
             navigationBar
                 .padding(.horizontal, -40)
-            
+            Spacer()
             // 포토피커
             ProfileImage(selectedImageData: $viewModel.selectedImageData)
             
@@ -35,6 +35,7 @@ struct CreateProfileView: View {
                 onFinish()
                 print("시작 버튼 클릭")
             }
+            Spacer()
         }
         .padding(.horizontal,40)
     }
@@ -58,5 +59,5 @@ struct CreateProfileView: View {
     
     
 }
-    
+
     

@@ -28,9 +28,9 @@ struct TempHomeView: View {
                 showWriteRecord = true
             }
         }
-        .fullScreenCover(isPresented: $showCreateGalaxy) {
-            CreateGalaxyView()
-        }
+//        .fullScreenCover(isPresented: $showCreateGalaxy) {
+//            CreateGalaxyView()
+//        }
         .fullScreenCover(isPresented: $showWritePledge) {
             NavigationStack {
                 WritePledgeView(
