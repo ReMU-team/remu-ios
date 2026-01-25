@@ -30,9 +30,6 @@
 				Resource/Extension/.gitkeep,
 				Resource/Keychain/.gitkeep,
 				Resource/UIConstants/.gitkeep,
-				Service/.gitkeep,
-				Service/MoyaRouter/.gitkeep,
-				Service/MoyaService/.gitkeep,
 				Service/Social/.gitkeep,
 			);
 			target = 696FDA352F102DC100F3678F /* ReMU */;
