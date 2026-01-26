@@ -31,6 +31,6 @@ import Foundation
 
 /// 실제 다짐 카드에 저장/표시되는 단일 다짐
 struct Pledge: Identifiable {
-    let id = UUID()
+    let id: UUID = UUID()
     let content: String
 }
