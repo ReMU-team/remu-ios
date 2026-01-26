@@ -47,3 +47,4 @@ class HomeViewModel: ObservableObject {
         self.scale = magnitude
     }
 }
+

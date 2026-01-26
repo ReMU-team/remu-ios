@@ -41,6 +41,19 @@ struct HomeGalaxyView: View {
             } else {
                 ProgressView().tint(.white)
             }
+            VStack(alignment: .trailing){
+                Spacer()
+                HStack{
+                    Spacer()
+                    Button(action:{}){
+                        Image("card")
+                            .shadow(color: .white ,radius:5, x: 2, y: 4)
+                    }.padding(.trailing, 22) // 화면 끝에서 살짝 띄우기
+                        .padding(.bottom, 20)   // 하단에서 살짝 띄우기
+                }
+            }.frame(maxWidth: .infinity, maxHeight: .infinity) // 화면 전체를 차지하게 하여 Spacer가 작동하게 함
+                .allowsHitTesting(true) // 하위 버튼 클릭 가능하도록 보장
+            
             
             // 3. 상단 정보 UI (줌 영향 없이 고정)
             VStack {
