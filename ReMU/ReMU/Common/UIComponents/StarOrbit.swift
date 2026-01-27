@@ -27,7 +27,7 @@ struct DynamicOrbitView: View {
         }
         return totalRadius
     }
-
+    
     var body: some View {
         ZStack {
             // 궤도 가이드 라인
@@ -45,13 +45,25 @@ struct DynamicOrbitView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: starSize, height: starSize)
+                            .rotationEffect(.degrees(-rotation - angle)) // 자전 상쇄
                     }
-                    Text(stars[starIndex].title)
+                    Text("\(stars[starIndex].title)")
                         .font(.system(size: 8))
                         .foregroundColor(.white)
+                        .padding(.horizontal, 6) // 텍스트 좌우 여백 (글자가 길어져도 이 간격은 유지됨)
+                        .padding(.vertical, 3)
+                        .background(Capsule().fill(Color.white.opacity(0.3)) // 배경색 설정
+                            )
+                        .rotationEffect(.degrees(-rotation - angle)) // 자전 상쇄
+                    
+                    Text("Day \(stars[starIndex].onData)")
+                        .font(.system(size: 8))
+                        .foregroundColor(.white)
+                        .rotationEffect(.degrees(-rotation - angle)) // 자전 상쇄
+                    
                 }
-                .offset(x: orbitRadius)
-                .rotationEffect(.degrees(angle))
+                .offset(x: orbitRadius)           // 1. 먼저 중심에서 궤도 반지름만큼 밀어냅니다.
+                    .rotationEffect(.degrees(angle))  // 2. 궤도 위의 고유 위치(각도)에 배치합니다.
             }
         }
         .rotationEffect(.degrees(rotation))
