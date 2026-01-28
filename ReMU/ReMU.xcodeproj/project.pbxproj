@@ -25,7 +25,6 @@
 				Core/Actor/.gitkeep,
 				Core/DIContainer/.gitkeep,
 				Core/Utils/.gitkeep,
-				Models/.gitkeep,
 				Models/DTO/.gitkeep,
 				Resource/.gitkeep,
 				Resource/Extension/.gitkeep,

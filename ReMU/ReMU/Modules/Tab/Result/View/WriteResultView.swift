@@ -13,10 +13,8 @@ struct WriteResultView: View {
 //    let onFinish: () -> Void
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
-    @State private var pledge1: String = ""
-    @State private var isChecked1: Bool = false
-    @State private var isChecked2: Bool = false
-    @State private var review: String = ""
+
+    @StateObject private var viewModel = ResultViewModel()
     
     var body: some View {
         VStack {
@@ -73,7 +71,12 @@ struct WriteResultView: View {
     var middle: some View {
         VStack(spacing: 35) {
             emoji
-            pledges
+            
+            // ForEach로 뷰모델의 배열만큼 반복 생성
+            ForEach($viewModel.pledges) { $item in
+                PledgeRow(item: $item)
+            }
+            
             overall
         }
         .padding()
@@ -113,39 +116,16 @@ struct WriteResultView: View {
         } // TODO: emoji + 은하이름 + 여행날짜 컴포넌트화, MVVM 구조화, 회고이모지변경 버튼 액션
     }
     
-    var pledges: some View {
-        VStack(spacing: 8) {
-            HStack {
-                TextBox(text: "다짐 1")
-                Button(action: {
-                    isChecked1.toggle()
-                }) {
-                    Image(systemName: isChecked1 ? "checkmark.circle.fill" : "checkmark.circle")
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(Color.purpleC495E0)
-                }
-                Button(action: {
-                    isChecked2.toggle()
-                }) {
-                    Image(systemName: isChecked2 ? "xmark.circle.fill" :"xmark.circle")
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(Color.purpleC495E0)
-                }
-            }
-            ReMUTextField(text: $pledge1, placeholder: "회고 내용을 입력해주세요.", height: 50)
-        } // TODO: pledges 컴포넌트화, MVVM 구조화, 완료 OX 버튼 액션
-    }
-    
     var overall: some View {
         VStack(alignment: .leading) {
             Text("여행 후기")
-                .font(.pt15)
+                .font(.pt15) // font extension 가정
                 .foregroundStyle(.grayScale9)
-            ReMUTextField(text: $review, placeholder: "여행 후기를 입력해주세요.", height: 195)
+            // 3. 뷰모델의 review 바인딩
+            ReMUTextField(text: $viewModel.review, placeholder: "여행 후기를 입력해주세요.", height: 195)
         }
     }
+
     
     // MARK: - bottom
     var bottom: some View {
