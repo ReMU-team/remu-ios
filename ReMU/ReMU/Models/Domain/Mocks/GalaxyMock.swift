@@ -31,16 +31,16 @@ extension GalaxyData {
             totalDay: 3,
             month: 1,
             day: 15,
-            galaxyIcon: "galaxy.icon.1",
+            galaxyIcon: "galaxy_1",
             stars: [
-                StarData(title: "Star1", onData: 1, starIcon: "planet1"),
-                StarData(title: "Star2", onData: 2, starIcon: "planet2"),
-                StarData(title: "Star3", onData: 3, starIcon: "planet3"),
-                StarData(title: "Star4", onData: 4, starIcon: "planet4"),
-                StarData(title: "Star5", onData: 5, starIcon: "planet5"),
-                StarData(title: "Star6", onData: 6, starIcon: "planet6"),
-                StarData(title: "Star7", onData: 7, starIcon: "planet7"),
-                StarData(title: "Star8", onData: 8, starIcon: "planet8")
+                StarData(title: "Star1", onData: 1, starIcon: "planet_1"),
+                StarData(title: "Star2", onData: 2, starIcon: "planet_2"),
+                StarData(title: "Star3", onData: 3, starIcon: "planet_3"),
+                StarData(title: "Star4", onData: 4, starIcon: "planet_4"),
+                StarData(title: "Star5", onData: 5, starIcon: "planet_5"),
+                StarData(title: "Star6", onData: 6, starIcon: "planet_6"),
+                StarData(title: "Star7", onData: 7, starIcon: "planet_7"),
+                StarData(title: "Star8", onData: 8, starIcon: "planet_8")
             ]
         )
     }

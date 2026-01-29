@@ -9,6 +9,7 @@ import SwiftUI
 
 enum NavigationRoute: Equatable, Hashable {
     case home
+    
 }
 
 struct NavigationRoutingView: View {

@@ -24,7 +24,6 @@
 				Core/Actor/.gitkeep,
 				Models/DTO/.gitkeep,
 				Resource/.gitkeep,
-				Resource/Extension/.gitkeep,
 				Resource/Keychain/.gitkeep,
 				Resource/UIConstants/.gitkeep,
 				Service/Social/.gitkeep,
