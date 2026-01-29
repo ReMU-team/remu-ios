@@ -13,20 +13,39 @@ class ResultViewModel: ObservableObject {
     
     // 다짐 목록 (PledgeItem은 ReviewResult.swift에 정의됨)
     @Published var pledges: [PledgeItem] = [
-        PledgeItem(title: "다짐 1", content: ""),
-        PledgeItem(title: "다짐 2", content: "")
+        PledgeItem(title: "아이스크림 사먹기", content: ""),
+        PledgeItem(title: "현지인 맛집 찾아가기", content: ""),
+        PledgeItem(title: "베스트컷 한 장 찍기", content: "")
     ]
     
     // 여행 후기
     @Published var review: String = ""
     
-    // 결과 생성 함수
+    // AI결과 생성 함수
     func createFinalResult() -> ReviewResult {
-        return ReviewResult( // TripReviewResult -> ReviewResult로 이름 통일
+        return ReviewResult(
             galaxyId: 0, // 임시 ID
             travelEmojiImageName: "emoji_name", // 임시 이미지명
             overallContent: review,
             aiFeedback: nil
         )
+    }
+    
+    // MARK: - Emoji
+    @Published var isEmojiSheetPresented = false
+    @Published var tempSelectedEmoji: EmojiItem?
+    @Published var selectedEmoji: EmojiItem?
+
+    let emojis = EmojiCatalog.all
+
+    func confirmEmojiSelection() {
+        selectedEmoji = tempSelectedEmoji
+        tempSelectedEmoji = nil
+        isEmojiSheetPresented = false
+    }
+
+    func openEmojiSheet() {
+        tempSelectedEmoji = selectedEmoji
+        isEmojiSheetPresented = true
     }
 }

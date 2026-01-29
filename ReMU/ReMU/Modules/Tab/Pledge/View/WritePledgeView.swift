@@ -77,7 +77,7 @@ struct WritePledgeView: View {
     private var writingPledge: some View {
         VStack (alignment: .leading) {
             
-            // 다짐 작성칸 // TODO: 텍스트필드 UI 수정 필요
+            // 다짐 작성칸
             ForEach($viewModel.pledges) { $pledge in
                 PledgeInputView(
                     text: $pledge.content,

@@ -14,7 +14,10 @@ struct WriteResultView: View {
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
 
+    // 회고 뷰모델
     @StateObject private var viewModel = ResultViewModel()
+    
+
     
     var body: some View {
         VStack {
@@ -52,12 +55,14 @@ struct WriteResultView: View {
                 Text("은하의 여정을 회상해봐요")
                     .font(.pt20)
                     .foregroundStyle(.grayScale9)
-                Text("이번 여행을 회고해보아요!")
-                    .font(.pt12)
-                    .foregroundStyle(.grayScale5)
-                Text("출발 전에는 이렇게 작성하였어요.")
-                    .font(.pt12)
-                    .foregroundStyle(.grayScale5)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("이번 여행을 회고해보아요!")
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale5)
+                    Text("출발 전에는 이렇게 작성하였어요.")
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale5)
+                }
                 Text("지금의 나는 어떤가요?")
                     .font(.pt13)
                     .foregroundStyle(.grayScale7)
@@ -72,7 +77,6 @@ struct WriteResultView: View {
         VStack(spacing: 35) {
             emoji
             
-            // ForEach로 뷰모델의 배열만큼 반복 생성
             ForEach($viewModel.pledges) { $item in
                 PledgeRow(item: $item)
             }
@@ -93,7 +97,9 @@ struct WriteResultView: View {
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
-                    Button(action: {}) {
+                    Button(action: {
+                        viewModel.openEmojiSheet()
+                    }) {
                         Text("회고 이모지 변경")
                             .foregroundStyle(.purpleC495E0)
                             .font(.pt12)
@@ -108,6 +114,21 @@ struct WriteResultView: View {
                             .stroke(Color.purpleC495E0, lineWidth: 1)
                             )
                     }
+                    .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
+                        EmojiPickerSheet(
+                            emojis: viewModel.emojis,
+                            selectedEmoji: $viewModel.tempSelectedEmoji,
+                            onConfirm: {
+                                viewModel.confirmEmojiSelection()
+                            },
+                            onClose: {
+                                viewModel.isEmojiSheetPresented = false
+                            }
+                        )
+                    }
+
+                    
+                    
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
@@ -119,9 +140,8 @@ struct WriteResultView: View {
     var overall: some View {
         VStack(alignment: .leading) {
             Text("여행 후기")
-                .font(.pt15) // font extension 가정
+                .font(.pt15)
                 .foregroundStyle(.grayScale9)
-            // 3. 뷰모델의 review 바인딩
             ReMUTextField(text: $viewModel.review, placeholder: "여행 후기를 입력해주세요.", height: 195)
         }
     }
@@ -132,7 +152,7 @@ struct WriteResultView: View {
         VStack {
             
         }
-    } // TODO: 네비게이션...
+    } // TODO: 네비게이션
 }
 
 #Preview {
