@@ -9,12 +9,17 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject var appState: AppState
+    
     // 네비게이션
     @State private var showCreateGalaxy = false
     @State private var showWritePledge = false
     @State private var showWriteRecord = false
     @State private var showMenu = false
+    @State private var showTimeLine = false
     
+    @State private var galaxies: [Galaxy] = []
+
     
     var body: some View {
         ZStack{
@@ -30,7 +35,7 @@ struct HomeView: View {
             VStack{
                 HStack{
                     Spacer()
-                    Button(action: {}){
+                    Button(action: {showTimeLine = true}){
                         Image(systemName: "globe")
                             .resizable()
                             .frame(width: 24,height: 24)
@@ -52,23 +57,28 @@ struct HomeView: View {
                             .resizable()
                             .frame(width: 35,height: 35)
                     }.foregroundColor(.white)
-                }.padding(.bottom,16)
+                }
+                .padding(.bottom,16)
+                
                 Text("첫 은하 생성하기")
                     .font(.pt18)
                     .foregroundColor(.white)
-                Spacer()
                 
-                // TODO: UI 수정, 네비게이션 완료
-                Button("📝 기록 생성") {
-                    showWriteRecord = true
-                }
-                Button("✍️ 다짐 생성") { // TODO: 다짐카드 이미지 변경
-                    showWritePledge = true
-                }
+                Spacer()
             }
         }
+        // 은하 생성 뷰 시트 띄우기
         .fullScreenCover(isPresented: $showCreateGalaxy) {
-            CreateGalaxyView()
+            // 은하 정보 저장
+            CreateGalaxyView { galaxy in
+                galaxies.append(galaxy)
+                appState.currentGalaxy = galaxy
+                
+                showCreateGalaxy = false
+            }
+        }
+        .fullScreenCover(isPresented: $showTimeLine) {
+            TimeLineView()
         }
         .fullScreenCover(isPresented: $showMenu) {
             MenuView()

@@ -14,6 +14,7 @@ struct CreateResultCardView: View {
     var body: some View {
         VStack {
             navigation
+            Spacer()
             top
             middle
 //            bottom

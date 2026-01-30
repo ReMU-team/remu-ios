@@ -9,6 +9,10 @@ import SwiftUI
 
 struct PledgeCardFlip: View {
     
+    // 뷰모델
+    @StateObject private var pledgeViewModel = PledgeViewModel()
+    @StateObject private var galaxyViewModel = CreateGalaxyViewModel()
+    
     @State var flip = false
     
     var body: some View {
@@ -58,7 +62,7 @@ struct CardOneView: View {
                 .frame(width: 45, height: 45)
             VStack(alignment: .leading) {
                 HStack {
-                    Text("6인팟 스위스")
+                    Text("galaxyViewModel.galaxyName")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()

@@ -5,10 +5,13 @@
 //  Created by 김종수 on 1/26/26.
 //
 
-import Foundation
 import SwiftUI
 
 struct TimeLineView: View {
+    
+    //뒤로가기
+    @Environment(\.dismiss) private var dismiss
+    
     
     var body: some View {
         ZStack{
@@ -23,23 +26,16 @@ struct TimeLineView: View {
                 .scaledToFit()
             VStack{
                 HStack{
-                    Button(action:{}){
+                    Button {
+                        dismiss()
+                    } label: {
                         Image("white_left_arrow")
                     }
                     Spacer()
-                    Button(action: {}){
-                        Image(systemName: "globe")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                    Button(action: {}){
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                }.padding(22)
-                    .padding(.bottom,134)
-                    .foregroundColor(.white)
+                }
+                .padding(22)
+                .padding(.bottom,134)
+                .foregroundColor(.white)
                 VStack{
                     Image("home_star")
                         .padding(.bottom,20)

@@ -133,10 +133,9 @@ struct WritePledgeView: View {
                 .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
                     EmojiPickerSheet(
                         emojis: viewModel.emojis,
-                        selectedEmoji: $viewModel.tempSelectedEmoji,
-                        onConfirm: {
-                            viewModel.confirmEmojiSelection()
-                        },
+                        selectedEmojis: $viewModel.tempSelectedEmojis,
+                        maxSelection: 1,
+                        onConfirm: viewModel.confirmEmojiSelection,
                         onClose: {
                             viewModel.isEmojiSheetPresented = false
                         }
@@ -169,5 +168,12 @@ struct WritePledgeView: View {
 }
 
 #Preview {
-//    WritePledgeView()
+    NavigationStack {
+        WritePledgeView(
+            onFinish: {
+                print("finish")
+            }
+        )
+    }
 }
+

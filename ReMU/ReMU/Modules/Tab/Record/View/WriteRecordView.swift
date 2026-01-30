@@ -14,6 +14,10 @@ struct WriteRecordView: View {
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
+    // 뷰모델
+    @StateObject private var viewModel = WriteRecordViewModel()
+
+    
     // 제목 TODO: 뷰모델 제작 후 변경
     @State private var title: String = ""
     
@@ -37,8 +41,33 @@ struct WriteRecordView: View {
             nextButton
         }
         .navigationDestination(isPresented: $goNext) {
-                    CreateRecordCardView(onFinish: onFinish)
+            CreateRecordCardView(onFinish: onFinish)
+        }
+        .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
+            EmojiPickerSheet(
+                emojis: viewModel.emojis,
+                selectedEmojis: $viewModel.tempSelectedEmojis,
+                maxSelection: 3,
+                onConfirm: viewModel.confirmEmojiSelection,
+                onClose: {
+                    viewModel.isEmojiSheetPresented = false
                 }
+            )
+        }
+
+
+        .sheet(isPresented: $viewModel.isColorSheetPresented) {
+            CardColorPickerSheet(
+                colors: viewModel.cardColors,
+                selectedColor: $viewModel.selectedCardColor,
+                onClose: { viewModel.isColorSheetPresented = false }
+            )
+        }
+
+        .sheet(isPresented: $viewModel.isPhotoPickerPresented) {
+            PhotoPickerView(viewModel: viewModel)
+        }
+
         
     }
     // MARK: - navigationBar
@@ -66,6 +95,15 @@ struct WriteRecordView: View {
                 Text("10.31")
                     .font(.pt15)
                     .foregroundStyle(.grayScale5)
+                
+                Spacer()
+                
+                if let color = viewModel.selectedCardColor {
+                    Image(color.assetName)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                }
+
             }
             .padding(.top,37)
             .padding(.bottom, 24)
@@ -80,6 +118,20 @@ struct WriteRecordView: View {
             Rectangle()
                 .fill(.grayScale7)
                 .frame(height: 1)
+            
+            HStack(spacing: 8) {
+                ForEach(viewModel.selectedEmojis) { emoji in
+                    Image(emoji.id)
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                }
+
+                if viewModel.selectedPhoto != nil {
+                    Text("사진")
+                }
+            }
+            .padding(.top, 12)
+
         }
     }
     
@@ -87,12 +139,26 @@ struct WriteRecordView: View {
     private var buttonGroup: some View {
         HStack (spacing: 8) {
             RecordSelectionButton(title: "카드색상")
+                .onTapGesture {
+                    viewModel.isColorSheetPresented = true
+                }
+
             RecordSelectionButton(title: "이모지")
+                .onTapGesture {
+                    viewModel.openEmojiSheet()
+                }
+
+
             RecordSelectionButton(title: "사진")
+                .onTapGesture {
+                    viewModel.isPhotoPickerPresented = true
+                }
+
         }
         .padding(.top, 71)
         .padding(.bottom, 48)
     }
+    
     
     
     // MARK: - writeContent
@@ -135,5 +201,12 @@ struct WriteRecordView: View {
 }
 
 #Preview {
-//    WriteRecordView()
+    NavigationStack {
+        WriteRecordView(
+            onFinish: {
+                print("finish")
+            }
+        )
+    }
 }
+
