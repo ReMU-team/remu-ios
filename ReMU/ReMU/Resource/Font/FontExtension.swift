@@ -16,4 +16,5 @@ extension Font {
     static let pt15 = Font.system(size: 15)
     static let pt13 = Font.system(size: 13)
     static let pt12 = Font.system(size: 12)
+    static let pt8 = Font.system(size: 8)
 }

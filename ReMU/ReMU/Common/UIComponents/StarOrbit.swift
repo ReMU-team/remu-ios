@@ -29,7 +29,7 @@ struct DynamicOrbitView: View {
         }
         return totalRadius
     }
-
+    
     var body: some View {
         
         TimelineView(.animation) { timeline in
