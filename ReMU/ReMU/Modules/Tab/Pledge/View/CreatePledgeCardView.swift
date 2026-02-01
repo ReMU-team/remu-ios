@@ -43,7 +43,7 @@ struct CreatePledgeCardView: View {
     private var pledgeCardView: some View {
         VStack {
             Text("다짐 카드가 생성되었어요!")
-                .font(.pt18)
+                .font(.pt20)
                 .foregroundStyle(.grayScale9)
             PledgeCardFlip()
                 .padding(.top, 50)

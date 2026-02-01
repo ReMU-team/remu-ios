@@ -40,6 +40,7 @@ struct PledgeCardFlip: View {
     PledgeCardFlip()
 }
 
+// MARK: - 뒷장
 struct CardOneView: View {
     
     @Binding var flip: Bool
@@ -47,7 +48,7 @@ struct CardOneView: View {
         ZStack {
             Rectangle()
                 .fill(.white)
-                .cornerRadius(12)
+                .cornerRadius(16)
                 .shadow(radius: 8)
             VStack {
                 top
@@ -63,22 +64,30 @@ struct CardOneView: View {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
+            Spacer()
             VStack(alignment: .leading) {
                 HStack {
-//                    Text("galaxyViewModel.galaxyName")
                     Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
+                        .padding(.horizontal, 16)
+                    
                     Spacer()
-                    Image(systemName: "pencil.line")
-                    Image(systemName: "xmark.app")
+                    Button(action: {}) {
+                        Image("pencil.line")
+                            .foregroundStyle(Color.grayScale8)
+                    }
+                    Button(action: {}) {
+                        Image("close_icon")
+                            .foregroundStyle(Color.grayScale8)
+                    }
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
-                
+                    .padding(.horizontal, 16)
             }
-            Spacer()
+            
         }
         .padding(.top, 32)
         .padding(.bottom, 22)
@@ -100,7 +109,7 @@ struct CardTwoView: View {
         ZStack {
             Rectangle()
                 .fill(.white)
-                .cornerRadius(12)
+                .cornerRadius(16)
                 .shadow(radius: 8)
             VStack {
                 top
@@ -117,26 +126,30 @@ struct CardTwoView: View {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
+            Spacer()
             VStack(alignment: .leading) {
                 HStack {
                     Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
+                        .padding(.horizontal, 16)
+                    
                     Spacer()
                     Button(action: {}) {
-                        Image(systemName: "pencil.line")
+                        Image("pencil.line")
                             .foregroundStyle(Color.grayScale8)
                     }
                     Button(action: {}) {
-                        Image(systemName: "xmark.app")
+                        Image("close_icon")
                             .foregroundStyle(Color.grayScale8)
                     }
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
+                    .padding(.horizontal, 16)
             }
-            Spacer()
+            
         }
         .padding(.top, 32)
         .padding(.bottom, 22)

@@ -33,10 +33,11 @@ struct CreateProfileView: View {
             VStack {
                 navigationBar
                     .padding(.horizontal, -40)
-                Spacer()
+                    .padding(.bottom, 55)
+                
                 // 포토피커
                 ProfileImage(selectedImageData: $viewModel.selectedImageData)
-                    .padding(.bottom, 96)
+                    .padding(.bottom, 60)
                 
                 
                 // MARK: - 이름 적기
@@ -45,7 +46,7 @@ struct CreateProfileView: View {
                     Text("이름*")
                         .font(.pt15)
                     
-                    ReMUTextField(text: $viewModel.username, placeholder: "15자 이내로 입력해주세요", height: 40)
+                    ReMUTextFieldOneLine(text: $viewModel.username, placeholder: "15자 이내로 입력해주세요", height: 32)
                 }
                 
                 // TODO: 2자 이상 / 사용 가능한 닉네임입니다. 추가 필요!!
@@ -59,9 +60,11 @@ struct CreateProfileView: View {
                     Text("한 줄 소개")
                         .font(.pt15)
                     
-                    ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 40)
+                    ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 80)
                     
                 }
+                
+                Spacer()
                 
                 // MARK: - 시작 버튼
                 PrimaryButton(
@@ -71,8 +74,8 @@ struct CreateProfileView: View {
                     onFinish()
                     print("시작 버튼 클릭")
                 }
-                .padding(.top, 123)
-                .padding(.bottom, 77)
+                //.padding(.top, 123)
+                .padding(.bottom, 54)
             }
             .padding(.horizontal,40)
         }

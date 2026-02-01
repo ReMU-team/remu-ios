@@ -31,11 +31,18 @@ struct GalaxyCheckView: View {
     var body: some View {
         ZStack{
             Color.blue212148.ignoresSafeArea()
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .ignoresSafeArea()
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                    Image("gradation")
+                        .resizable()
+                        .scaledToFill()
+                        .scaleEffect(1.4)
+                        .offset(x: -100, y: -100)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                }
+                .ignoresSafeArea() // 배경은 전체에 깔리게
+                .allowsHitTesting(false) // 터치 방해 금지
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
