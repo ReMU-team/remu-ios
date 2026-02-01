@@ -19,36 +19,42 @@ struct CardColorPickerSheet: View {
     )
 
     var body: some View {
-        VStack {
-            Text("카드 색상")
-                .font(.pt16)
-                .padding(.top, 40)
-
-            LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(colors) { color in
-                    Image(color.assetName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 56, height: 56)
-                        .overlay {
-                            if selectedColor == color {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(.purpleC495E0, lineWidth: 3)
+        ZStack {
+            Color.white
+                .ignoresSafeArea()
+            VStack {
+                Text("카드 색상")
+                    .font(.pt16)
+                    .padding(.top, 40)
+                
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(colors) { color in
+                        Image(color.assetName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 56, height: 56)
+                            .shadow(radius: 4)
+                            .overlay {
+                                if selectedColor == color {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(.purpleC495E0, lineWidth: 3)
+                                }
                             }
-                        }
-                        .onTapGesture {
-                            selectedColor = color
-                            onClose()
-                        }
+                            .onTapGesture {
+                                selectedColor = color
+                                onClose()
+                            }
+                    }
                 }
+                .padding(.top, 24)
+                .padding(.horizontal, 40)
+                
+                Spacer()
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 40)
-
-            Spacer()
+            .padding(.bottom, 54)
+            .presentationDetents([.fraction(0.5)])
+            .presentationDragIndicator(.visible)
         }
-        .presentationDetents([.fraction(0.35)])
-        .presentationDragIndicator(.visible)
     }
 }
 

@@ -23,6 +23,9 @@ struct PhotoPickerView: View {
         .onChange(of: pickerItem) { newItem in
             viewModel.setPhoto(from: newItem)
         }
+        .padding(.bottom, 54)
+        .presentationDetents([.fraction(0.5)])
+        .presentationDragIndicator(.visible)
     }
 }
 

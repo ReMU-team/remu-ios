@@ -54,14 +54,6 @@ struct CreateRecordCardView: View {
     private var finishButton: some View {
         VStack {
             Spacer()
-//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-//                goNext = true
-//            }
-//            .navigationDestination(isPresented: $goNext) {
-//                TempHomeView() // TODO: 메인으로 변경 필요
-//            }
-//            .padding(.bottom, 54)
-            
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
                 onFinish() // 홈으로 복귀
             }
@@ -74,4 +66,12 @@ struct CreateRecordCardView: View {
 }
 
 
-
+#Preview {
+    NavigationStack {
+        CreateRecordCardView(
+            onFinish: {
+                print("Record card finished")
+            }
+        )
+    }
+}

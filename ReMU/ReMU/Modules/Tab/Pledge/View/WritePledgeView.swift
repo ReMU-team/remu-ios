@@ -60,8 +60,8 @@ struct WritePledgeView: View {
     private var description: some View {
         HStack {
             VStack (alignment: .leading, spacing: 8) {
-                Text("이번 여행,\n어떤 기분으로 떠나볼까요?")
-                    .font(.pt20)
+                Text("다짐 카드 작성하기")
+                    .font(.pt18)
                     .foregroundStyle(.grayScale9)
                 Text("기대되는 일, 이루고 싶은 마음을 자유롭게 적어주세요.\n세 가지가 아니어도 괜찮아요. 단 하나의 마음만으로도 충분하니까요.")
                     .font(.pt12)

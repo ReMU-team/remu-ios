@@ -101,7 +101,8 @@ struct WriteRecordView: View {
                 if let color = viewModel.selectedCardColor {
                     Image(color.assetName)
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 35, height: 35)
+                        .shadow(radius: 8)
                 }
 
             }

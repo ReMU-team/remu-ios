@@ -21,57 +21,60 @@ struct EmojiPickerSheet: View {
     let onClose: () -> Void
 
     var body: some View {
-        VStack {
-
-            // 헤더
-            HStack {
-                Text("이모지")
-                    .font(.pt16)
-                    .foregroundStyle(.grayScale9)
-                Spacer()
-            }
-            .padding(.horizontal, 40)
-            .padding(.top, 44)
-            .padding(.bottom, 16)
-
-            // 이모지 리스트
-            let columns = Array(
-                repeating: GridItem(.flexible(), spacing: 16),
-                count: 5
-            )
-
-            LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(emojis) { emoji in
-                    EmojiSelectableItem(
-                        emoji: emoji,
-                        isSelected: selectedEmojis.contains { $0.id == emoji.id }
-                    )
-                    .onTapGesture {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                            toggleEmoji(emoji)
+        ZStack {
+            Color.white
+                .ignoresSafeArea()
+            VStack {
+                // 헤더
+                HStack {
+                    Text("이모지")
+                        .font(.pt16)
+                        .foregroundStyle(.grayScale9)
+                    Spacer()
+                }
+                .padding(.horizontal, 40)
+                .padding(.top, 44)
+                .padding(.bottom, 16)
+                
+                // 이모지 리스트
+                let columns = Array(
+                    repeating: GridItem(.flexible(), spacing: 16),
+                    count: 5
+                )
+                
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(emojis) { emoji in
+                        EmojiSelectableItem(
+                            emoji: emoji,
+                            isSelected: selectedEmojis.contains { $0.id == emoji.id }
+                        )
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                toggleEmoji(emoji)
+                            }
                         }
                     }
                 }
-            }
-            .padding(.horizontal, 40)
-
-            Spacer()
-
-            // 추가하기 버튼
-            PrimaryButton(
-                title: "추가하기",
-                backgroundColor: selectedEmojis.isEmpty
+                .padding(.horizontal, 40)
+                
+                Spacer()
+                
+                // 추가하기 버튼
+                PrimaryButton(
+                    title: "추가하기",
+                    backgroundColor: selectedEmojis.isEmpty
                     ? .grayScale3
                     : .purpleC495E0
-            ) {
-                onConfirm()
+                ) {
+                    onConfirm()
+                }
+                .disabled(selectedEmojis.isEmpty)
+                .padding(.horizontal, 40)
             }
-            .disabled(selectedEmojis.isEmpty)
-            .padding(.horizontal, 40)
+            .padding(.bottom, 54)
+            .presentationDetents([.fraction(0.5)])
+            .presentationDragIndicator(.visible)
         }
-        .padding(.bottom, 54)
-        .presentationDetents([.fraction(0.5)])
-        .presentationDragIndicator(.visible)
     }
 
     // MARK: - Selection Logic
