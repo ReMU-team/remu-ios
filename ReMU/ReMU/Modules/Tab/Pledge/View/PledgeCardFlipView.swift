@@ -27,7 +27,10 @@ struct PledgeCardFlip: View {
         .onTapGesture {
             flip.toggle()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // 티모가 다른 뷰에서 패딩 문제로 지움
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
+        
         //.background(Color(red: 40/255, green: 40/255, blue: 40/255))
         .background(.white) // 배경색 수정
     }
@@ -62,7 +65,8 @@ struct CardOneView: View {
                 .frame(width: 45, height: 45)
             VStack(alignment: .leading) {
                 HStack {
-                    Text("galaxyViewModel.galaxyName")
+//                    Text("galaxyViewModel.galaxyName")
+                    Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
@@ -72,6 +76,7 @@ struct CardOneView: View {
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
+                
             }
             Spacer()
         }
@@ -80,8 +85,9 @@ struct CardOneView: View {
     }
     
     var middle: some View {
-        VStack {
+        ZStack {
             TextBox(isExpanded: true)
+            Image("logo_illust_1")
         }
         .padding(.bottom, 32)
     }

@@ -27,11 +27,21 @@ struct HomeGalaxyView: View {
         ZStack {
             // MARK: - 1. 배경 레이어
             Color.blue212148.ignoresSafeArea()
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .ignoresSafeArea()
+            
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                    Image("gradation")
+                        .resizable()
+                        .scaledToFill()
+                        .scaleEffect(1.5)
+                        .offset(x: -100, y: -100)
+                        // 화면 크기를 geometry에서 가져와서 꽉 채우되,
+                        // 프레임을 잡고 잘라내어(clipped) 외부 레이아웃에 영향을 주지 않음
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                }
+                .ignoresSafeArea() // 배경은 전체에 깔리게
+                .allowsHitTesting(false) // 터치 방해 금지
             
             Image("starObjet")
                 .resizable()

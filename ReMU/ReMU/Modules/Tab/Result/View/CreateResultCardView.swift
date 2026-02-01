@@ -9,6 +9,9 @@ import Foundation
 import SwiftUI
 
 struct CreateResultCardView: View {
+    
+    let onFinish: () -> Void
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -17,7 +20,8 @@ struct CreateResultCardView: View {
             Spacer()
             top
             middle
-//            bottom
+            bottom
+            Spacer()
         }
     }
 
@@ -60,10 +64,29 @@ struct CreateResultCardView: View {
         }
     }
     
+    // MARK: - bottom
+    private var bottom: some View {
+        VStack {
+            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
+                onFinish() // 홈으로 복귀
+            }
+            
+            
+        }
+        .padding(.horizontal, 40)
+        
+    }
+    
     
     
 }
 
 #Preview {
-    CreateResultCardView()
+    NavigationStack {
+        CreateResultCardView(
+            onFinish: {
+                print("Result card finished")
+            }
+        )
+    }
 }
