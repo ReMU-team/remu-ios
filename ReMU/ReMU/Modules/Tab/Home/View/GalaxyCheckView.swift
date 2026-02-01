@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct GalaxyCheckView: View {
-    let galaxyList: [GalaxyData]
+    let galaxyList: [Galaxy]
     
     let columns = [
         GridItem(.flexible()),
@@ -84,6 +84,6 @@ struct GalaxyCheckView: View {
 
 
 #Preview {
-    GalaxyCheckView(galaxyList: [GalaxyData.mock])
+    GalaxyCheckView(galaxyList: [Galaxy.mock])
 }
 

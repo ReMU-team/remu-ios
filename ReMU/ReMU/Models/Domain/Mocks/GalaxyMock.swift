@@ -7,42 +7,35 @@
 
 import Foundation
 
-struct GalaxyData: Identifiable {
-    let id = UUID()
-    let title: String
-    let totalDay: Int
-    let month: Int
-    let day: Int
-    let galaxyIcon: String
-    let stars: [StarData]
-}
+extension Galaxy {
 
-struct StarData: Identifiable {
-    let id = UUID()
-    let title: String
-    let onData: Int
-    let starIcon: String
-}
-
-extension GalaxyData {
-    static var mock: GalaxyData {
-        GalaxyData(
-            title: "iOS의 개발 여정",
-            totalDay: 3,
+    static let mock: Galaxy = Galaxy(
+        serverId: 1,
+        title: "iOS의 개발 여정",
+        destination: "서울",
+        startDate: DateComponents(
+            calendar: .current,
+            year: 2026,
             month: 1,
-            day: 15,
-            galaxyIcon: "galaxy_1",
-            stars: [
-                StarData(title: "Star1", onData: 1, starIcon: "planet_1"),
-                StarData(title: "Star2", onData: 2, starIcon: "planet_2"),
-                StarData(title: "Star3", onData: 3, starIcon: "planet_3"),
-                StarData(title: "Star4", onData: 4, starIcon: "planet_4"),
-                StarData(title: "Star5", onData: 5, starIcon: "planet_5"),
-                StarData(title: "Star6", onData: 6, starIcon: "planet_6"),
-                StarData(title: "Star7", onData: 7, starIcon: "planet_7"),
-                StarData(title: "Star8", onData: 8, starIcon: "planet_8")
-            ]
-        )
-    }
+            day: 15
+        ).date!,
+        endDate: DateComponents(
+            calendar: .current,
+            year: 2026,
+            month: 1,
+            day: 22
+        ).date!,
+        totalDay: 8, 
+        galaxyIcon: "galaxy_1",
+        stars: [
+            Star(serverId: 1, name: "Star 1", dayOffset: 1, starIcon: "planet_1"),
+            Star(serverId: 2, name: "Star 2", dayOffset: 2, starIcon: "planet_2"),
+            Star(serverId: 3, name: "Star 3", dayOffset: 3, starIcon: "planet_3"),
+            Star(serverId: 4, name: "Star 4", dayOffset: 4, starIcon: "planet_4"),
+            Star(serverId: 5, name: "Star 5", dayOffset: 5, starIcon: "planet_5"),
+            Star(serverId: 6, name: "Star 6", dayOffset: 6, starIcon: "planet_6"),
+            Star(serverId: 7, name: "Star 7", dayOffset: 7, starIcon: "planet_7"),
+            Star(serverId: 8, name: "Star 8", dayOffset: 8, starIcon: "planet_8")
+        ]
+    )
 }
-

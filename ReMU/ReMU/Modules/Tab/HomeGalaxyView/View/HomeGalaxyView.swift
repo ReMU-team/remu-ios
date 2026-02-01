@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct HomeGalaxyView: View {
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel = HomeGalaxyViewModel()
 
     var body: some View {
         ZStack {
@@ -26,9 +26,9 @@ struct HomeGalaxyView: View {
                 .scaledToFit()
             
             // 2. 메인 은하 시스템 (중앙 배치)
-            if let data = viewModel.galaxyData {
+            if let data = viewModel.galaxy {
                 GalaxySystemView(
-                    galaxyData: data,
+                    galaxy: data,
                     partitionedStars: viewModel.partitionedStars,
                     scale: viewModel.scale // 줌 배율 전달
                 )
@@ -73,7 +73,7 @@ struct HomeGalaxyView: View {
                     .foregroundColor(.white)
                 VStack(spacing: 8) {
                     HStack(spacing: 4) {
-                        Text(viewModel.galaxyData?.title ?? "Loading...")
+                        Text(viewModel.galaxy?.title ?? "Loading...")
                             .font(.pt24)
                         
                         Button(action: {}) {
@@ -84,7 +84,7 @@ struct HomeGalaxyView: View {
                         
                     }.foregroundColor(.white)
                     
-                    if let data = viewModel.galaxyData {
+                    if let data = viewModel.galaxy {
                         Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
                             .font(.pt16)
                             .foregroundColor(.white)

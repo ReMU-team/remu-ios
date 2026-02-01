@@ -70,9 +70,9 @@ final class PledgeViewModel: ObservableObject {
         isEmojiSheetPresented = false
     }
 
-    func makePledgeCard(galaxyId: Int) -> PledgeCard {
+    func makePledgeCard(galaxyServerId: Int) -> PledgeCard {
         PledgeCard(
-            galaxyId: galaxyId,
+            galaxyServerId: galaxyServerId,
             emojiImageName: selectedEmoji!.id,
             pledges: pledges.map { Pledge(content: $0.content) }
         )
