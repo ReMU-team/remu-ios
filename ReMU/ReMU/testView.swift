@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct TestView: View {
-    let ballCount: Int = 10
-    let orbitIndex: Int = 5
+    let ballCount: Int = 1
+    let orbitIndex: Int = 3
     
     // 궤도 반지름 계산
     private var orbitRadius: CGFloat {
