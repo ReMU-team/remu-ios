@@ -13,8 +13,8 @@ struct PledgeInputView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ReMUTextField(
-                text: $text, 
+            ReMUTextFieldOneLine(
+                text: $text,
                 placeholder: "떠나기 전의 마음을 남겨주세요",
                 height: 40
             )

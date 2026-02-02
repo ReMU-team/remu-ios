@@ -15,27 +15,26 @@ struct MenuView: View {
     
     var body: some View {
         VStack(alignment: .leading){
-            HStack{
-                Button(action:{dismiss()}){
-                    Image("leftArrow")
-                }
-                
-                Spacer()
-                Text("메뉴")
-                    .font(.pt20)
-                Spacer()
-            }.padding(.bottom,32)
+            navigationBar
+                .padding(.horizontal, -20)
+                .padding(.bottom, 38)
+            
+            // MARK: - 프로필
             HStack{
                 Image("StandardProfile")
-                VStack(alignment: .leading,spacing: 16){
-                    Text("iOSDev")// 수정필요
+                
+                VStack(alignment: .leading, spacing: 16){
+                    Text("계정 이름")// 수정필요
                         .font(.pt16)
                         .foregroundColor(.grayScale9)
-                    Text("힘들다 힘들어") // 수정필요
+                    Text("한 줄 소개") // 수정필요
                         .font(.pt13)
                         .foregroundColor(.grayScale7)
                 }
+                .padding(.horizontal, 16)
                 Spacer()
+                
+                // 프로필 수정하기 버튼
                 Button(action:{}){
                     Image("pencil.line")
                         .foregroundColor(.grayScale7)
@@ -141,9 +140,22 @@ struct MenuView: View {
                 }
             }
             
-        }.padding(.horizontal,22)
+        }
+        .padding(.horizontal,20)
         .modifier(ActionAlertModifier())
     }
+    
+    
+    // MARK: - navigationBar
+    private var navigationBar: some View {
+        CustomNavigationBar(
+                        title: "메뉴",
+                        onBack: {
+                            dismiss()
+                        }
+                    )
+    }
+    
 }
 
 #Preview {

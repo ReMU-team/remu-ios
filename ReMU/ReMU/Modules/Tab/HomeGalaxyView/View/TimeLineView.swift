@@ -5,47 +5,55 @@
 //  Created by 김종수 on 1/26/26.
 //
 
-import Foundation
 import SwiftUI
 
 struct TimeLineView: View {
     
+    //뒤로가기
+    @Environment(\.dismiss) private var dismiss
+    
+    
     var body: some View {
         ZStack{
+            // 배경 색
             Color.blue212148.ignoresSafeArea()
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .ignoresSafeArea()
+            
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                    Image("gradation")
+                        .resizable()
+                        .scaledToFill()
+                        .scaleEffect(1.4)
+                        .offset(x: -100, y: -100)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                }
+                .ignoresSafeArea() // 배경은 전체에 깔리게
+                .allowsHitTesting(false) // 터치 방해 금지
+            
+            // 배경 별
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
+                .allowsHitTesting(false)
             VStack{
                 HStack{
-                    Button(action:{}){
+                    Button {
+                        dismiss()
+                    } label: {
                         Image("white_left_arrow")
                     }
                     Spacer()
-                    Button(action: {}){
-                        Image(systemName: "globe")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                    Button(action: {}){
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                }.padding(22)
-                    .padding(.bottom,134)
-                    .foregroundColor(.white)
+                }
+                .padding(22)
+                .padding(.bottom,134)
+                .foregroundColor(.white)
                 VStack{
                     Image("home_star")
                         .padding(.bottom,20)
                     Text("서로의 여정을 하나로 엮어요.\n 곧, 친구와 함께 만든 기록들이\n  하나의 타임라인으로 펼쳐집니다")
                         .font(.pt16)
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .padding(.bottom,31)
                     

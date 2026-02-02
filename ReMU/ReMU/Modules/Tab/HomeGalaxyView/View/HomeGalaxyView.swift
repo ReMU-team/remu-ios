@@ -9,7 +9,19 @@ import Foundation
 import SwiftUI
 
 struct HomeGalaxyView: View {
+    @EnvironmentObject var appState: AppState
+    
     @StateObject private var viewModel = HomeViewModel()
+    
+    //네비게이션
+    @State private var showCreateGalaxy = false
+    @State private var showWritePledge = false
+    @State private var showWriteRecord = false
+    @State private var showMenu = false
+    @State private var showTimeLine = false
+    @State private var showGalaxyList = false
+    
+    @State private var galaxies: [Galaxy] = []
 
     var body: some View {
         if viewModel.galaxyData == nil {

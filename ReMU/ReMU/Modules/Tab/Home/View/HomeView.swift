@@ -9,28 +9,50 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject var appState: AppState
+    
     // 네비게이션
     @State private var showCreateGalaxy = false
     @State private var showWritePledge = false
     @State private var showWriteRecord = false
     @State private var showMenu = false
+    @State private var showTimeLine = false
     
+    @State private var galaxies: [Galaxy] = []
+
     
     var body: some View {
         ZStack{
-            Color.blue212148.ignoresSafeArea()
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(minWidth: 0, maxWidth: .infinity)
+            // 배경 색
+            Color.blue212148
                 .ignoresSafeArea()
+            
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                    Image("gradation")
+                        .resizable()
+                        .scaledToFill()
+                        .scaleEffect(1.4)
+                        .offset(x: -100, y: -100)
+                        // 화면 크기를 geometry에서 가져와서 꽉 채우되,
+                        // 프레임을 잡고 잘라내어(clipped) 외부 레이아웃에 영향을 주지 않음
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                }
+                .ignoresSafeArea() // 배경은 전체에 깔리게
+                .allowsHitTesting(false) // 터치 방해 금지
+            
+        
+            // 배경 별
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
+                .allowsHitTesting(false)
+        
             VStack{
                 HStack{
                     Spacer()
-                    Button(action: {}){
+                    Button(action: {showTimeLine = true}){
                         Image(systemName: "globe")
                             .resizable()
                             .frame(width: 24,height: 24)
@@ -52,23 +74,28 @@ struct HomeView: View {
                             .resizable()
                             .frame(width: 35,height: 35)
                     }.foregroundColor(.white)
-                }.padding(.bottom,16)
+                }
+                .padding(.bottom,16)
+                
                 Text("첫 은하 생성하기")
                     .font(.pt18)
                     .foregroundColor(.white)
-                Spacer()
                 
-                // TODO: UI 수정, 네비게이션 완료
-                Button("📝 기록 생성") {
-                    showWriteRecord = true
-                }
-                Button("✍️ 다짐 생성") { // TODO: 다짐카드 이미지 변경
-                    showWritePledge = true
-                }
+                Spacer()
             }
         }
+        // 은하 생성 뷰 시트 띄우기
         .fullScreenCover(isPresented: $showCreateGalaxy) {
-            CreateGalaxyView()
+            // 은하 정보 저장
+            CreateGalaxyView { galaxy in
+                galaxies.append(galaxy)
+                appState.currentGalaxy = galaxy
+                
+                showCreateGalaxy = false
+            }
+        }
+        .fullScreenCover(isPresented: $showTimeLine) {
+            TimeLineView()
         }
         .fullScreenCover(isPresented: $showMenu) {
             MenuView()

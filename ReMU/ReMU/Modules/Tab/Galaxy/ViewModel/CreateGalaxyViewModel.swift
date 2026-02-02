@@ -10,7 +10,9 @@ import Combine
 
 @MainActor
 final class CreateGalaxyViewModel: ObservableObject {
+    @Published var createdGalaxy: Galaxy?
 
+    
     @Published var destination: String?
     @Published var startDate: Date?
     @Published var endDate: Date?
@@ -27,4 +29,16 @@ final class CreateGalaxyViewModel: ObservableObject {
         !galaxyName.trimmingCharacters(in: .whitespaces).isEmpty &&
         selectedGalaxyImageName != nil
     }
+    
+    func makeGalaxy() -> Galaxy {
+        Galaxy(
+            id: UUID(),
+            name: galaxyName,
+            destination: destination!,
+            startDate: startDate,
+            endDate: endDate,
+            imageName: selectedGalaxyImageName!
+        )
+    }
+
 }

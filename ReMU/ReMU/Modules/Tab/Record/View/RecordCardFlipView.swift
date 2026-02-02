@@ -34,6 +34,7 @@ struct RecordCardFlip: View {
     RecordCardFlip()
 }
 
+// MARK: - 뒷장
 struct RecordCardOneView: View {
     
     @Binding var flip: Bool
@@ -53,7 +54,7 @@ struct RecordCardOneView: View {
     }
     
     var top: some View {
-        HStack {
+        HStack (spacing: 16) {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
@@ -63,14 +64,21 @@ struct RecordCardOneView: View {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
+            Spacer()
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
-                    Image(systemName: "pencil.line")
-                    Image(systemName: "xmark.app")
+                    Button(action: {}) {
+                        Image("pencil.line")
+                    }
+                    
+                    Button(action: {}) {
+                        Image("close_icon")
+                            
+                    }
                 }
             }
-            Spacer()
+            
         }
         .padding(.top, 20)
         .padding(.bottom, 22)
@@ -84,6 +92,7 @@ struct RecordCardOneView: View {
     }
 }
 
+// 앞장
 struct RecordCardTwoView: View {
     
     @Binding var flip: Bool
@@ -110,14 +119,16 @@ struct RecordCardTwoView: View {
                     Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt13)
+                    
                     Spacer()
+                    
                     Button(action: {}) {
-                        Image(systemName: "pencil.line")
-                            .foregroundStyle(Color.grayScale8)
+                        Image("pencil.line")
                     }
+                    
                     Button(action: {}) {
-                        Image(systemName: "xmark.app")
-                            .foregroundStyle(Color.grayScale8)
+                        Image("close_icon")
+                            
                     }
                 }
                 Text("25/10/29-25/11/10")

@@ -17,7 +17,7 @@ struct ProfileImage: View {
                         .frame(width: 132, height: 132)
                         .clipShape(Circle())
                 } else {
-                    Image("StandardProfile")
+                    Image("camera_icon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 132, height: 132)

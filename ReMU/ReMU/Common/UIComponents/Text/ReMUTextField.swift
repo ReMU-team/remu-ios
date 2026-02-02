@@ -20,7 +20,7 @@ struct ReMUTextField: View {
                 Text(placeholder)
                     .font(.pt16)
                     .foregroundStyle(.grayScale5)
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 8)
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, (height > 60) ? 0 : 4)
@@ -28,8 +28,11 @@ struct ReMUTextField: View {
             
             // 2. 실제 입력창
             TextEditor(text: $text)
+                .font(.pt16)
+                .foregroundStyle(.grayScale9)
                 .scrollContentBackground(.hidden)
-                .padding(8)
+                .padding(.horizontal, 8)
+                
         }
         .frame(height: height)
         .background(Color.white.opacity(0.5)) // 반투명 흰색 배경

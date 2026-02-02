@@ -9,6 +9,15 @@ import Foundation
 import SwiftUI
 
 struct GalaxyCheckView: View {
+    
+    // 뒤로가기
+    @Environment(\.dismiss) private var dismiss
+    
+    // 네비게이션
+    @State private var showCreateGalaxy = false
+    
+    @State private var galaxies: [Galaxy] = []
+    
     let galaxyList: [GalaxyData]
     
     let columns = [
@@ -22,32 +31,35 @@ struct GalaxyCheckView: View {
     var body: some View {
         ZStack{
             Color.blue212148.ignoresSafeArea()
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .ignoresSafeArea()
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                    Image("gradation")
+                        .resizable()
+                        .scaledToFill()
+                        .scaleEffect(1.4)
+                        .offset(x: -100, y: -100)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                }
+                .ignoresSafeArea() // 배경은 전체에 깔리게
+                .allowsHitTesting(false) // 터치 방해 금지
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
             VStack{
                 HStack{
-                    Button(action:{}){
+                    // 뒤로가기
+                    Button {
+                        dismiss()
+                    } label: {
                         Image("white_left_arrow")
                     }
+                    
                     Spacer()
-                    Button(action: {}){
-                        Image(systemName: "globe")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                    Button(action: {}){
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .frame(width: 24,height: 24)
-                    }
-                }.padding(22)
-                    .foregroundColor(.white)
+                    
+                }
+                .padding(22)
+                .foregroundColor(.white)
                 Text("나의 우주")
                     .font(.pt24)
                     .foregroundColor(.white)
@@ -73,9 +85,19 @@ struct GalaxyCheckView: View {
                 }.padding(.horizontal,22)
                 Spacer()
                 HStack(spacing: 9){
-                PrimaryButton(title: "히스토리", action: {})
-                PrimaryButton(title: "은하 생성하기",backgroundColor: .purpleC495E0 , action: {})
-                }.padding(.horizontal,40)
+                    PrimaryButton(title: "히스토리", action: {})
+                    
+                    // 은하 생성 버튼
+                    PrimaryButton(title: "은하 생성하기",backgroundColor: .purpleC495E0 , action: {showCreateGalaxy = true})
+                }
+                .padding(.horizontal,40)
+                
+                // 은하 생성 뷰로 이동
+                .fullScreenCover(isPresented: $showCreateGalaxy) {
+                    CreateGalaxyView { galaxy in
+                            galaxies.append(galaxy)
+                        }
+                }
             }
         }
     }
