@@ -31,9 +31,8 @@ struct HomeGalaxyView: View {
         else {
             GalaxyView
         }
-        
-       
     }
+    // MARK: - initialHomeView
     private var initialHomeView: some View {
         GeometryReader { geometry in
             ZStack{
@@ -50,6 +49,7 @@ struct HomeGalaxyView: View {
         }
     }
     
+    // MARK: - GalaxyView
     private var GalaxyView: some View {
         // 전체를 감싸는 GeometryReader를 사용해 화면의 실제 크기를 확보합니다.
         GeometryReader { geometry in
@@ -92,22 +92,50 @@ struct HomeGalaxyView: View {
             .overlay(CardButton)
         }
     }
+    
+    // MARK: - background
     private var background: some View{
-        GeometryReader { geometry in
+//        GeometryReader { geometry in
+//            Color.blue212148
+//            
+//            Image("Homegradation")
+//                .resizable()
+//                .aspectRatio(contentMode: .fill)
+//                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
+//                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
+//            
+//            Image("starObjet")
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: geometry.size.width)
+//        }
+        ZStack {
+            // 배경 색
             Color.blue212148
+                .ignoresSafeArea()
             
-            Image("Homegradation")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
-                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                Image("gradation")
+                    .resizable()
+                    .scaledToFill()
+                    .scaleEffect(1.4)
+                    .offset(x: -100, y: -100)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
+            }
+            .ignoresSafeArea() // 배경은 전체에 깔리게
+            .allowsHitTesting(false) // 터치 방해 금지
             
+            
+            // 배경 별
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
-                .frame(width: geometry.size.width)
+                .allowsHitTesting(false)
         }
     }
+    
     // 코드 가독성을 위해 View를 변수로 분리
     private var upperHeaderUI: some View {
         VStack(spacing: 8) {
