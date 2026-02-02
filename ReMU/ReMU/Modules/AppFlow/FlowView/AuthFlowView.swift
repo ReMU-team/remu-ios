@@ -12,6 +12,8 @@ struct AuthFlowView: View {
     @State private var showCreateProfile = false
     @State private var showProfileIntro = false
     
+    @EnvironmentObject var appState: AppState
+    
     let onAuthFinished: () -> Void
     
     var body: some View {
@@ -26,6 +28,8 @@ struct AuthFlowView: View {
                     onAuthFinished()
                 }
             )
+            .environmentObject(appState.profileViewModel)
+            
         } else if showOnboarding {
             OnboardingView(
                 onExit: { showOnboarding = false },

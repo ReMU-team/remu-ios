@@ -45,7 +45,7 @@ struct PrimaryButton: View {
                 .foregroundColor(textColor)
                 .frame(maxWidth: .infinity) // View에서 패딩을 이용해서 가로 길이 설정!
                 .padding(.vertical, 16)
-                .background(isDisabled ? Color.gray : backgroundColor)
+                .background(isDisabled ? .purpleC495E0.opacity(0.4) : backgroundColor)
                 .cornerRadius(12)
         }
         .disabled(isDisabled)

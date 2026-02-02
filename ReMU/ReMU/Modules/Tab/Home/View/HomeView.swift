@@ -102,6 +102,7 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $showMenu) {
             MenuView()
+                .environmentObject(appState.profileViewModel)
         }
         .fullScreenCover(isPresented: $showWritePledge) {
             NavigationStack {

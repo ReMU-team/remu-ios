@@ -46,6 +46,7 @@ struct HomeGalaxyView: View {
         }
         .fullScreenCover(isPresented: $showMenu) {
             MenuView()
+                .environmentObject(appState.profileViewModel)
         }
         .fullScreenCover (isPresented: $showGalaxyList) {
             GalaxyCheckView(galaxyList: [])
