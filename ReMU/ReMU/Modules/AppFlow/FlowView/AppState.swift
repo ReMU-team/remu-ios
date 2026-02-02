@@ -10,7 +10,6 @@ import Combine
 
 final class AppState: ObservableObject {
     // 홈 상태 처리
-    @Published var homeState: HomeState = .empty
     @Published var currentGalaxy: Galaxy?
     
     enum AppRoute {

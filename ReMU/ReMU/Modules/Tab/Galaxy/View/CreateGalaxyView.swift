@@ -43,7 +43,6 @@ struct CreateGalaxyView: View {
                         if let galaxy = viewModel.createdGalaxy {
                             onFinish(galaxy)        // HomeView로 전달
                         }
-                        appState.homeState = .galaxy
                         showWritePledge = false
                         dismiss()                  // CreateGalaxyView 닫기
                     }

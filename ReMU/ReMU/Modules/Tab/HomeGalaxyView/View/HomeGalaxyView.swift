@@ -15,7 +15,6 @@ struct HomeGalaxyView: View {
     
     //네비게이션
     @State private var showCreateGalaxy = false
-    @State private var showWritePledge = false
     @State private var showWriteRecord = false
     @State private var showMenu = false
     @State private var showTimeLine = false
@@ -24,12 +23,41 @@ struct HomeGalaxyView: View {
     @State private var galaxies: [Galaxy] = []
 
     var body: some View {
-        if viewModel.galaxyData == nil {
-            initialHomeView
-                .transition(.opacity)
+        VStack {
+            if viewModel.galaxyData == nil {
+                initialHomeView
+                    .transition(.opacity)
+            }
+            else {
+                GalaxyView
+            }
         }
-        else {
-            GalaxyView
+        .fullScreenCover(isPresented: $showCreateGalaxy) {
+            // 은하 정보 저장
+            CreateGalaxyView { galaxy in
+                galaxies.append(galaxy)
+                appState.currentGalaxy = galaxy
+                
+                showCreateGalaxy = false
+            }
+        }
+        .fullScreenCover(isPresented: $showTimeLine) {
+            TimeLineView()
+        }
+        .fullScreenCover(isPresented: $showMenu) {
+            MenuView()
+        }
+        .fullScreenCover (isPresented: $showGalaxyList) {
+            GalaxyCheckView(galaxyList: [])
+        }
+        .fullScreenCover(isPresented: $showWriteRecord) {
+            NavigationStack {
+                WriteRecordView(
+                    onFinish: {
+                        showWriteRecord = false
+                    }
+                )
+            }
         }
     }
     // MARK: - initialHomeView
@@ -42,7 +70,8 @@ struct HomeGalaxyView: View {
                     Spacer()
                     initialHomeButton
                     Spacer()
-                }.padding(.horizontal, 22)
+                }
+                .padding(.horizontal, 22)
                 // 중요: VStack이 화면 크기를 넘지 않도록 제한
                 .frame(width: geometry.size.width, height: geometry.size.height)
             }.ignoresSafeArea()
@@ -136,33 +165,35 @@ struct HomeGalaxyView: View {
         }
     }
     
+    // MARK: - upperHeaderUI
     // 코드 가독성을 위해 View를 변수로 분리
     private var upperHeaderUI: some View {
-        VStack(spacing: 8) {
+        VStack {
             HStack {
                 Spacer()
-                Button(action: {}) {
+                Button(action: {showTimeLine = true}){
                     Image(systemName: "globe")
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 24,height: 24)
                 }
-                Button(action: {}) {
+                Button(action: {showMenu = true}){
                     Image(systemName: "person.crop.circle")
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 24,height: 24)
                 }
             }
-            .padding(.bottom, 27)
             .foregroundColor(.white)
-    
         }
+        .padding(.top, 16)
     }
+    
+    // MARK: - TitleUI
     private var TitleUI: some View {
         VStack(spacing: 8) {
             HStack(spacing: 4) {
                 Text(viewModel.galaxyData?.title ?? "Loading...")
                     .font(.system(size: 24)) // .pt24 대신 예시
-                Button(action: {}) {
+                Button (action: {showGalaxyList = true}) {
                     Image(systemName: "greaterthan")
                         .padding(.leading, 7)
                 }
@@ -175,12 +206,13 @@ struct HomeGalaxyView: View {
                     .foregroundColor(.white)
             }
         }
+        .padding(.top, 40)
     }
+    
+    // MARK: - initialHomeButton
     private var initialHomeButton: some View {
         VStack(spacing: 0) { // 내부 요소들을 수직으로 묶어줍니다.
-            Button(action: {
-                // 버튼 클릭 시 동작
-            }) {
+            Button (action: {showCreateGalaxy = true}) {
                 ZStack {
                     Circle()
                         .stroke(style: StrokeStyle(lineWidth: 1, dash: [5]))
@@ -200,8 +232,9 @@ struct HomeGalaxyView: View {
         }
     }
 
+    // MARK: - bottomAddButton
     private var bottomAddButton: some View {
-        Button(action: {}) {
+        Button (action: {showWriteRecord = true}) {
             ZStack {
                 Circle()
                     .foregroundColor(.white.opacity(0.3))
@@ -213,6 +246,8 @@ struct HomeGalaxyView: View {
             }
         }
     }
+    
+    // MARK: - CardButton
     private var CardButton: some View {
         VStack {
             Spacer()
