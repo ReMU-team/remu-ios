@@ -62,8 +62,9 @@ struct HomeView: View {
                             .resizable()
                             .frame(width: 24,height: 24)
                     }
-                }.padding(22)
-                    .foregroundColor(.white)
+                }
+                .padding(20)
+                .foregroundColor(.white)
                 Spacer()
                 Button(action: {showCreateGalaxy = true}) {
                     ZStack{
