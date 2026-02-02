@@ -13,6 +13,7 @@ struct LoginView: View {
     let onGoogleLogin: () -> Void
     let onAppleLogin: () -> Void
     
+    
     // MARK: - body
     var body: some View {
         logo
@@ -47,9 +48,14 @@ struct LoginView: View {
             
             // 로그인 버튼
             VStack (spacing: 20){
-                SocialLoginButton(type: .kakao, action: onKakaoLogin)
-                SocialLoginButton(type: .google, action: onGoogleLogin)
-                SocialLoginButton(type: .apple, action: onAppleLogin)
+                SocialLoginButton(type: .kakao, action:
+                    onKakaoLogin
+                )
+                SocialLoginButton(type: .google, action: onGoogleLogin
+                )
+                SocialLoginButton(type: .apple, action:
+                    onAppleLogin
+                )
             }
         }
         .padding(.horizontal, 46)
@@ -60,7 +66,12 @@ struct LoginView: View {
 
 #Preview {
     LoginView(
-        onKakaoLogin: { print("kakao") },
+        onKakaoLogin: {
+                    // completion 인자를 처리하는 클로저를 추가해줍니다.
+                    KakaoManager.shared.kakaoLogin { success in
+                        print("카카오 로그인 결과: \(success)")
+                    }
+                },
         onGoogleLogin: { print("google") },
         onAppleLogin: { print("apple") }
     )
