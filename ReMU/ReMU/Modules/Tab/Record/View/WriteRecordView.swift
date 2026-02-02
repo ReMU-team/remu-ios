@@ -189,7 +189,6 @@ struct WriteRecordView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            // 다짐 1개 이상 작성 시 클릭 가능
             PrimaryButton(title: "분석하기", backgroundColor: .purpleC495E0) {
                 goNext = true
             }
