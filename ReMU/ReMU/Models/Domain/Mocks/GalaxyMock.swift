@@ -40,7 +40,18 @@ extension GalaxyData {
                 StarData(title: "Star5", onData: 5, starIcon: "planet_5"),
                 StarData(title: "Star6", onData: 6, starIcon: "planet_6"),
                 StarData(title: "Star7", onData: 7, starIcon: "planet_7"),
-                StarData(title: "Star8", onData: 8, starIcon: "planet_8")
+                StarData(title: "Star8", onData: 8, starIcon: "planet_8"),
+                StarData(title: "Star9", onData: 9, starIcon: "planet_1"),
+                StarData(title: "Star10", onData: 10, starIcon: "planet_2"),
+                StarData(title: "Star11", onData: 11, starIcon: "planet_3"),
+                StarData(title: "Star12", onData: 12, starIcon: "planet_4"),
+                StarData(title: "Star6", onData: 6, starIcon: "planet_6"),
+                StarData(title: "Star7", onData: 7, starIcon: "planet_7"),
+                StarData(title: "Star8", onData: 8, starIcon: "planet_8"),
+                StarData(title: "Star9", onData: 9, starIcon: "planet_1"),
+                StarData(title: "Star10", onData: 10, starIcon: "planet_2"),
+                StarData(title: "Star11", onData: 11, starIcon: "planet_3"),
+                StarData(title: "Star12", onData: 12, starIcon: "planet_4")
             ]
         )
     }

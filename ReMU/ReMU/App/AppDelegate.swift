@@ -15,7 +15,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // 앱이 실행될 때 델리게이트 위임
         UNUserNotificationCenter.current().delegate = self
-        
         // (선택) 앱 켜자마자 권한 요청하고 싶으면 여기서 호출
         // NotificationService.shared.requestPermission()
         
