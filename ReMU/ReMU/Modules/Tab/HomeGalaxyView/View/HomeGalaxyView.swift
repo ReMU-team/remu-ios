@@ -24,6 +24,8 @@ struct HomeGalaxyView: View {
     @State private var showMenu = false
     @State private var showTimeLine = false
     @State private var showGalaxyList = false
+    @State private var showWriteResult = false
+    @State private var showCreateResultCard = false
     
     @State private var galaxies: [Galaxy] = []
     
@@ -53,6 +55,7 @@ struct HomeGalaxyView: View {
                     }
                     .zIndex(1)
             }
+            
             if showCardOverlay {
                 CardOverlayView(
                     selectedTab: $selectedCardTab,
@@ -60,10 +63,16 @@ struct HomeGalaxyView: View {
                         withAnimation {
                             showCardOverlay = false
                         }
+                    },
+                    onWriteResult: {
+                        showCardOverlay = false
+                        showWriteResult = true
                     }
                 )
+
                 .zIndex(2)
             }
+
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
@@ -93,6 +102,24 @@ struct HomeGalaxyView: View {
                 )
             }
         }
+        .fullScreenCover(isPresented: $showWriteResult) {
+            WriteResultView(
+                onFinish: {
+                    showWriteResult = false
+                    showCreateResultCard = true
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $showCreateResultCard) {
+            CreateResultCardView(
+                onFinish: {
+                    showCreateResultCard = false
+                }
+            )
+        }
+
+
+
     }
     // MARK: - initialHomeView
     private var initialHomeView: some View {

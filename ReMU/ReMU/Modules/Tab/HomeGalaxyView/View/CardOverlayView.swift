@@ -9,8 +9,8 @@ import SwiftUI
 
 struct CardOverlayView: View {
     @Binding var selectedTab: CardTab
-
     let onClose: () -> Void
+    let onWriteResult: () -> Void
     
     var body: some View {
         ZStack {
@@ -60,13 +60,16 @@ struct CardOverlayView: View {
         case .pledge:
             PledgeCardFlip()
         case .review:
-            ReviewCardGuideView()
+            ReviewCardGuideView{
+                onWriteResult()
+            }
         }
     }
     
     
-    // 여행 끝나기 전 카드
+    // MARK: - ReviewCardGuideView
     struct ReviewCardGuideView: View {
+        let onWriteResult: () -> Void
         var body: some View {
             ZStack {
                 Rectangle()
@@ -120,6 +123,8 @@ struct CardOverlayView: View {
                 
                 VStack (spacing: 12) {
                     Button {
+                        onWriteResult()
+                        
                     } label: {
                         Text("회고 카드 만들기")
                             .font(.pt12)
@@ -162,7 +167,8 @@ private struct CardOverlayPreview: View {
                 selectedTab: $selectedTab,
                 onClose: {
                     print("닫기 눌림")
-                }
+                },
+                onWriteResult: {}
             )
         }
     }
