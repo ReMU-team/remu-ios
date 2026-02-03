@@ -23,8 +23,8 @@ class HomeViewModel: ObservableObject {
     func fetchGalaxyData() {
         // 목데이터 로드 및 궤도 분할 계산 실행
         let data = GalaxyData.mock
-        self.galaxyData = nil
-        //self.galaxyData = data
+        //self.galaxyData = nil
+        self.galaxyData = data
         self.partitionedStars = partitionStars(data.stars)
     }
     
