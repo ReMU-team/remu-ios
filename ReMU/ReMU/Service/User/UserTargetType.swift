@@ -54,4 +54,17 @@ extension UserTargetType: APITargetType {
         }
         
     }
+    
+    var sampleData: Data {
+        return Data("""
+            {
+              "isSuccess": true,
+              "code": "200",
+              "message": "success",
+                "imageUrl": "string",
+                "name": "종수",
+                "introduction": "빡세다"
+            }
+            """.utf8)
+    }
 }
