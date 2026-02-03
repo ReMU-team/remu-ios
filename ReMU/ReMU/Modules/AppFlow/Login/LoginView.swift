@@ -17,7 +17,10 @@ struct LoginView: View {
     // MARK: - body
     var body: some View {
         logo
+            .padding(.top, 100)
+        Spacer()
         login
+            .padding(.bottom, 92)
     }
     
     // MARK: - logo section
@@ -43,7 +46,6 @@ struct LoginView: View {
             Text("소셜 계정으로 로그인")
                 .font(.pt13)
                 .foregroundStyle(.grayScale5)
-                .padding(.top, 142)
                 .padding(.bottom, 16)
             
             // 로그인 버튼

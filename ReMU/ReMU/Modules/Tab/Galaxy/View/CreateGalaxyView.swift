@@ -43,7 +43,6 @@ struct CreateGalaxyView: View {
                         if let galaxy = viewModel.createdGalaxy {
                             onFinish(galaxy)        // HomeView로 전달
                         }
-                        appState.homeState = .galaxy
                         showWritePledge = false
                         dismiss()                  // CreateGalaxyView 닫기
                     }
@@ -157,7 +156,7 @@ struct CreateGalaxyView: View {
     private var finishButton: some View {
         VStack {
             PrimaryButton(title: "완료",
-                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .grayScale3,
+                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4),
                           isDisabled: !viewModel.isFinishEnabled
             ) {
                 let galaxy = viewModel.makeGalaxy()

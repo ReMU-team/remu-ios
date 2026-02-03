@@ -36,7 +36,6 @@
 				Core/Actor/.gitkeep,
 				Info.plist,
 				Models/DTO/.gitkeep,
-				Resource/.gitkeep,
 				Resource/UIConstants/.gitkeep,
 			);
 			target = 696FDA352F102DC100F3678F /* ReMU */;

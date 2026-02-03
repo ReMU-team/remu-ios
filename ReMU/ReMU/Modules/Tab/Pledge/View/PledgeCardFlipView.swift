@@ -6,6 +6,10 @@
 //
 
 import SwiftUI
+enum CardSize {
+    static let width: CGFloat = 297
+    static let height: CGFloat = 419
+}
 
 struct PledgeCardFlip: View {
     
@@ -24,15 +28,11 @@ struct PledgeCardFlip: View {
                 .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear : .linear.delay(0.35), value: flip)
         }
+        .frame(width: CardSize.width, height: CardSize.height)
         .onTapGesture {
             flip.toggle()
         }
-        // 티모가 다른 뷰에서 패딩 문제로 지움
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        
-        
-        //.background(Color(red: 40/255, green: 40/255, blue: 40/255))
-        .background(.white) // 배경색 수정
+        .background(Color.clear)// 배경색 수정
     }
 }
 
@@ -56,7 +56,6 @@ struct CardOneView: View {
             }
             .padding(.horizontal, 24)
         }
-        .frame(width: 297, height: 419)
     }
     
     var top: some View {
@@ -95,13 +94,14 @@ struct CardOneView: View {
     
     var middle: some View {
         ZStack {
-            TextBox(isExpanded: true)
             Image("logo_illust_1")
+    
         }
-        .padding(.bottom, 32)
+        .padding(.bottom, 24)
     }
 }
 
+// MARK: - CardTwoView
 struct CardTwoView: View {
     
     @Binding var flip: Bool
@@ -118,7 +118,6 @@ struct CardTwoView: View {
             }
             .padding(.horizontal, 24)
         }
-        .frame(width: 297, height: 419)
     }
     
     var top: some View {
@@ -163,6 +162,7 @@ struct CardTwoView: View {
             TextBox(text: "다짐 1")
             TextBox(text: "다짐 2")
             TextBox(text: "다짐 3")
+
         }
     }
 }

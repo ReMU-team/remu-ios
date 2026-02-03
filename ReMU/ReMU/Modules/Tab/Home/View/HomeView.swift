@@ -63,7 +63,8 @@ struct HomeView: View {
                             .frame(width: 24,height: 24)
                     }
                 }
-                .padding(20)
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
                 .foregroundColor(.white)
                 Spacer()
                 Button(action: {showCreateGalaxy = true}) {
@@ -74,7 +75,8 @@ struct HomeView: View {
                         Image(systemName: "plus")
                             .resizable()
                             .frame(width: 35,height: 35)
-                    }.foregroundColor(.white)
+                    }
+                    .foregroundColor(.white)
                 }
                 .padding(.bottom,16)
                 
@@ -100,6 +102,7 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $showMenu) {
             MenuView()
+                .environmentObject(appState.profileViewModel)
         }
         .fullScreenCover(isPresented: $showWritePledge) {
             NavigationStack {

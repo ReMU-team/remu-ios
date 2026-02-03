@@ -13,24 +13,113 @@ struct HomeGalaxyView: View {
     
     @StateObject private var viewModel = HomeViewModel()
     
+    // 카드 오버레이
+    @State private var showCardOverlay = false
+    @State private var selectedCardTab: CardTab = .pledge
+    
+    
     //네비게이션
     @State private var showCreateGalaxy = false
-    @State private var showWritePledge = false
     @State private var showWriteRecord = false
     @State private var showMenu = false
     @State private var showTimeLine = false
     @State private var showGalaxyList = false
+    @State private var showWriteResult = false
+    @State private var showCreateResultCard = false
     
     @State private var galaxies: [Galaxy] = []
-
+    
+    // MARK: - body
     var body: some View {
-        if viewModel.galaxyData == nil {
-            initialHomeView
-                .transition(.opacity)
+        ZStack {
+            VStack {
+                if viewModel.galaxyData == nil {
+                    initialHomeView
+                        .transition(.opacity)
+                }
+                else {
+                    GalaxyView
+                }
+            }
+            .allowsHitTesting(!showCardOverlay)
+            
+            // 카드 오버레이
+            if showCardOverlay {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture {
+                        withAnimation {
+                            showCardOverlay = false
+                        }
+                    }
+                    .zIndex(1)
+            }
+            
+            if showCardOverlay {
+                CardOverlayView(
+                    selectedTab: $selectedCardTab,
+                    onClose: {
+                        withAnimation {
+                            showCardOverlay = false
+                        }
+                    },
+                    onWriteResult: {
+                        showCardOverlay = false
+                        showWriteResult = true
+                    }
+                )
+
+                .zIndex(2)
+            }
+
         }
-        else {
-            GalaxyView
+        .fullScreenCover(isPresented: $showCreateGalaxy) {
+            // 은하 정보 저장
+            CreateGalaxyView { galaxy in
+                galaxies.append(galaxy)
+                appState.currentGalaxy = galaxy
+                
+                showCreateGalaxy = false
+            }
         }
+        .fullScreenCover(isPresented: $showTimeLine) {
+            TimeLineView()
+        }
+        .fullScreenCover(isPresented: $showMenu) {
+            MenuView()
+                .environmentObject(appState.profileViewModel)
+        }
+        .fullScreenCover (isPresented: $showGalaxyList) {
+            GalaxyCheckView(galaxyList: [])
+        }
+        .fullScreenCover(isPresented: $showWriteRecord) {
+            NavigationStack {
+                WriteRecordView(
+                    onFinish: {
+                        showWriteRecord = false
+                    }
+                )
+            }
+        }
+        .fullScreenCover(isPresented: $showWriteResult) {
+            WriteResultView(
+                onFinish: {
+                    showWriteResult = false
+                    showCreateResultCard = true
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $showCreateResultCard) {
+            CreateResultCardView(
+                onFinish: {
+                    showCreateResultCard = false
+                }
+            )
+        }
+
+
+
     }
     // MARK: - initialHomeView
     private var initialHomeView: some View {
@@ -42,7 +131,8 @@ struct HomeGalaxyView: View {
                     Spacer()
                     initialHomeButton
                     Spacer()
-                }.padding(.horizontal, 22)
+                }
+                .padding(.horizontal, 22)
                 // 중요: VStack이 화면 크기를 넘지 않도록 제한
                 .frame(width: geometry.size.width, height: geometry.size.height)
             }.ignoresSafeArea()
@@ -57,7 +147,7 @@ struct HomeGalaxyView: View {
                 // 1. 배경 및 은하 레이어 (화면 크기에 딱 맞게 가둠)
                 ZStack {
                     background
-
+                    
                     if let data = viewModel.galaxyData {
                         GalaxySystemView(
                             galaxyData: data,
@@ -65,12 +155,18 @@ struct HomeGalaxyView: View {
                             scale: viewModel.scale
                         )
                         .frame(width: geometry.size.width, height: geometry.size.height)
-
+                        
                     }
-                }.contentShape(Rectangle())                   .gesture(MagnificationGesture().onChanged { value in viewModel.updateScale(magnitude: value.magnitude)
-                })
+                    
+                    
+                    
+                }
+                .contentShape(Rectangle())
+                .gesture(MagnificationGesture()
+                    .onChanged { value in viewModel.updateScale(magnitude: value.magnitude)
+                    })
                 .ignoresSafeArea() // 배경 레이어만 SafeArea 무시
-
+                
                 // 2. 상단/하단 UI 레이어 (SafeArea 내부 고정)
                 VStack {
                     // 상단 헤더
@@ -95,20 +191,20 @@ struct HomeGalaxyView: View {
     
     // MARK: - background
     private var background: some View{
-//        GeometryReader { geometry in
-//            Color.blue212148
-//            
-//            Image("Homegradation")
-//                .resizable()
-//                .aspectRatio(contentMode: .fill)
-//                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
-//                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
-//            
-//            Image("starObjet")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: geometry.size.width)
-//        }
+        //        GeometryReader { geometry in
+        //            Color.blue212148
+        //
+        //            Image("Homegradation")
+        //                .resizable()
+        //                .aspectRatio(contentMode: .fill)
+        //                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
+        //                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
+        //
+        //            Image("starObjet")
+        //                .resizable()
+        //                .scaledToFit()
+        //                .frame(width: geometry.size.width)
+        //        }
         ZStack {
             // 배경 색
             Color.blue212148
@@ -136,51 +232,54 @@ struct HomeGalaxyView: View {
         }
     }
     
+    // MARK: - upperHeaderUI
     // 코드 가독성을 위해 View를 변수로 분리
     private var upperHeaderUI: some View {
-        VStack(spacing: 8) {
+        VStack {
             HStack {
                 Spacer()
-                Button(action: {}) {
+                Button(action: {showTimeLine = true}){
                     Image(systemName: "globe")
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 24,height: 24)
                 }
-                Button(action: {}) {
+                Button(action: {showMenu = true}){
                     Image(systemName: "person.crop.circle")
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 24,height: 24)
                 }
             }
-            .padding(.bottom, 27)
             .foregroundColor(.white)
-    
         }
+        .padding(.top, 16)
     }
+    
+    // MARK: - TitleUI
     private var TitleUI: some View {
         VStack(spacing: 8) {
             HStack(spacing: 4) {
                 Text(viewModel.galaxyData?.title ?? "Loading...")
                     .font(.system(size: 24)) // .pt24 대신 예시
-                Button(action: {}) {
+                Button (action: {showGalaxyList = true}) {
                     Image(systemName: "greaterthan")
                         .padding(.leading, 7)
                 }
             }
             .foregroundColor(.white)
-
+            
             if let data = viewModel.galaxyData {
                 Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
                     .foregroundColor(.white)
             }
         }
+        .padding(.top, 40)
     }
+    
+    // MARK: - initialHomeButton
     private var initialHomeButton: some View {
         VStack(spacing: 0) { // 내부 요소들을 수직으로 묶어줍니다.
-            Button(action: {
-                // 버튼 클릭 시 동작
-            }) {
+            Button (action: {showCreateGalaxy = true}) {
                 ZStack {
                     Circle()
                         .stroke(style: StrokeStyle(lineWidth: 1, dash: [5]))
@@ -193,15 +292,16 @@ struct HomeGalaxyView: View {
                 .foregroundColor(.white) // ZStack 내부의 색상을 결정
             }
             .padding(.bottom, 16) // Button 하단에 여백 추가 (정상 작동)
-
+            
             Text("첫 은하 생성하기")
                 .font(.pt18)
                 .foregroundColor(.white)
         }
     }
-
+    
+    // MARK: - bottomAddButton
     private var bottomAddButton: some View {
-        Button(action: {}) {
+        Button (action: {showWriteRecord = true}) {
             ZStack {
                 Circle()
                     .foregroundColor(.white.opacity(0.3))
@@ -213,17 +313,28 @@ struct HomeGalaxyView: View {
             }
         }
     }
+    
+    // MARK: - CardButton
     private var CardButton: some View {
         VStack {
             Spacer()
             HStack {
                 Spacer()
-                Button(action: {}) {
-                    Image("card")
-                        .shadow(color: .white, radius: 5, x: 2, y: 4)
-                }
+                Button(
+                    action: {
+                        withAnimation(.easeOut) {
+                            showCardOverlay = true
+                            selectedCardTab = .pledge
+                        }
+                    },
+                    label: {
+                        Image("card")
+                            .shadow(color: .white, radius: 5, x: 2, y: 4)
+                    }
+                )
                 .padding(.trailing, 22)
                 .padding(.bottom, 20)
+
             }
         }
     }

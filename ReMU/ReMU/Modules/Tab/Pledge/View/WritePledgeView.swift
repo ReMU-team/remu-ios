@@ -154,7 +154,7 @@ struct WritePledgeView: View {
             Spacer()
             // 다짐 1개 이상 작성 시 클릭 가능
             PrimaryButton(title: "다음",
-                          backgroundColor: viewModel.isNextEnabled ? .purpleC495E0 : .grayScale3
+                          backgroundColor: viewModel.isNextEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4)
             ) {
                 goNext = true
             }
