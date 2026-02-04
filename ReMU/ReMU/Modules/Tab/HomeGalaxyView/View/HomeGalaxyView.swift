@@ -311,6 +311,8 @@ struct HomeGalaxyView: View {
                     .frame(width: 18, height: 18)
                     .foregroundColor(.white)
             }
+            // 리퀴드 글래스 효과 적용
+            .glassEffect(.clear.interactive(), in: .capsule)
         }
     }
     
