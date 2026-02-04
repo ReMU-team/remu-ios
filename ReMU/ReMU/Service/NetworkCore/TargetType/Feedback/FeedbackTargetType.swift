@@ -39,9 +39,9 @@ extension FeedbackTargetType: APITargetType{
     var headers: [String : String]?{
         switch self {
         case .createFeedback(let accessToken,_),.fetchFeedback(let accessToken,_),.patchFeedback(let accessToken,_):
-            var headers = ["Content-Type": "application/json"]
-            headers["Authorization"] = "Bearer \(accessToken)"
-            return headers
+            var header = ["Accept": "application/json"]
+            header["Authorization"] = "Bearer \(accessToken)"
+            return header
         }
     }
     

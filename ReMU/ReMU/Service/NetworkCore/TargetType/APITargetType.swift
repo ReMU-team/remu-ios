@@ -26,10 +26,7 @@ extension APITargetType {
                 case .requestJSONEncodable, .requestParameters:
                     header["Content-Type"] = "application/json"
                 default:
-                    return [
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    ]
+                    break
         }
         return header
     }
