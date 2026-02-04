@@ -40,5 +40,4 @@ final class CreateGalaxyViewModel: ObservableObject {
             imageName: selectedGalaxyImageName!
         )
     }
-
 }
