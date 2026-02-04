@@ -6,8 +6,16 @@
 //
 
 import SwiftUI
+enum CardSize {
+    static let width: CGFloat = 297
+    static let height: CGFloat = 419
+}
 
 struct PledgeCardFlip: View {
+    
+    // 뷰모델
+    @StateObject private var pledgeViewModel = PledgeViewModel()
+    @StateObject private var galaxyViewModel = CreateGalaxyViewModel()
     
     @State var flip = false
     
@@ -20,12 +28,11 @@ struct PledgeCardFlip: View {
                 .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear : .linear.delay(0.35), value: flip)
         }
+        .frame(width: CardSize.width, height: CardSize.height)
         .onTapGesture {
             flip.toggle()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        //.background(Color(red: 40/255, green: 40/255, blue: 40/255))
-        .background(.white) // 배경색 수정
+        .background(Color.clear)// 배경색 수정
     }
 }
 
@@ -33,6 +40,7 @@ struct PledgeCardFlip: View {
     PledgeCardFlip()
 }
 
+// MARK: - 뒷장
 struct CardOneView: View {
     
     @Binding var flip: Bool
@@ -40,7 +48,7 @@ struct CardOneView: View {
         ZStack {
             Rectangle()
                 .fill(.white)
-                .cornerRadius(12)
+                .cornerRadius(16)
                 .shadow(radius: 8)
             VStack {
                 top
@@ -48,7 +56,6 @@ struct CardOneView: View {
             }
             .padding(.horizontal, 24)
         }
-        .frame(width: 297, height: 419)
     }
     
     var top: some View {
@@ -56,33 +63,45 @@ struct CardOneView: View {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
+            Spacer()
             VStack(alignment: .leading) {
                 HStack {
                     Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
+                        .padding(.horizontal, 16)
+                    
                     Spacer()
-                    Image(systemName: "pencil.line")
-                    Image(systemName: "xmark.app")
+                    Button(action: {}) {
+                        Image("pencil.line")
+                            .foregroundStyle(Color.grayScale8)
+                    }
+                    Button(action: {}) {
+                        Image("close_icon")
+                            .foregroundStyle(Color.grayScale8)
+                    }
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
+                    .padding(.horizontal, 16)
             }
-            Spacer()
+            
         }
         .padding(.top, 32)
         .padding(.bottom, 22)
     }
     
     var middle: some View {
-        VStack {
-            TextBox(isExpanded: true)
+        ZStack {
+            Image("logo_illust_1")
+    
         }
-        .padding(.bottom, 32)
+        .padding(.bottom, 24)
     }
 }
 
+// MARK: - CardTwoView
 struct CardTwoView: View {
     
     @Binding var flip: Bool
@@ -90,7 +109,7 @@ struct CardTwoView: View {
         ZStack {
             Rectangle()
                 .fill(.white)
-                .cornerRadius(12)
+                .cornerRadius(16)
                 .shadow(radius: 8)
             VStack {
                 top
@@ -99,7 +118,6 @@ struct CardTwoView: View {
             }
             .padding(.horizontal, 24)
         }
-        .frame(width: 297, height: 419)
     }
     
     var top: some View {
@@ -107,26 +125,30 @@ struct CardTwoView: View {
             Circle()
                 .fill(.blue5050AE)
                 .frame(width: 45, height: 45)
+            Spacer()
             VStack(alignment: .leading) {
                 HStack {
                     Text("6인팟 스위스")
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
+                        .padding(.horizontal, 16)
+                    
                     Spacer()
                     Button(action: {}) {
-                        Image(systemName: "pencil.line")
+                        Image("pencil.line")
                             .foregroundStyle(Color.grayScale8)
                     }
                     Button(action: {}) {
-                        Image(systemName: "xmark.app")
+                        Image("close_icon")
                             .foregroundStyle(Color.grayScale8)
                     }
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
+                    .padding(.horizontal, 16)
             }
-            Spacer()
+            
         }
         .padding(.top, 32)
         .padding(.bottom, 22)
@@ -140,6 +162,7 @@ struct CardTwoView: View {
             TextBox(text: "다짐 1")
             TextBox(text: "다짐 2")
             TextBox(text: "다짐 3")
+
         }
     }
 }

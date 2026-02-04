@@ -10,14 +10,16 @@ import SwiftUI
 
 
 struct WriteResultView: View {
-//    let onFinish: () -> Void
+    
+    let onFinish: () -> Void
+    
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
-
-    // 회고 뷰모델
-    @StateObject private var viewModel = ResultViewModel()
     
-
+    @State private var pledge1: String = ""
+    @State private var isChecked1: Bool = false
+    @State private var isChecked2: Bool = false
+    @State private var review: String = ""
     
     var body: some View {
         VStack {
@@ -32,10 +34,12 @@ struct WriteResultView: View {
                 VStack(spacing: 24) {
                     top
                     middle
+                    nextButton
                 }
             }
     //        bottom
         }
+        
     }
     
     // MARK: - navigation
@@ -152,9 +156,28 @@ struct WriteResultView: View {
         VStack {
             
         }
-    } // TODO: 네비게이션
+    }
+    
+    // MARK: - nextBottom
+    private var nextButton: some View {
+        VStack {
+            Spacer()
+            PrimaryButton(title: "회고 분석하기", backgroundColor: .purpleC495E0
+            ) {
+                onFinish()
+            }
+            .padding(.bottom, 54)
+            
+        }
+        .padding(.horizontal, 40)
+        
+    }
 }
 
 #Preview {
-    WriteResultView()
+    WriteResultView(
+        onFinish: {
+            print("다음 버튼")
+        }
+    )
 }

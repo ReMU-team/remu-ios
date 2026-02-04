@@ -8,27 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		4D0BB6D92F18A51200D80143 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 4D0BB6D82F18A51200D80143 /* Moya */; };
+		9854D9352F2C7ADA00248052 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9342F2C7ADA00248052 /* KakaoSDKAuth */; };
+		9854D9372F2C7ADA00248052 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9362F2C7ADA00248052 /* KakaoSDKCommon */; };
+		9854D9392F2C7ADA00248052 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9382F2C7ADA00248052 /* KakaoSDKUser */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9854DD0E2F2FAA0900248052 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 696FDA2E2F102DC100F3678F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 696FDA352F102DC100F3678F;
+			remoteInfo = ReMU;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		696FDA362F102DC100F3678F /* ReMU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReMU.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9854DD0A2F2FAA0900248052 /* ReMU_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReMU_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		4D1B02422F12AB24001171F2 /* Exceptions for "ReMU" folder in "ReMU" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Common/.gitkeep,
-				Common/Protocol/.gitkeep,
 				Common/UIComponents/.gitkeep,
-				Core/.gitkeep,
 				Core/Actor/.gitkeep,
 				Core/DIContainer/.gitkeep,
 				Core/Utils/.gitkeep,
+				Info.plist,
 				Models/DTO/.gitkeep,
-				Resource/.gitkeep,
-				Resource/Extension/.gitkeep,
-				Resource/Keychain/.gitkeep,
 				Resource/UIConstants/.gitkeep,
 			);
 			target = 696FDA352F102DC100F3678F /* ReMU */;
@@ -44,6 +53,11 @@
 			path = ReMU;
 			sourceTree = "<group>";
 		};
+		9854DD0B2F2FAA0900248052 /* ReMU_Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReMU_Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +65,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9854D9392F2C7ADA00248052 /* KakaoSDKUser in Frameworks */,
 				4D0BB6D92F18A51200D80143 /* Moya in Frameworks */,
+				9854D9372F2C7ADA00248052 /* KakaoSDKCommon in Frameworks */,
+				9854D9352F2C7ADA00248052 /* KakaoSDKAuth in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9854DD072F2FAA0900248052 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				696FDA382F102DC100F3678F /* ReMU */,
+				9854DD0B2F2FAA0900248052 /* ReMU_Tests */,
 				4D0BB6D72F18A4FD00D80143 /* Frameworks */,
 				696FDA372F102DC100F3678F /* Products */,
 			);
@@ -78,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				696FDA362F102DC100F3678F /* ReMU.app */,
+				9854DD0A2F2FAA0900248052 /* ReMU_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,10 +129,36 @@
 			name = ReMU;
 			packageProductDependencies = (
 				4D0BB6D82F18A51200D80143 /* Moya */,
+				9854D9342F2C7ADA00248052 /* KakaoSDKAuth */,
+				9854D9362F2C7ADA00248052 /* KakaoSDKCommon */,
+				9854D9382F2C7ADA00248052 /* KakaoSDKUser */,
 			);
 			productName = ReMU;
 			productReference = 696FDA362F102DC100F3678F /* ReMU.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9854DD092F2FAA0900248052 /* ReMU_Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9854DD102F2FAA0900248052 /* Build configuration list for PBXNativeTarget "ReMU_Tests" */;
+			buildPhases = (
+				9854DD062F2FAA0900248052 /* Sources */,
+				9854DD072F2FAA0900248052 /* Frameworks */,
+				9854DD082F2FAA0900248052 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9854DD0F2F2FAA0900248052 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9854DD0B2F2FAA0900248052 /* ReMU_Tests */,
+			);
+			name = ReMU_Tests;
+			packageProductDependencies = (
+			);
+			productName = ReMU_Tests;
+			productReference = 9854DD0A2F2FAA0900248052 /* ReMU_Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -121,6 +173,10 @@
 					696FDA352F102DC100F3678F = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
+					9854DD092F2FAA0900248052 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 696FDA352F102DC100F3678F;
+					};
 				};
 			};
 			buildConfigurationList = 696FDA312F102DC100F3678F /* Build configuration list for PBXProject "ReMU" */;
@@ -134,6 +190,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				4DB729AB2F17666F0047509B /* XCRemoteSwiftPackageReference "Moya" */,
+				9854D9332F2C7ADA00248052 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 696FDA372F102DC100F3678F /* Products */;
@@ -141,12 +198,20 @@
 			projectRoot = "";
 			targets = (
 				696FDA352F102DC100F3678F /* ReMU */,
+				9854DD092F2FAA0900248052 /* ReMU_Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		696FDA342F102DC100F3678F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9854DD082F2FAA0900248052 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -163,11 +228,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9854DD062F2FAA0900248052 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9854DD0F2F2FAA0900248052 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 696FDA352F102DC100F3678F /* ReMU */;
+			targetProxy = 9854DD0E2F2FAA0900248052 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		696FDA3F2F102DC300F3678F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 696FDA382F102DC100F3678F /* ReMU */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -231,6 +313,8 @@
 		};
 		696FDA402F102DC300F3678F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 696FDA382F102DC100F3678F /* ReMU */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -287,6 +371,8 @@
 		};
 		696FDA422F102DC300F3678F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 696FDA382F102DC100F3678F /* ReMU */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -294,6 +380,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReMU/Info.plist;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -319,6 +406,8 @@
 		};
 		696FDA432F102DC300F3678F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 696FDA382F102DC100F3678F /* ReMU */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -326,6 +415,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReMU/Info.plist;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진 앨범 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -346,6 +436,46 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9854DD112F2FAA0900248052 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "UMC.ReMU-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReMU.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ReMU";
+			};
+			name = Debug;
+		};
+		9854DD122F2FAA0900248052 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "UMC.ReMU-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReMU.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ReMU";
 			};
 			name = Release;
 		};
@@ -370,6 +500,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9854DD102F2FAA0900248052 /* Build configuration list for PBXNativeTarget "ReMU_Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9854DD112F2FAA0900248052 /* Debug */,
+				9854DD122F2FAA0900248052 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -381,6 +520,14 @@
 				minimumVersion = 15.0.3;
 			};
 		};
+		9854D9332F2C7ADA00248052 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.27.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -388,6 +535,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4DB729AB2F17666F0047509B /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
+		};
+		9854D9342F2C7ADA00248052 /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9854D9332F2C7ADA00248052 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		9854D9362F2C7ADA00248052 /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9854D9332F2C7ADA00248052 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
+		};
+		9854D9382F2C7ADA00248052 /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9854D9332F2C7ADA00248052 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

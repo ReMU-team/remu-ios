@@ -10,8 +10,12 @@ import SwiftUI
 struct AuthFlowView: View {
     @State private var showOnboarding = false
     @State private var showCreateProfile = false
-
+    @State private var showProfileIntro = false
+    
+    @EnvironmentObject var appState: AppState
+    
     let onAuthFinished: () -> Void
+    
     var body: some View {
         if showCreateProfile {
             CreateProfileView(
@@ -24,23 +28,44 @@ struct AuthFlowView: View {
                     onAuthFinished()
                 }
             )
+            .environmentObject(appState.profileViewModel)
+            
         } else if showOnboarding {
             OnboardingView(
                 onExit: { showOnboarding = false },
                 onFinish: {
                     showOnboarding = false
-                    showCreateProfile = true
+                    showProfileIntro = true
                 }
             )
+        } else if showProfileIntro {
+            ProfileIntroView()
+                .transition(.opacity)
+                .onAppear {
+                    Task {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        withAnimation {
+                            showProfileIntro = false
+                            showCreateProfile = true
+                        }
+                    }
+                }
+            
         } else {
             LoginView(
-                onKakaoLogin: { showOnboarding = true },
+                onKakaoLogin: {
+                    // Placeholder(<#...#>)가 남아있지 않도록 주의하세요!
+                    KakaoManager.shared.kakaoLogin { success in
+                        if success {
+                            showOnboarding = true
+                        }
+                    }
+                },
                 onGoogleLogin: { showOnboarding = true },
                 onAppleLogin: { showOnboarding = true }
             )
         }
     }
 }
-
 
 

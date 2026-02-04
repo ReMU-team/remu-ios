@@ -21,7 +21,9 @@ struct CreatePledgeCardView: View {
     var body: some View {
         VStack{
             navigationBar
+            Spacer()
             pledgeCardView
+            Spacer()
             finishButton
         }
         .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
@@ -41,7 +43,7 @@ struct CreatePledgeCardView: View {
     private var pledgeCardView: some View {
         VStack {
             Text("다짐 카드가 생성되었어요!")
-                .font(.pt18)
+                .font(.pt20)
                 .foregroundStyle(.grayScale9)
             PledgeCardFlip()
                 .padding(.top, 50)
@@ -50,29 +52,28 @@ struct CreatePledgeCardView: View {
                 .font(.pt13)
                 .foregroundStyle(.grayScale5)
         }
-        .padding(.top, 64)
     }
     
     // MARK: - finishButton
     private var finishButton: some View {
         VStack {
-            Spacer()
-            //            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-            //                goNext = true
-            //            }
-            //            .navigationDestination(isPresented: $goNext) {
-            //                TempHomeView() // TODO: 메인으로 변경 필요
-            //            }
-            //            .padding(.bottom, 54)
-            
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
                 onFinish() // 홈으로 복귀
             }
-            
+            .padding(.horizontal, 40)
+            .padding(.bottom, 54)
         }
-        .padding(.horizontal, 40)
+        
         
     }
 }
 
-
+#Preview {
+    NavigationStack {
+        CreatePledgeCardView(
+            onFinish: {
+                print("Pledge card finished")
+            }
+        )
+    }
+}

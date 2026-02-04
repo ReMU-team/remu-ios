@@ -8,38 +8,100 @@
 import SwiftUI
 
 struct CreateProfileView: View {
-    @StateObject private var viewModel = ProfileViewModel()
+    @EnvironmentObject var viewModel: ProfileViewModel
+
     
     let onBack: () -> Void // 뒤로가기 콜백 (온보딩 첫화면으로 이동)
     let onFinish: () -> Void // 완료 콜백 (메인 화면으로 이동)
     
     var body: some View {
-        VStack {
-            navigationBar
-                .padding(.horizontal, -40)
-            Spacer()
-            // 포토피커
-            ProfileImage(selectedImageData: $viewModel.selectedImageData)
-            
-            // 이름 적기
-            ReMUTextField(text: $viewModel.username, placeholder: "15자 이내로 입력해주세요", height: 40)
-            
-            // 한 줄 소개
-            ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 40)
-            
-            // 시작 버튼
-            PrimaryButton(
-                title: "시작하기", backgroundColor: .purpleC495E0
-            ) {
-                viewModel.updateProfile()
-                onFinish()
-                print("시작 버튼 클릭")
+        ZStack {
+            // 배경 그라데이션
+            GeometryReader { geometry in
+                Image("gradation")
+                    .resizable()
+                    .scaledToFill()
+                    .scaleEffect(1.5)
+                    .offset(x: -100, y: -100)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
             }
-            Spacer()
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
+            
+            VStack {
+                navigationBar
+
+                Spacer()
+                
+                // 포토피커
+                ProfileImage(selectedImageData: $viewModel.selectedImageData)
+                    .padding(.top, 55)
+                    .padding(.bottom, 46)
+                    
+                
+                
+                // MARK: - 이름 적기
+                VStack (alignment: .leading, spacing: 5) {
+                    
+                    Text("이름*")
+                        .font(.pt15)
+                    
+                    ReMUTextFieldOneLine(
+                        text: $viewModel.username,
+                        placeholder: "15자 이내로 입력해주세요",
+                        height: 32
+                    )
+                    .onSubmit {
+                        viewModel.validateNickname()
+                    }
+                    
+                    
+                    // 가능 여부 메시지
+                    Text(viewModel.nicknameMessage ?? "")
+                        .font(.pt13)
+                        .foregroundColor(
+                            viewModel.isNicknameValid ? .true3 : .false3
+                        )
+                        .opacity(viewModel.nicknameMessage == nil ? 0 : 1)
+                        .frame(height: 18, alignment: .leading)
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+                        
+                    
+
+                    
+                    // MARK: - 한 줄 소개
+                    VStack (alignment: .leading, spacing: 5) {
+                        
+                        Text("한 줄 소개")
+                            .font(.pt15)
+                        
+                        ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 80)
+                        
+                    }
+                    Spacer()
+                    
+                    // MARK: - 시작 버튼
+                    PrimaryButton(
+                        title: "시작하기",
+                        backgroundColor: viewModel.isFinishEnabled
+                            ? .purpleC495E0
+                            : .purpleC495E0.opacity(0.4),
+                        isDisabled: !viewModel.isFinishEnabled
+                    ) {
+                        viewModel.updateProfile()
+                        onFinish()
+                    }
+
+                    .padding(.bottom, 54)
+                }
+                .padding(.horizontal,40)
+            }
+            
+            
         }
-        .padding(.horizontal,40)
     }
-    
     // MARK: - navigationBar
     private var navigationBar: some View {
         HStack {
@@ -47,7 +109,7 @@ struct CreateProfileView: View {
                 onBack()
             } label: {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.grayScale9)
+                    .foregroundStyle(.white)
             }
             
             Spacer()
@@ -55,9 +117,15 @@ struct CreateProfileView: View {
         .padding(.horizontal, 20)
         .padding(.top, 16)
     }
-    
-    
-    
+}
+#Preview {
+    CreateProfileView(
+        onBack: {
+            print("Back tapped")
+        },
+        onFinish: {
+            print("Finish tapped")
+        }
+    )
 }
 
-    

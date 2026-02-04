@@ -8,9 +8,17 @@
 import SwiftUI
 
 struct CreateGalaxyView: View {
+    // 홈 상태
+    @EnvironmentObject var appState: AppState
     
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
+    
+    // 네비게이션
+    @State private var showWritePledge = false
+    
+    // 은하 생성
+    let onFinish: (Galaxy) -> Void
     
     // 뷰모델
     @StateObject private var viewModel = CreateGalaxyViewModel()
@@ -28,6 +36,21 @@ struct CreateGalaxyView: View {
             
             finishButton
         }
+        .fullScreenCover(isPresented: $showWritePledge) {
+            NavigationStack {
+                WritePledgeView(
+                    onFinish: {
+                        if let galaxy = viewModel.createdGalaxy {
+                            onFinish(galaxy)        // HomeView로 전달
+                        }
+                        showWritePledge = false
+                        dismiss()                  // CreateGalaxyView 닫기
+                    }
+                )
+            }
+        }
+
+
         
     }
     
@@ -133,10 +156,12 @@ struct CreateGalaxyView: View {
     private var finishButton: some View {
         VStack {
             PrimaryButton(title: "완료",
-                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .grayScale3,
+                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4),
                           isDisabled: !viewModel.isFinishEnabled
             ) {
-                dismiss() // 홈으로 복귀
+                let galaxy = viewModel.makeGalaxy()
+                viewModel.createdGalaxy = galaxy // 임시 저장
+                showWritePledge = true // 다짐 작성으로 이동
             }
         }
         .padding(.horizontal, 40)
@@ -162,7 +187,7 @@ struct GalaxySelectableItem: View {
 }
 
 
-
-#Preview {
-    CreateGalaxyView()
-}
+//
+//#Preview {
+//    CreateGalaxyView()
+//}

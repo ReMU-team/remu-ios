@@ -40,7 +40,7 @@ struct CreateRecordCardView: View {
             Text("기록 카드가 생성되었어요!")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            PledgeCardFlip()
+            RecordCardFlip()
                 .padding(.top, 50)
                 .padding(.bottom, 20)
             Text("카드를 클릭하면 뒷면이 보여요!")
@@ -54,14 +54,6 @@ struct CreateRecordCardView: View {
     private var finishButton: some View {
         VStack {
             Spacer()
-//            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-//                goNext = true
-//            }
-//            .navigationDestination(isPresented: $goNext) {
-//                TempHomeView() // TODO: 메인으로 변경 필요
-//            }
-//            .padding(.bottom, 54)
-            
             PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
                 onFinish() // 홈으로 복귀
             }
@@ -73,7 +65,13 @@ struct CreateRecordCardView: View {
     }
 }
 
-#Preview {
-    //CreateRecordCardView()
-}
 
+#Preview {
+    NavigationStack {
+        CreateRecordCardView(
+            onFinish: {
+                print("Record card finished")
+            }
+        )
+    }
+}

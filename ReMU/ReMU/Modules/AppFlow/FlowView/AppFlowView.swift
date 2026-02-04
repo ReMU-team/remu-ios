@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct AppFlowView: View {
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
-        HomeView()
+        HomeGalaxyView()
+            .environmentObject(appState)
+            .environmentObject(appState.profileViewModel)
     }
 }
 

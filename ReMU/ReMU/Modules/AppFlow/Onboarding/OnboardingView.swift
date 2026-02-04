@@ -18,6 +18,7 @@ struct OnboardingView: View {
             Spacer()
             contents
             buttons
+            Spacer()
             
         }
         
@@ -54,13 +55,13 @@ struct OnboardingView: View {
             
             Text(page.description)
                 .font(.pt15)
-                .padding(.bottom, 46)
+                .padding(.bottom, 48)
                 .foregroundStyle(.grayScale5)
             
-            Spacer()
             Image(page.imageName)
-                .padding(.bottom, 72)
-            Spacer()
+                .resizable()
+                .frame(width: 313, height: 304)
+                .padding(.bottom, 64)
             
             // page indicator
             HStack(spacing: 12) {
