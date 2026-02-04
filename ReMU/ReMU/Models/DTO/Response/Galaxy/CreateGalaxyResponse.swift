@@ -7,13 +7,6 @@
 
 import Foundation
 
-struct CreateGalaxyResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: CreateGalaxyItem
-}
-
 struct CreateGalaxyItem : Codable {
     let galaxyId: Int
     let name: String
@@ -21,3 +14,5 @@ struct CreateGalaxyItem : Codable {
     let arrivalDate: String
     let endDate: String
 }
+
+typealias CreateGalaxyResponse = BaseResponse<CreateGalaxyItem>
