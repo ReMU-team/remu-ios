@@ -7,40 +7,44 @@
 
 import Foundation
 import KakaoSDKUser
+import KakaoSDKAuth
+
+
 
 class KakaoManager {
     static let shared = KakaoManager()
     
+    struct KakaoToken {
+        let accessToken: String?
+        let refreshToken: String?
+    }
+    
     private init() {}
     
-    
-    func kakaoLogin(completion: @escaping (Bool) -> Void) {
+    // 로그인 성공 시 accessToken 반환
+    func kakaoLogin(completion: @escaping (KakaoToken?) -> Void) {
+        
+        let handleResult: (OAuthToken?, Error?) -> Void = { oauthToken, error in
+            if let error = error {
+                print(error)
+                completion(nil)
+            }
+            else {
+                print("로그인 success")
+                print(oauthToken?.accessToken as Any)
+                print(oauthToken?.refreshToken as Any)
+                let tokens = KakaoToken(
+                    accessToken: oauthToken?.accessToken, refreshToken: oauthToken?.refreshToken)
+                completion(tokens)
+            }
+        }
         // 카카오톡 실행 가능 여부 확인
         if UserApi.isKakaoTalkLoginAvailable() {
             // 카카오톡 로그인
-            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
-                if let error = error {
-                    print(error)
-                } else {
-                    print("카카오톡 로그인 success")
-                    
-                    // 추가작업
-                    _ = oauthToken
-                }
-            }
-        }
-        else {
+            UserApi.shared.loginWithKakaoTalk(completion: handleResult)
+        }else{
             // 카카오계정 로그인
-            UserApi.shared.loginWithKakaoAccount { oauthToken, error in
-                if let error = error {
-                    print(error)
-                } else {
-                    print("카카오계정 로그인 success")
-                    
-                    // 추가작업
-                    _ = oauthToken
-                }
-            }
+            UserApi.shared.loginWithKakaoAccount(completion: handleResult)
         }
     }
     
