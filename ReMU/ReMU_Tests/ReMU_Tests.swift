@@ -44,8 +44,8 @@ struct AuthAPITest {
         
         // then
         #expect(json.isSuccess == true)
-        #expect(json.result.accessToken == "sample_access_token")
-        #expect(json.result.isNewUser == true)
+        #expect(json.result?.accessToken == "sample_access_token")
+        #expect(json.result?.isNewUser == true)
     }
     
     @Test("로그인 실패 시 에러가 발생해야 한다")
