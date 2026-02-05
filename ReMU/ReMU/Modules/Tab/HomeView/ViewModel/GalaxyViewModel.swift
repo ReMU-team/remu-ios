@@ -8,6 +8,32 @@
 import Foundation
 import SwiftUI
 import Combine
+import Moya
+
+@Observable
+class GalaxyHomeViewModel {
+    
+    // MARK: - Properties
+    private let GalaxyDetailProvider: MoyaProvider<GalaxyTargetType>
+    // 의존성 주입
+    init(container: DIContainer) {
+        self.GalaxyDetailProvider = container.apiProviderStore.galaxy()
+    }
+    
+    // MARK: - Func
+    @MainActor
+    func fetchGalaxyDetailData(galaxyId: Int) async {
+        do {
+            let response = try await GalaxyDetailProvider.requestAsync(.fetchGalaxyDetail(galaxyId: galaxyId))
+            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
+        } catch {
+            
+        }
+    }
+    
+    
+}
+
 
 class HomeViewModel: ObservableObject {
     // 1. View에서 관찰할 데이터들

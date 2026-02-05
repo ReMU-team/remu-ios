@@ -7,13 +7,7 @@
 
 import Foundation
 
-// 최상위 응답 객체
-struct createResultResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: createResultItem
-}
+
 
 // 결과 데이터 객체
 struct createResultItem: Codable {
@@ -32,3 +26,6 @@ struct createResultDetail: Codable {
     let isResolutionFulfilled: Bool
     let createdAt: String // String 대신 Date로 처리 가능
 }
+
+// 최상위 응답 객체
+typealias createResultResponse = BaseResponse<createResultItem>

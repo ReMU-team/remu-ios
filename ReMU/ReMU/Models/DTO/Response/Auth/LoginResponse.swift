@@ -7,9 +7,4 @@
 
 import Foundation
 
-struct LoginResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: UserInfo
-}
+typealias LoginResponse = BaseResponse<UserInfo>
