@@ -32,14 +32,14 @@ struct NetworkImageView: View {
                 Text("이미지 로드 실패")
             }
         }
-        .onAppear {
-            loader.loadImage(from: url)
+        .task {
+            await loader.loadImage(from: url)
         }
         .onDisappear {
             loader.cancel()
         }
     }
 }
-#Preview {
-    NetworkImageView(url: "https://plus.unsplash.com/premium_photo-1675006717262-a8f9aed248a3?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8JUVBJUIzJUEwJUVDJTlBJUE5JUVCJTlGJTg5fGVufDB8fDB8fHww")
+#Preview{
+    NetworkImageView(url: "https://ssumer.com/wp-content/uploads/2010/11/Google-Chromessumercap010.jpg")
 }
