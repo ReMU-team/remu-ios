@@ -7,28 +7,15 @@
 
 import Foundation
 
-struct GalaxyData: Identifiable {
-    let id = UUID()
-    let title: String
-    let totalDay: Int
-    let month: Int
-    let day: Int
-    let galaxyIcon: String
-    let stars: [StarData]
-}
+extension Galaxy {
 
-struct StarData: Identifiable {
-    let id = UUID()
-    let title: String
-    let onData: Int
-    let starIcon: String
-}
-
-extension GalaxyData {
-    static var mock: GalaxyData {
-        GalaxyData(
-            title: "iOS의 개발 여정",
-            totalDay: 3,
+    static let mock: Galaxy = Galaxy(
+        serverId: 1,
+        title: "iOS의 개발 여정",
+        destination: "서울",
+        startDate: DateComponents(
+            calendar: .current,
+            year: 2026,
             month: 1,
             day: 15,
             galaxyIcon: "galaxy_1",
@@ -56,4 +43,3 @@ extension GalaxyData {
         )
     }
 }
-

@@ -106,6 +106,6 @@ struct GalaxyCheckView: View {
 
 
 #Preview {
-    GalaxyCheckView(galaxyList: [GalaxyData.mock])
+    GalaxyCheckView(galaxyList: [Galaxy.mock])
 }
 

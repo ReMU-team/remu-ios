@@ -63,8 +63,10 @@ struct ResultCardOneView: View {
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
-                    Image(systemName: "pencil.line")
-                    Image(systemName: "xmark.app")
+                    Button(action: {}) {
+                        Image(systemName: "xmark.app")
+                            .foregroundStyle(Color.grayScale8)
+                    }
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
@@ -124,10 +126,6 @@ struct ResultCardTwoView: View {
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
-                    Button(action: {}) {
-                        Image(systemName: "pencil.line")
-                            .foregroundStyle(Color.grayScale8)
-                    }
                     Button(action: {}) {
                         Image(systemName: "xmark.app")
                             .foregroundStyle(Color.grayScale8)

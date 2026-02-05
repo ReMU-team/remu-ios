@@ -8,12 +8,38 @@
 import Foundation
 
 struct Galaxy: Identifiable {
-    let id: UUID
-
-    // MARK: - 생성 시 결정 (필수)
-    let name: String              // 은하 이름
-    let destination: String         // 장소명
-    let startDate: Date?
-    let endDate: Date?
-    let imageName: String         // 은하 이미지 (asset name)
+    let id: UUID = UUID() // 로컬 식별 id (UI용)
+    let serverId: Int // 서버 식별 id (API용)
+    
+    let title: String // 은하 이름
+    let destination: String // 여행 장소
+    let startDate: Date // 여행 시작일
+    let endDate: Date // 여행 종료일
+    let totalDay: Int // 전체 여행 일 수
+    let galaxyIcon: String // 은하 이미지
+    
+    let stars: [Star] // 은하의 별들
 }
+
+extension Galaxy {
+    var month: Int {
+        Calendar.current.component(.month, from: startDate)
+    }
+
+    var day: Int {
+        Calendar.current.component(.day, from: startDate)
+    }
+}
+
+
+
+struct Star: Identifiable {
+    let id: UUID = UUID()
+    let serverId: Int
+    
+    let name: String // 별 이름
+    let dayOffset: Int // ?일차 (ex.DAY3)
+    let starIcon: String // 별 이미지
+}
+
+

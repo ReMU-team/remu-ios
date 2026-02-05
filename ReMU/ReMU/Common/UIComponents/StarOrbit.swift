@@ -5,14 +5,13 @@
 //  Created by 김종수 on 1/15/26.
 //
 
-import Foundation
 import SwiftUI
 
 
 struct DynamicOrbitView: View {
-    let stars: [StarData]
+    let stars: [Star]
     let orbitIndex: Int
-    
+
     @State private var rotation: Double = 0.0
     
     // 알고리즘: 궤도 인덱스에 따라 별 크기와 반지름 계산
@@ -24,13 +23,14 @@ struct DynamicOrbitView: View {
         let baseRadius: CGFloat = 75
         let baseGap: CGFloat = 50
         var totalRadius = baseRadius
+
         // 궤도 사이의 거리가 8씩 누적 증가하는 로직
         for _ in 0..<orbitIndex {
             totalRadius += baseGap
         }
         return totalRadius
     }
-    
+
     var body: some View {
         
         TimelineView(.animation) { timeline in

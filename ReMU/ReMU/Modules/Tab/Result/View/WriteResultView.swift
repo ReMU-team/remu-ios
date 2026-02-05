@@ -59,12 +59,14 @@ struct WriteResultView: View {
                 Text("은하의 여정을 회상해봐요")
                     .font(.pt20)
                     .foregroundStyle(.grayScale9)
-                Text("이번 여행을 회고해보아요!")
-                    .font(.pt12)
-                    .foregroundStyle(.grayScale5)
-                Text("출발 전에는 이렇게 작성하였어요.")
-                    .font(.pt12)
-                    .foregroundStyle(.grayScale5)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("이번 여행을 회고해보아요!")
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale5)
+                    Text("출발 전에는 이렇게 작성하였어요.")
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale5)
+                }
                 Text("지금의 나는 어떤가요?")
                     .font(.pt13)
                     .foregroundStyle(.grayScale7)
@@ -78,7 +80,11 @@ struct WriteResultView: View {
     var middle: some View {
         VStack(spacing: 35) {
             emoji
-            pledges
+            
+            ForEach($viewModel.pledges) { $item in
+                PledgeRow(item: $item)
+            }
+            
             overall
         }
         .padding()
@@ -95,7 +101,9 @@ struct WriteResultView: View {
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
-                    Button(action: {}) {
+                    Button(action: {
+                        viewModel.openEmojiSheet()
+                    }) {
                         Text("회고 이모지 변경")
                             .foregroundStyle(.purpleC495E0)
                             .font(.pt12)
@@ -110,6 +118,21 @@ struct WriteResultView: View {
                             .stroke(Color.purpleC495E0, lineWidth: 1)
                             )
                     }
+                    .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
+                        EmojiPickerSheet(
+                            emojis: viewModel.emojis,
+                            selectedEmoji: $viewModel.tempSelectedEmoji,
+                            onConfirm: {
+                                viewModel.confirmEmojiSelection()
+                            },
+                            onClose: {
+                                viewModel.isEmojiSheetPresented = false
+                            }
+                        )
+                    }
+
+                    
+                    
                 }
                 Text("25/10/29-25/11/10")
                     .foregroundStyle(.grayScale5)
@@ -118,39 +141,15 @@ struct WriteResultView: View {
         } // TODO: emoji + 은하이름 + 여행날짜 컴포넌트화, MVVM 구조화, 회고이모지변경 버튼 액션
     }
     
-    var pledges: some View {
-        VStack(spacing: 8) {
-            HStack {
-                TextBox(text: "다짐 1")
-                Button(action: {
-                    isChecked1.toggle()
-                }) {
-                    Image(systemName: isChecked1 ? "checkmark.circle.fill" : "checkmark.circle")
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(Color.purpleC495E0)
-                }
-                Button(action: {
-                    isChecked2.toggle()
-                }) {
-                    Image(systemName: isChecked2 ? "xmark.circle.fill" :"xmark.circle")
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(Color.purpleC495E0)
-                }
-            }
-            ReMUTextField(text: $pledge1, placeholder: "회고 내용을 입력해주세요.", height: 50)
-        } // TODO: pledges 컴포넌트화, MVVM 구조화, 완료 OX 버튼 액션
-    }
-    
     var overall: some View {
         VStack(alignment: .leading) {
             Text("여행 후기")
                 .font(.pt15)
                 .foregroundStyle(.grayScale9)
-            ReMUTextField(text: $review, placeholder: "여행 후기를 입력해주세요.", height: 195)
+            ReMUTextField(text: $viewModel.review, placeholder: "여행 후기를 입력해주세요.", height: 195)
         }
     }
+
     
     // MARK: - bottom
     var bottom: some View {

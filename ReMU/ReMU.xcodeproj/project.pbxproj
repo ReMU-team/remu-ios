@@ -34,6 +34,8 @@
 			membershipExceptions = (
 				Common/UIComponents/.gitkeep,
 				Core/Actor/.gitkeep,
+				Core/DIContainer/.gitkeep,
+				Core/Utils/.gitkeep,
 				Info.plist,
 				Models/DTO/.gitkeep,
 				Resource/UIConstants/.gitkeep,

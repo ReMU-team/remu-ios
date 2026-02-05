@@ -10,7 +10,7 @@ import SwiftUI
 
 //개별 은하 아이템 셀 (재사용성 및 협업 효율을 위해 분리)
 struct GalaxyCell: View {
-    let galaxy: GalaxyData
+    let galaxy: Galaxy
     
     var body: some View {
         VStack(spacing: 8) {
