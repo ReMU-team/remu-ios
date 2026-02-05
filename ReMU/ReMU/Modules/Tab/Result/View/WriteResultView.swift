@@ -45,7 +45,7 @@ struct WriteResultView: View {
     // MARK: - navigation
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "6인팟 스위스",
+                        title: "회고 작성",
                         onBack: {
                             dismiss()
                         }

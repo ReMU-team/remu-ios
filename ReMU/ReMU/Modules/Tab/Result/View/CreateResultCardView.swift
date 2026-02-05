@@ -29,7 +29,7 @@ struct CreateResultCardView: View {
     // MARK: - navigation
     private var navigation: some View {
         CustomNavigationBar(
-            title: "6인팟 스위스",
+            title: "회고 생성",
             onBack: {
                 dismiss()
             }
