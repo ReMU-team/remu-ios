@@ -10,7 +10,7 @@ import Alamofire
 import Moya
 
 enum UserTargetType {
-    case fetchUser(request: PatchUserRequest)
+    case patchUser(request: PatchUserRequest)
     case verifyDuplicateName(name: String)
     case checkUserProfile
     case deleteUser
@@ -21,7 +21,7 @@ extension UserTargetType: APITargetType {
     
     var path: String {
         switch self {
-        case .fetchUser, .checkUserProfile:
+        case .patchUser, .checkUserProfile:
                 return "/profile"
         case .verifyDuplicateName:
             return "/name/exists"
@@ -32,7 +32,7 @@ extension UserTargetType: APITargetType {
     
     var method: Moya.Method {
         switch self {
-        case .fetchUser:
+        case .patchUser:
             return .patch
         case .verifyDuplicateName, .checkUserProfile:
             return .get
@@ -43,7 +43,7 @@ extension UserTargetType: APITargetType {
     
     var task: Moya.Task {
         switch self {
-        case .fetchUser(request: let request):
+        case .patchUser(request: let request):
             return .requestJSONEncodable(request)
         case .checkUserProfile, .deleteUser:
             return .requestPlain
@@ -53,5 +53,18 @@ extension UserTargetType: APITargetType {
             
         }
         
+    }
+    
+    var sampleData: Data {
+        return Data("""
+            {
+              "isSuccess": true,
+              "code": "200",
+              "message": "success",
+                "imageUrl": "string",
+                "name": "종수",
+                "introduction": "빡세다"
+            }
+            """.utf8)
     }
 }

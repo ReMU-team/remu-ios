@@ -10,7 +10,7 @@
 		4D0BB6D92F18A51200D80143 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 4D0BB6D82F18A51200D80143 /* Moya */; };
 		9854D9352F2C7ADA00248052 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9342F2C7ADA00248052 /* KakaoSDKAuth */; };
 		9854D9372F2C7ADA00248052 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9362F2C7ADA00248052 /* KakaoSDKCommon */; };
-		9854D9392F2C7ADA00248052 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9382F2C7ADA00248052 /* KakaoSDKUser */; };
+		9854D9392F2C7ADA00248052 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 9854D9382F2C7ADA00248052 /* KakaoSDKUser */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */

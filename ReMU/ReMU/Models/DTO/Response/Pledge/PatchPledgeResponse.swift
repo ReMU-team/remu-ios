@@ -7,15 +7,10 @@
 
 import Foundation
 
-struct PatchPledgeResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: PatchPledgeResult
-}
-
 struct PatchPledgeResult: Codable {
     let emojiId: String
     let illustId: String
     let contents: [String]
 }
+
+typealias PatchPledgeResponse = BaseResponse<PatchPledgeResult>

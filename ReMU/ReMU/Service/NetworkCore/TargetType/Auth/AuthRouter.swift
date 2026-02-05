@@ -20,7 +20,6 @@ extension AuthRouter: APITargetType {
     var path: String {
         switch self {
         case .tokenRefresh:
-            // TODO: 서버 API 명세서에는 리프레쉬 토큰이 아직 없어서 추후 얘기할 예정
             return "/refresh"
         }
     }

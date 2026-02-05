@@ -7,9 +7,4 @@
 
 import Foundation
 
-struct DeleteGalaxyResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: String
-}
+typealias DeleteGalaxyResponse = BaseResponse<String>

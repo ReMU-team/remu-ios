@@ -16,7 +16,8 @@ struct DynamicOrbitView: View {
     
     // 알고리즘: 궤도 인덱스에 따라 별 크기와 반지름 계산
     private var starSize: CGFloat { 18 + CGFloat(orbitIndex * 8) }
-    private var rotationSpeed: Double { Double(30 - (orbitIndex * 2)) }
+    // TODO: 궤도 속도 조절.. 경품 이벤트..?
+    private var rotationSpeed: Double { Double(110 - (orbitIndex * 2)) }
     
     private var orbitRadius: CGFloat {
         let baseRadius: CGFloat = 75

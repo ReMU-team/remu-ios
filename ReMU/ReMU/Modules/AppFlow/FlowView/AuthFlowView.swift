@@ -56,7 +56,7 @@ struct AuthFlowView: View {
                 onKakaoLogin: {
                     // Placeholder(<#...#>)가 남아있지 않도록 주의하세요!
                     KakaoManager.shared.kakaoLogin { success in
-                        if success {
+                        if (success != nil) {
                             showOnboarding = true
                         }
                     }

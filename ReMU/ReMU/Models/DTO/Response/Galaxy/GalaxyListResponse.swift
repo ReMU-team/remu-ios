@@ -7,13 +7,6 @@
 
 import Foundation
 
-struct GalaxyListResponse: Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: GalaxyListResult
-}
-
 struct GalaxyListResult: Codable {
     let totalCount: Int
     let galaxies: [GalaxySummary]
@@ -26,3 +19,5 @@ struct GalaxySummary: Codable {
     let name: String
     let emojiResourceName: String
 }
+
+typealias GalaxyListResponse = BaseResponse<GalaxyListResult>
