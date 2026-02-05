@@ -73,7 +73,7 @@ struct WriteRecordView: View {
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "6인팟 스위스", // TODO: 뷰모델에서 받아오기
+                        title: "기록 작성",
                         onBack: {
                             dismiss()
                         }

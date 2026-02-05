@@ -49,7 +49,7 @@ struct WritePledgeView: View {
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "은하 이름",
+                        title: "다짐 작성",
                         onBack: {
                             dismiss()
                         }

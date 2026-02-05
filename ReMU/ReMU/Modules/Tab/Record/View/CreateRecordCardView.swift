@@ -27,7 +27,7 @@ struct CreateRecordCardView: View {
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "6인팟 스위스",
+                        title: "기록 생성",
                         onBack: {
                             dismiss()
                         }

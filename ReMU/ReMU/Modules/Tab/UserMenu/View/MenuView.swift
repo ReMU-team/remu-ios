@@ -13,7 +13,7 @@ struct MenuView: View {
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
-    @EnvironmentObject var viewModel: ProfileViewModel
+//    @EnvironmentObject var viewModel: ProfileViewModel
 
     
     var body: some View {
@@ -24,24 +24,27 @@ struct MenuView: View {
             
             // MARK: - 프로필
             HStack{
-                if let data = viewModel.selectedImageData,
-                   let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 56, height: 56)
-                        .clipShape(Circle())
-                } else {
-                    Image("StandardProfile")
-                        .resizable()
-                        .frame(width: 56, height: 56)
-                }
+//                if let data = viewModel.selectedImageData,
+//                   let uiImage = UIImage(data: data) {
+//                    Image(uiImage: uiImage)
+//                        .resizable()
+//                        .scaledToFill()
+//                        .frame(width: 56, height: 56)
+//                        .clipShape(Circle())
+//                } else {
+//                    Image("StandardProfile")
+//                        .resizable()
+//                        .frame(width: 56, height: 56)
+//                }
+                Image("StandardProfile")
+                    .resizable()
+                    .frame(width: 56, height: 56)
 
                 VStack(alignment: .leading, spacing: 16){
-                    Text(viewModel.username)// 수정필요
+                    Text("viewModel.username")// 수정필요
                         .font(.pt16)
                         .foregroundColor(.grayScale9)
-                    Text(viewModel.description) // 수정필요
+                    Text("viewModel.description") // 수정필요
                         .font(.pt13)
                         .foregroundColor(.grayScale7)
                 }

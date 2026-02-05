@@ -32,7 +32,7 @@ struct CreatePledgeCardView: View {
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "6인팟 스위스",
+                        title: "다짐 생성",
                         onBack: {
                             dismiss()
                         }
