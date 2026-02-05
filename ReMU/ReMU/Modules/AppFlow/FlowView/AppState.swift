@@ -20,11 +20,7 @@ final class AppState: ObservableObject {
     @Published var currentGalaxy: Galaxy?
     
     // 전역 공유
-    let profileViewModel: ProfileViewModel
-    
-    init(profileViewModel: ProfileViewModel ){
-        self.profileViewModel = profileViewModel
-    }
+    let profileViewModel = ProfileViewModel()
 
     // 로그인 상태인지 체크하기
     func checkLoginStatus() async {
