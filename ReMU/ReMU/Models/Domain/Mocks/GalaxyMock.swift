@@ -8,7 +8,6 @@
 import Foundation
 
 extension Galaxy {
-
     static let mock: Galaxy = Galaxy(
         serverId: 1,
         title: "iOS의 개발 여정",

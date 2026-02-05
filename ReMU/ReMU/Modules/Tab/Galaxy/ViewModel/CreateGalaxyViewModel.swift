@@ -30,14 +30,14 @@ final class CreateGalaxyViewModel: ObservableObject {
         selectedGalaxyImageName != nil
     }
     
-    func makeGalaxy() -> Galaxy {
-        Galaxy(
-            id: UUID(),
-            name: galaxyName,
-            destination: destination!,
-            startDate: startDate,
-            endDate: endDate,
-            imageName: selectedGalaxyImageName!
-        )
-    }
+//    func makeGalaxy() -> Galaxy {
+//        Galaxy(
+//            id: UUID(),
+//            name: galaxyName,
+//            destination: destination!,
+//            startDate: startDate,
+//            endDate: endDate,
+//            imageName: selectedGalaxyImageName!
+//        )
+//    }
 }
