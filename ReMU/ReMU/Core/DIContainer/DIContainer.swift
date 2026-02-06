@@ -25,8 +25,10 @@ import Combine
 
 final class DIContainer: ObservableObject{
     @Published var router: NavigationRouter
+    
+    private let networkService: NetworkService
+    
     let userSessionKeychain: UserSessionKeychainService
-    let networkService: NetworkService
     let apiProviderStore: APIProviderStore
     
     init(
@@ -38,6 +40,4 @@ final class DIContainer: ObservableObject{
         self.networkService = NetworkServiceImpl(userSessionKeychain: userSessionKeychain)
         self.apiProviderStore = APIProviderStore(networkService: networkService)
     }
-}
-
-/// 
+} 
