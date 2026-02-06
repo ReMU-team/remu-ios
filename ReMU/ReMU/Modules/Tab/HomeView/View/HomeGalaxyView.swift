@@ -33,7 +33,7 @@ struct HomeGalaxyView: View {
     var body: some View {
         ZStack {
             VStack {
-                if viewModel.galaxyData == nil {
+                if viewModel.galaxy == nil {
                     initialHomeView
                         .transition(.opacity)
                 }
@@ -148,9 +148,9 @@ struct HomeGalaxyView: View {
                 ZStack {
                     background
                     
-                    if let data = viewModel.galaxyData {
+                    if let data = viewModel.galaxy {
                         GalaxySystemView(
-                            galaxyData: data,
+                            galaxy: data,
                             partitionedStars: viewModel.partitionedStars,
                             scale: viewModel.scale
                         )
@@ -258,7 +258,7 @@ struct HomeGalaxyView: View {
     private var TitleUI: some View {
         VStack(spacing: 8) {
             HStack(spacing: 4) {
-                Text(viewModel.galaxyData?.title ?? "Loading...")
+                Text(viewModel.galaxy?.title ?? "Loading...")
                     .font(.system(size: 24)) // .pt24 대신 예시
                 Button (action: {showGalaxyList = true}) {
                     Image(systemName: "greaterthan")
@@ -267,7 +267,7 @@ struct HomeGalaxyView: View {
             }
             .foregroundColor(.white)
             
-            if let data = viewModel.galaxyData {
+            if let data = viewModel.galaxy {
                 Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
                     .foregroundColor(.white)
