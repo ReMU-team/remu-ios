@@ -28,4 +28,16 @@ extension APIProviderStore {
     func galaxy() -> MoyaProvider<GalaxyTargetType> {
         return networkService.createProvider(for: GalaxyTargetType.self)
     }
+    func star() -> MoyaProvider<StarTargetType> {
+        return networkService.createProvider(for: StarTargetType.self)
+    }
+    func feedback() -> MoyaProvider<FeedbackTargetType> {
+        return networkService.createProvider(for: FeedbackTargetType.self)
+    }
+    func pledge() -> MoyaProvider<PledgeTargetType> {
+        return networkService.createProvider(for: PledgeTargetType.self)
+    }
+    func result() -> MoyaProvider<ResultTargetType> {
+        return networkService.createProvider(for: ResultTargetType.self)
+    }
 }

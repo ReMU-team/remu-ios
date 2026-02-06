@@ -1,6 +1,11 @@
+////
+////  GalaxyMock.swift
+////  ReMU
+////
+////  Created by 김종수 on 1/15/26.
+////
 //
-//  GalaxyMock.swift
-//  ReMU
+//import Foundation
 //
 //  Created by 김종수 on 1/15/26.
 //
