@@ -18,7 +18,7 @@ struct GalaxyCheckView: View {
     
     @State private var galaxies: [Galaxy] = []
     
-    let galaxyList: [GalaxyData]
+    let galaxyList: [Galaxy]
     
     let columns = [
         GridItem(.flexible()),

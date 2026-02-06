@@ -7,6 +7,53 @@
 //
 //import Foundation
 //
+//  Created by 김종수 on 1/15/26.
+//
+
+import Foundation
+
+extension Galaxy {
+
+    static let mock: Galaxy = {
+
+        // MARK: - Date
+        let startDate = Calendar.current.date(from: DateComponents(
+            year: 2026,
+            month: 1,
+            day: 15
+        ))!
+
+        let endDate = Calendar.current.date(from: DateComponents(
+            year: 2026,
+            month: 1,
+            day: 26
+        ))!
+
+        // MARK: - Stars
+        let stars: [Star] = (1...12).map { day in
+            Star(
+                serverId: day,
+                name: "Star \(day)",
+                dayOffset: day,
+                starIcon: "planet_\(day % 8 + 1)"
+            )
+        }
+
+        // MARK: - Galaxy
+        return Galaxy(
+            serverId: 1,
+            title: "iOS의 개발 여정",
+            destination: "서울",
+            startDate: startDate,
+            endDate: endDate,
+            totalDay: 12,
+            galaxyIcon: "galaxy_1",
+            stars: stars
+        )
+    }()
+}
+
+
 //extension Galaxy {
 //    static let mock: Galaxy = Galaxy(
 //        serverId: 1,
@@ -40,5 +87,4 @@
 //                StarData(title: "Star12", onData: 12, starIcon: "planet_4")
 //            ]
 //        )
-//    }
 //}

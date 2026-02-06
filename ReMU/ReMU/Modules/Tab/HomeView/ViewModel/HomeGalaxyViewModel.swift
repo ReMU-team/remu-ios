@@ -37,8 +37,8 @@ class GalaxyHomeViewModel {
 
 class HomeViewModel: ObservableObject {
     // 1. View에서 관찰할 데이터들
-    @Published var galaxyData: GalaxyData?
-    @Published var partitionedStars: [[StarData]] = []
+    @Published var galaxyData: Galaxy?
+    @Published var partitionedStars: [[Star]] = []
     @Published var scale: CGFloat = 1
     
     init() {
@@ -48,15 +48,15 @@ class HomeViewModel: ObservableObject {
     
     func fetchGalaxyData() {
         // 목데이터 로드 및 궤도 분할 계산 실행
-        let data = GalaxyData.mock
+        let data = Galaxy.mock
         //self.galaxyData = nil
         self.galaxyData = data
         self.partitionedStars = partitionStars(data.stars)
     }
     
     // 2. 궤도 배치 알고리즘: 별의 개수에 따라 2, 3, 4... 개씩 묶음
-    private func partitionStars(_ stars: [StarData]) -> [[StarData]] {
-        var partitioned: [[StarData]] = []
+    private func partitionStars(_ stars: [Star]) -> [[Star]] {
+        var partitioned: [[Star]] = []
         var remainingStars = stars
         var currentCapacity = 2 // 첫 번째 궤도는 최대 2개
         

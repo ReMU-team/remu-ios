@@ -14,6 +14,18 @@ struct ResultCard: Identifiable {
     let pledgeEmojiImageName: String
     let resultEmojiImageName: String
     
-    let reviewText: String // 여행 후 회고
-    let aiFeedback: String // AI 피드백
+    let reviews: [Review]
+    let reflection: String
+    let aiFeedback: String
 }
+
+struct Review: Identifiable {
+    let id: Int                 // reviewId
+    let pledgeId: Int           // 다짐 ID
+
+    let pledgeContent: String   // 다짐 내용
+    var reviewContent: String   // 회고 내용
+    var isFulfilled: Bool
+}
+
+

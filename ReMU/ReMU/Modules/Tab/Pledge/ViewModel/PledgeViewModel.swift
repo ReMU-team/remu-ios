@@ -97,7 +97,7 @@ final class PledgeViewModel: ObservableObject {
     // MARK: - Card Conversion
     func makePledgeCard(galaxyId: Int) -> PledgeCard {
         PledgeCard(
-            galaxyId: galaxyId,
+            galaxyServerId: galaxyId,
             emojiImageName: selectedEmoji?.id ?? "",
             pledges: pledges.map {
                 Pledge(content: $0.content)
