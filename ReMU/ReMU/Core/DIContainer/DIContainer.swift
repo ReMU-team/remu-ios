@@ -40,4 +40,17 @@ final class DIContainer: ObservableObject{
         self.networkService = NetworkServiceImpl(userSessionKeychain: userSessionKeychain)
         self.apiProviderStore = APIProviderStore(networkService: networkService)
     }
-} 
+}
+
+// 프리뷰를 위한
+extension DIContainer {
+    static var preview: DIContainer {
+        DIContainer(
+            router: NavigationRouter(),
+            userSessionKeychain: UserSessionKeychainServiceImpl()
+        )
+    }
+}
+
+
+

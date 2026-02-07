@@ -29,6 +29,12 @@ struct HomeGalaxyView: View {
     
     @State private var galaxies: [Galaxy] = []
     
+    // 기록, 회고 여행 기간 표시
+//    let periodText = travelPeriodText(
+//        start: galaxy.startDate,
+//        end: galaxy.endDate
+//    )
+//    
     // MARK: - body
     var body: some View {
         ZStack {
@@ -95,11 +101,15 @@ struct HomeGalaxyView: View {
         }
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
-                WriteRecordView(
-                    onFinish: {
-                        showWriteRecord = false
-                    }
-                )
+                if let galaxy = viewModel.galaxy {
+                    WriteRecordView(
+                        galaxyId: galaxy.id,
+                        dday: galaxy.totalDay,
+                        onFinish: {
+                            showWriteRecord = false
+                        }
+                    )
+                }
             }
         }
         .fullScreenCover(isPresented: $showWriteResult) {

@@ -6,16 +6,35 @@
 //
 
 import Foundation
+import PhotosUI
 
-struct RecordCard: Identifiable {
-    let id = UUID()
-    let galaxyServerId: Int
-
-    let EmojiImageName: [RecordEmojies]
+/// 카드 UI 전용 모델
+struct RecordCardModel {
+    let galaxyName: String
+    let travelPeriodText: String
+    let title: String
+    let image: UIImage?
+    let dday: Int
+    let dateText: String
+    let content: String
+    let emojis: [String]
 }
 
-struct RecordEmojies: Identifiable {
-    let id = UUID()
-    
-    let emoji: String
+extension RecordCardModel {
+    static func from(
+        draft: RecordDraft,
+        dday: Int
+    ) -> RecordCardModel {
+        RecordCardModel(
+            galaxyName: "임시 은하",          // TODO: 실제 값으로 교체
+            travelPeriodText: "",
+            title: draft.title,
+            image: draft.image,
+            dday: dday,
+            dateText: Date().uiFormat,
+            content: draft.content,
+            emojis: draft.emojis
+        )
+    }
 }
+

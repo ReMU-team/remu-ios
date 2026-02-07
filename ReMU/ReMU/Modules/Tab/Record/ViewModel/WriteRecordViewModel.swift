@@ -18,13 +18,23 @@ final class WriteRecordViewModel: ObservableObject {
     @Published var isColorSheetPresented = false
     @Published var isPhotoPickerPresented = false
     
+    // MARK: - Input Values
+    @Published var title: String = ""
+    @Published var content: String = ""
+    
     // MARK: - Emoji
     let emojis: [EmojiItem] = EmojiCatalog.all
-    
     @Published var selectedEmojis: [EmojiItem] = []        // 최종 적용
     @Published var tempSelectedEmojis: [EmojiItem] = []    // 시트 내부 선택 (최대 3)
     
-    // MARK: - Emoji Sheet LifeCycle
+    // MARK: - Card Color
+       let cardColors: [CardColor] = CardColor.allCases
+       @Published var selectedCardColor: CardColor?
+    
+    // MARK: - Photo
+    @Published var selectedPhoto: UIImage?
+    
+    // MARK: - Emoji Sheet Logic
     func openEmojiSheet() {
         // 기존 선택값을 시트에 복사
         tempSelectedEmojis = selectedEmojis
@@ -52,9 +62,7 @@ final class WriteRecordViewModel: ObservableObject {
         selectedEmojis.removeAll { $0.id == emoji.id }
     }
     
-    // MARK: - Photo
-    @Published var selectedPhoto: UIImage?
-    
+    // MARK: - Photo Picker
     func setPhoto(from item: PhotosPickerItem?) {
         guard let item else { return }
         
@@ -66,7 +74,18 @@ final class WriteRecordViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Card Color 
-       let cardColors: [CardColor] = CardColor.allCases
-       @Published var selectedCardColor: CardColor?
+    // MARK: - Draft
+    func makeDraft() -> RecordDraft {
+        RecordDraft(
+            title: title,
+            content: content,
+            emojis: selectedEmojis.map { $0.id },
+            image: selectedPhoto,
+            cardColor: selectedCardColor?.assetName ?? "planet_1"
+        )
+    }
 }
+
+
+
+

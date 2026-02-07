@@ -15,7 +15,8 @@ struct RecordCardOverlayView: View {
     var body: some View {
         ZStack {
             
-            RecordCardFlip()
+            //TODO: 오류 수정 필요
+            RecordCardFlip(model: RecordCardModel)
             
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
