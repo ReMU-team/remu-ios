@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import Moya
+import _Concurrency
 
 @Observable
 class GalaxyHomeViewModel {
@@ -41,11 +42,67 @@ class HomeViewModel: ObservableObject {
     @Published var partitionedStars: [[Star]] = []
     @Published var scale: CGFloat = 1
     
-    init() {
+    @Published var selectedRecordCard: RecordCardModel?
+    @Published var isShowingRecordCard = false
+    
+    private let starProvider: MoyaProvider<StarTargetType>
+    private let userSession: UserSessionKeychainService
+    
+    init(container: DIContainer = .preview) {
         // 초기 데이터 로드 (추후 API 연동 시 이 함수에서 호출)
+        self.starProvider = container.apiProviderStore.star()
+        self.userSession = container.userSessionKeychain
         fetchGalaxyData()
     }
     
+    // 별 클릭 진입 함수
+    func onSelectStar(starId: Int) {
+        _Concurrency.Task {
+            await fetchStarDetail(starId: starId)
+        }
+    }
+    
+    // MARK: - 별 상세 조회 API
+    @MainActor
+    private func fetchStarDetail(starId: Int) async {
+        guard
+                let session = userSession.loadSession(for: .userSession),
+                let accessToken = session.accessToken
+            else {
+                print("❌ accessToken 없음")
+                return
+            }
+
+        // API 요청
+        do {
+            let response = try await starProvider.requestAsync(
+                .fetchStarDetail(accessToken: accessToken, starId: starId)
+            )
+
+            // 디코딩
+            let apiResponse = try JSONDecoder().decode(
+                StarDetailAPIResponse.self,
+                from: response.data
+            )
+
+            // result 언래핑
+            guard let result = apiResponse.result else {
+                        print("❌ StarDetail result 없음")
+                        return
+                    }
+
+            // UI 모델 변환
+            self.selectedRecordCard = RecordCardModel.from(
+                dto: result,
+                galaxy: galaxyData
+            )
+            self.isShowingRecordCard = true
+
+        } catch {
+            print("❌ 별 상세 조회 실패:", error)
+        }
+    }
+
     func fetchGalaxyData() {
         // 목데이터 로드 및 궤도 분할 계산 실행
         let data = Galaxy.mock

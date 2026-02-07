@@ -12,6 +12,7 @@ struct GalaxySystemView: View {
     let galaxy: Galaxy
     let partitionedStars: [[Star]]
     let scale: CGFloat
+    let onSelectStar: (Int) -> Void
 
     var body: some View {
         ZStack {
@@ -19,7 +20,8 @@ struct GalaxySystemView: View {
                 ForEach(partitionedStars.indices, id: \.self) { index in
                     DynamicOrbitView(
                         stars: partitionedStars[index],
-                        orbitIndex: index
+                        orbitIndex: index,
+                        onSelectStar: onSelectStar
                     )
                 }
             }

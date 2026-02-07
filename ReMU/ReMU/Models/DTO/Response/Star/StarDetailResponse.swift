@@ -13,7 +13,7 @@ struct StarDetailResponse: Decodable {
     let title: String
     let content: String
     let recordDate: String   // yyyy-MM-dd
-    let dDay: Int
+    let dday: Int
     let imageUrl: String?
     let cardColor: String
     let emojis: [String]

@@ -9,14 +9,14 @@ import SwiftUI
 
 struct RecordCardOverlayView: View {
     @Binding var selectedTab: CardTab
+    let model: RecordCardModel
     let onClose: () -> Void
-    let onWriteResult: () -> Void
+    let onEditRecord: () -> Void
     
     var body: some View {
         ZStack {
             
-            //TODO: 오류 수정 필요
-            RecordCardFlip(model: RecordCardModel)
+            RecordCardFlip(model: model)
             
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -31,24 +31,35 @@ struct RecordCardOverlayView: View {
 }
 
 private struct RecordCardOverlayPreview: View {
-    @State private var selectedTab: CardTab = .pledge
+    @State private var selectedTab: CardTab = .review
 
     var body: some View {
         ZStack {
-            // 홈 배경 흉내
             Color.blue212148
                 .ignoresSafeArea()
 
             RecordCardOverlayView(
                 selectedTab: $selectedTab,
+                model: RecordCardModel(
+                    galaxyName: "스위스 여행",
+                    travelPeriodText: "25/10/29-25/11/10",
+                    title: "첫 기록",
+                    image: nil,
+                    dday: 3,
+                    dateText: "10.31",
+                    content: "오늘은 정말 좋은 하루였다.",
+                    emojis: ["smile", "heart"]
+                ),
                 onClose: {
-                    print("닫기 눌림")
+                    print("닫기")
                 },
-                onWriteResult: {
-                    print("회고 작성")
+                onEditRecord: {
+                    print("기록 수정")
                 }
             )
         }
     }
 }
+
+
 

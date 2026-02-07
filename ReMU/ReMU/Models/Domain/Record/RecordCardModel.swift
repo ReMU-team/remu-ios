@@ -36,5 +36,23 @@ extension RecordCardModel {
             emojis: draft.emojis
         )
     }
+    
+    // API DTO -> 카드 UI 모델 변환
+    static func from(
+            dto: StarDetailResponse,
+            galaxy: Galaxy?
+        ) -> RecordCardModel {
+
+            RecordCardModel(
+                galaxyName: galaxy?.title ?? "",
+                travelPeriodText: "", // 필요하면 start~end 가공
+                title: dto.title,
+                image: nil, // imageUrl → UIImage는 다음 단계
+                dday: dto.dday,
+                dateText: dto.recordDate,
+                content: dto.content,
+                emojis: dto.emojis
+            )
+        }
 }
 
