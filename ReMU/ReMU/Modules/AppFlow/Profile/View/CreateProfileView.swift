@@ -47,7 +47,7 @@ struct CreateProfileView: View {
                     Text("이름*")
                         .font(.pt15)
                     
-                    ReMUTextFieldOneLine(
+                    ReMUTextField(
                         text: $viewModel.username,
                         placeholder: "15자 이내로 입력해주세요",
                         height: 32
