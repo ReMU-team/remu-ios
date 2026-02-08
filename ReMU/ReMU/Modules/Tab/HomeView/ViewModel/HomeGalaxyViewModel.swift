@@ -11,26 +11,84 @@ import Combine
 import Moya
 
 @Observable
-class GalaxyHomeViewModel {
+class GalaxyDetailViewModel {
+    // Galaxy Model
+    // var galaxyDetail : Galaxy?
+    var galaxyDetailResponse: GalaxyDetailResponse?
+    var starListResponse: StarListResponse?
+    
+    // Pagination
+    var dDay: Int = 0
+    var month: Int
+    var day: Int
+    
+    
+    private(set) var isLoading: Bool = false
     
     // MARK: - Properties
-    private let GalaxyDetailProvider: MoyaProvider<GalaxyTargetType>
+    private let galaxyDetailProvider: MoyaProvider<GalaxyTargetType>
+    private let starLIstProvider: MoyaProvider<StarTargetType>
+    private let container: DIContainer
+    
+    // MARK: - AccessToken Load KeychainService
+    private let keychain: UserSessionKeychainService
+    
     // 의존성 주입
     init(container: DIContainer) {
-        self.GalaxyDetailProvider = container.apiProviderStore.galaxy()
+        self.container = container
+        self.galaxyDetailProvider = container.apiProviderStore.galaxy()
+        self.starLIstProvider = container.apiProviderStore.star()
+        self.keychain = container.userSessionKeychain
+        
+        let components = Calendar.current.dateComponents([.year, .month, .day, .hour], from: Date())
+        self.month = components.month ?? 0
+        self.day = components.day ?? 0
     }
+    
+    
     
     // MARK: - Func
     @MainActor
     func fetchGalaxyDetailData(galaxyId: Int) async {
-        do {
-            let response = try await GalaxyDetailProvider.requestAsync(.fetchGalaxyDetail(galaxyId: galaxyId))
-            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
-        } catch {
-            
+        // 1. 키체인에서 세션 로드 및 토큰 추출
+        guard let session = keychain.loadSession(for: .userSession),
+              let accessToken = session.accessToken else {
+            print("토큰이 없습니다.")
+            return
         }
+        
+        self.isLoading = true
+        
+        do {
+            let response = try await galaxyDetailProvider.requestAsync(.fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
+            )
+            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
+            self.galaxyDetailResponse = dto
+                
+        } catch {
+            print("네트워크 에러: \(error)")
+        }
+        self.isLoading = false
     }
     
+    @MainActor
+    func fetchStarListData(galaxyId: Int) async {
+        guard let session = keychain.loadSession(for: .userSession),
+              let accessToken = session.accessToken else {
+            print("토큰이 없습니다.")
+            return
+        }
+        do{
+            let response = try await starLIstProvider.requestAsync(.fetchStarsList(accessToken: accessToken, galaxyId: galaxyId)
+            )
+            let dto = try JSONDecoder().decode(StarListResponse.self, from: response.data)
+            self.starListResponse = dto
+            
+        } catch{
+            print("네트워크 에러: \(error)")
+        }
+        
+    }
     
 }
 
