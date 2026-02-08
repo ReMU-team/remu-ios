@@ -95,6 +95,13 @@ struct HomeGalaxyView: View {
             }
 
         }
+        .onAppear {
+            if let galaxy = viewModel.galaxyData {
+                Task {
+                    await viewModel.fetchStarsList(galaxyId: galaxy.serverId)
+                }
+            }
+        }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
             CreateGalaxyView { galaxy in
