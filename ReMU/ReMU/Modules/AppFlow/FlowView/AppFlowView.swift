@@ -13,7 +13,6 @@ struct AppFlowView: View {
     var body: some View {
         HomeGalaxyView()
             .environmentObject(appState)
-            .environmentObject(appState.profileViewModel)
             .onAppear {
                 guard let galaxy = appState.currentGalaxy else { return }
                 NotificationScheduler.shared.evaluateTodayNotifications(galaxy)

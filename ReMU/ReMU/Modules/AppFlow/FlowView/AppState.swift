@@ -18,9 +18,6 @@ final class AppState: ObservableObject {
 
     @Published var route: AppRoute = .splash
     @Published var currentGalaxy: Galaxy?
-    
-    // 전역 공유
-    let profileViewModel = ProfileViewModel()
 
     // 로그인 상태인지 체크하기
     func checkLoginStatus() async {

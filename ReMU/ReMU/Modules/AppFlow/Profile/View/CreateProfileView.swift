@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CreateProfileView: View {
+    
     @EnvironmentObject var viewModel: ProfileViewModel
 
-    
-    let onBack: () -> Void // 뒤로가기 콜백 (온보딩 첫화면으로 이동)
-    let onFinish: () -> Void // 완료 콜백 (메인 화면으로 이동)
+    let onBack: () -> Void
+    let onFinish: () -> Void
     
     var body: some View {
         ZStack {
@@ -31,14 +31,14 @@ struct CreateProfileView: View {
             
             VStack {
                 navigationBar
-
+                
                 Spacer()
                 
                 // 포토피커
                 ProfileImage(selectedImageData: $viewModel.selectedImageData)
                     .padding(.top, 55)
                     .padding(.bottom, 46)
-                    
+                
                 
                 
                 // MARK: - 이름 적기
@@ -53,8 +53,9 @@ struct CreateProfileView: View {
                         height: 32
                     )
                     .onSubmit {
-                        viewModel.validateNickname()
-                    }
+                        Task {
+                                await viewModel.validateNickname()
+                            }                    }
                     
                     
                     // 가능 여부 메시지
@@ -67,9 +68,9 @@ struct CreateProfileView: View {
                         .frame(height: 18, alignment: .leading)
                         .padding(.top, 8)
                         .padding(.bottom, 16)
-                        
                     
-
+                    
+                    
                     
                     // MARK: - 한 줄 소개
                     VStack (alignment: .leading, spacing: 5) {
@@ -86,20 +87,22 @@ struct CreateProfileView: View {
                     PrimaryButton(
                         title: "시작하기",
                         backgroundColor: viewModel.isFinishEnabled
-                            ? .purpleC495E0
-                            : .purpleC495E0.opacity(0.4),
+                        ? .purpleC495E0
+                        : .purpleC495E0.opacity(0.4),
                         isDisabled: !viewModel.isFinishEnabled
                     ) {
-                        viewModel.updateProfile()
-                        onFinish()
+                        Task {
+                            let success = await viewModel.updateProfile()
+                            if success {
+                                onFinish()
+                            }
+                        }
                     }
-
                     .padding(.bottom, 54)
+                    
                 }
                 .padding(.horizontal,40)
             }
-            
-            
         }
     }
     // MARK: - navigationBar
