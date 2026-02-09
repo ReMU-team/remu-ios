@@ -21,7 +21,9 @@ struct CreateGalaxyView: View {
     let onFinish: (Galaxy) -> Void
     
     // 뷰모델
-    @StateObject private var viewModel = CreateGalaxyViewModel()
+    @StateObject private var viewModel =
+        CreateGalaxyViewModel(container: DIContainer.preview)
+
     
     var body: some View {
         VStack {
@@ -49,9 +51,6 @@ struct CreateGalaxyView: View {
                 )
             }
         }
-
-
-        
     }
     
     // MARK: - navigationBar
@@ -159,9 +158,12 @@ struct CreateGalaxyView: View {
                           backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4),
                           isDisabled: !viewModel.isFinishEnabled
             ) {
-                let galaxy = viewModel.makeGalaxy()
-                viewModel.createdGalaxy = galaxy // 임시 저장
-                showWritePledge = true // 다짐 작성으로 이동
+                Task {
+                    await viewModel.createGalaxy()
+                    if viewModel.createdGalaxy != nil {
+                        showWritePledge = true // 다짐 작성으로 이동
+                    }
+                }
             }
         }
         .padding(.horizontal, 40)
@@ -187,7 +189,15 @@ struct GalaxySelectableItem: View {
 }
 
 
-//
-//#Preview {
-//    CreateGalaxyView()
-//}
+#Preview {
+    let appState = AppState()
+    let container = DIContainer.preview
+
+    CreateGalaxyView { galaxy in
+        print("프리뷰에서 생성된 은하:", galaxy)
+        appState.currentGalaxy = galaxy
+    }
+    .environmentObject(appState)
+    .environmentObject(container)
+}
+
