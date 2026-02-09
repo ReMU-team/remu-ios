@@ -14,23 +14,37 @@ struct AuthFlowView: View {
     
     @EnvironmentObject var appState: AppState
     
+    @StateObject private var profileViewModel: ProfileViewModel
+    
     let onAuthFinished: () -> Void
+    
+    init(onAuthFinished: @escaping () -> Void) {
+            self.onAuthFinished = onAuthFinished
+
+            _profileViewModel = StateObject(
+                wrappedValue: ProfileViewModel(
+                    networkService: NetworkServiceImpl(
+                        userSessionKeychain: UserSessionKeychainServiceImpl()
+                    ),
+                    appState: AppState()
+                )
+            )
+        }
     
     var body: some View {
         if showCreateProfile {
-            CreateProfileView(
-                onBack: {
-                    // 온보딩으로 되돌림
-                    showCreateProfile = false
-                    showOnboarding = true
-                },
-                onFinish: {
-                    onAuthFinished()
+                    CreateProfileView(
+                        viewModel: profileViewModel,
+                        onBack: {
+                            showCreateProfile = false
+                            showOnboarding = true
+                        },
+                        onFinish: {
+                            onAuthFinished()
+                        }
+                    )
                 }
-            )
-            .environmentObject(appState.profileViewModel)
-            
-        } else if showOnboarding {
+        else if showOnboarding {
             OnboardingView(
                 onExit: { showOnboarding = false },
                 onFinish: {

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// keychan 저장
 struct UserInfo: Codable {
     var accessToken: String?
     var refreshToken: String?

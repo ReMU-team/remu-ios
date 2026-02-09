@@ -15,12 +15,9 @@ final class AppState: ObservableObject {
         case auth
         case main
     }
-
+    @Published var userProfile: UserProfile? = nil
     @Published var route: AppRoute = .splash
     @Published var currentGalaxy: Galaxy?
-    
-    // 전역 공유
-    let profileViewModel = ProfileViewModel()
 
     // 로그인 상태인지 체크하기
     func checkLoginStatus() async {
