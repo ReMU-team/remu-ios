@@ -12,29 +12,12 @@ struct AuthFlowView: View {
     @State private var showCreateProfile = false
     @State private var showProfileIntro = false
     
-    @EnvironmentObject var appState: AppState
-    
-    @StateObject private var profileViewModel: ProfileViewModel
     
     let onAuthFinished: () -> Void
-    
-    init(onAuthFinished: @escaping () -> Void) {
-            self.onAuthFinished = onAuthFinished
-
-            _profileViewModel = StateObject(
-                wrappedValue: ProfileViewModel(
-                    networkService: NetworkServiceImpl(
-                        userSessionKeychain: UserSessionKeychainServiceImpl()
-                    ),
-                    appState: AppState()
-                )
-            )
-        }
     
     var body: some View {
         if showCreateProfile {
                     CreateProfileView(
-                        viewModel: profileViewModel,
                         onBack: {
                             showCreateProfile = false
                             showOnboarding = true
@@ -80,6 +63,15 @@ struct AuthFlowView: View {
             )
         }
     }
+}
+
+
+#Preview {
+    AuthFlowView(
+        onAuthFinished: {
+            print("Auth Finished")
+        }
+    )
 }
 
 

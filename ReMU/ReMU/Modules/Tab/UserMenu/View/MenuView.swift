@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Combine
+import Moya
 
 struct MenuView: View {
 
@@ -13,41 +15,43 @@ struct MenuView: View {
     @StateObject private var viewModel: MenuViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(networkService: NetworkService) {
+    init(container: DIContainer) {
         _viewModel = StateObject(
-            wrappedValue: MenuViewModel(networkService: networkService)
+            wrappedValue: MenuViewModel(
+                provider: container.apiProviderStore.user()
+            )
         )
     }
 
     var body: some View {
         VStack(alignment: .leading) {
-
+            
             navigationBar
                 .padding(.horizontal, -20)
                 .padding(.bottom, 38)
-
+            
             profileView
-
+            
             Divider()
                 .background(Color.grayScale9)
                 .frame(height: 0.5)
                 .padding(.bottom, 24)
-
+            
             Text("설명")
                 .font(.pt18)
                 .foregroundColor(.grayScale9)
-
+            
             alarmSection
-
+            
             Divider()
                 .background(Color.grayScale9)
                 .frame(height: 0.5)
                 .padding(.bottom, 24)
-
+            
             menuSection
-
+            
             Spacer()
-
+            
             bottomButtons
         }
         .padding(.horizontal, 20)
@@ -56,6 +60,7 @@ struct MenuView: View {
             await viewModel.fetchProfile()
         }
     }
+        
 
     // MARK: - Profile
     private var profileView: some View {
@@ -179,10 +184,7 @@ struct MenuView: View {
 
 
 #Preview {
-    MenuView(
-        networkService: NetworkServiceImpl(
-            userSessionKeychain: UserSessionKeychainServiceImpl()
-        )
-    )
+    MenuView(container: DIContainer.preview)
 }
+
 

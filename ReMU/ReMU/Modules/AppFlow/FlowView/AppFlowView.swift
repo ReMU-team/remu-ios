@@ -15,7 +15,7 @@ struct AppFlowView: View {
             .environmentObject(appState)
             .onAppear {
                 guard let galaxy = appState.currentGalaxy else { return }
-                NotificationScheduler.shared.evaluateTodayNotifications(galaxy)
+                NotificationScheduler.shared.evaluateTodayNotifications(galaxy: galaxy)
             } // TODO: task 안정화
     }
 }
@@ -23,4 +23,6 @@ struct AppFlowView: View {
 
 #Preview {
     AppFlowView()
+        .environmentObject(AppState())
 }
+

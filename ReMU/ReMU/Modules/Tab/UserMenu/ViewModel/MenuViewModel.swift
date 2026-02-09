@@ -18,9 +18,9 @@ final class MenuViewModel: ObservableObject {
 
     private let provider: MoyaProvider<UserTargetType>
 
-    init(networkService: NetworkService) {
-        self.provider = networkService.createProvider(for: UserTargetType.self)
-    }
+    init(provider: MoyaProvider<UserTargetType>) {
+            self.provider = provider
+        }
 
     func fetchProfile() async {
         isLoading = true
@@ -35,7 +35,7 @@ final class MenuViewModel: ObservableObject {
                 return
             }
 
-            self.profile = UserProfile(
+            profile = UserProfile(
                 name: result.name,
                 introduction: result.introduction,
                 imageUrl: result.imageUrl

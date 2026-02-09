@@ -9,7 +9,12 @@ import SwiftUI
 
 struct CreateProfileView: View {
     
-    @StateObject var viewModel: ProfileViewModel
+    @StateObject private var viewModel =
+            ProfileViewModel(
+                networkService: NetworkServiceImpl(
+                    userSessionKeychain: UserSessionKeychainServiceImpl()
+                )
+            )
 
     let onBack: () -> Void
     let onFinish: () -> Void
@@ -124,12 +129,6 @@ struct CreateProfileView: View {
 
 #Preview {
     CreateProfileView(
-        viewModel: ProfileViewModel(
-            networkService: NetworkServiceImpl(
-                userSessionKeychain: UserSessionKeychainServiceImpl()
-            ),
-            appState: AppState()
-        ),
         onBack: {},
         onFinish: {}
     )
