@@ -31,15 +31,10 @@ extension Galaxy {
     }
 }
 
-
-
-struct Star: Identifiable {
-    let id: UUID = UUID()
+// 별 리스트
+struct Star {
     let serverId: Int
-    
     let name: String // 별 이름
     let dayOffset: Int // ?일차 (ex.DAY3)
     let starIcon: String // 별 이미지
 }
-
-

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 struct HomeView: View {
     
     @EnvironmentObject var appState: AppState
@@ -128,7 +128,7 @@ struct HomeView: View {
 #Preview {
     HomeView()
 }
-
+*/
 //struct TempHomeView: View {
 //
 //    @State private var showCreateGalaxy = false
