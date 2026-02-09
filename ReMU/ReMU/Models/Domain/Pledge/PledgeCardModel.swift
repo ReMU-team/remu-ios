@@ -16,7 +16,7 @@ import Foundation
 //}
 
 /// 하나의 은하(여행)에 귀속되는 다짐 카드 (은하당 1개)
-struct PledgeCard: Identifiable {
+struct PledgeCardModel: Identifiable {
     let id: UUID = UUID()
     let galaxyServerId: Int
 

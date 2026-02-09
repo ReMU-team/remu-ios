@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Moya
 
 /// 다짐 작성 화면 전용 ViewModel
 /// - 다짐 개수 제한 (1~5)
@@ -16,6 +17,169 @@ import Combine
 
 @MainActor
 final class PledgeViewModel: ObservableObject {
+    
+    @Published var pledgeCard: PledgeCardModel?
+    // MARK: - State
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+
+    
+    // MARK: - NetwordkService 주입
+    private let networkService: NetworkService
+    private let provider: MoyaProvider<PledgeTargetType>
+
+    init(networkService: NetworkService) {
+        self.networkService = networkService
+        self.provider = networkService.createProvider(for: PledgeTargetType.self)
+    }
+    
+    // MARK: - Pledge API 생성 함수
+    func createPledge(
+        galaxyId: Int,
+        completion: @escaping (Result<CreatePledgeResponse, Error>) -> Void
+    ) {
+        guard let emoji = selectedEmoji else { return }
+
+        let request = CreatePledgeRequest(
+            emojiId: emoji.id,
+            illustId: "TODO",
+            content: pledges.map { $0.content }
+        )
+
+        provider.request(
+            .createPledge(galaxyId: galaxyId, request: request)
+        ) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(
+                        CreatePledgeResponse.self,
+                        from: response.data
+                    )
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    // MARK: - Pledge API 조회 함수
+    func fetchPledge(galaxyId: Int) {
+        isLoading = true
+
+        provider.request(.checkPledge(galaxyId: galaxyId)) { [weak self] result in
+            guard let self else { return }
+            self.isLoading = false
+
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(
+                        CheckPledgeResponse.self,
+                        from: response.data
+                    )
+
+                    guard let result = decoded.result else { return }
+                    self.pledgeCard = self.makePledgeCard(
+                        galaxyId: galaxyId,
+                        result: result
+                    )
+
+                } catch {
+                    self.errorMessage = error.localizedDescription
+                }
+
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    // MARK: - Pledge API 수정 함수
+    func patchPledge(
+        galaxyId: Int,
+        completion: @escaping (Result<PatchPledgeResponse, Error>) -> Void
+    ) {
+        guard let emoji = selectedEmoji else { return }
+
+        let request = PatchPledgeRequest(
+            emojiId: selectedEmoji?.id,
+            resolutions: pledges.enumerated().map { index, pledge in
+                ResolutionItem(
+                    resolutionId: pledge.resolutionId, // 있으면 보내고
+                    content: pledge.content             // 수정 내용
+                )
+            }
+        )
+
+
+        provider.request(
+            .patchPledge(galaxyId: galaxyId, request: request)
+        ) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(
+                        PatchPledgeResponse.self,
+                        from: response.data
+                    )
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    
+    // MARK: - 생성 Mapping
+    private func makePledgeCard(
+        galaxyId: Int,
+        result: PledgeResult // 생성
+    ) -> PledgeCardModel {
+        PledgeCardModel(
+            galaxyServerId: galaxyId,
+            emojiImageName: result.emojiId,
+            pledges: result.contents.map {
+                Pledge(content: $0)
+            }
+        )
+    }
+
+    // MARK: - 조회 Mapping
+    private func makePledgeCard(
+        galaxyId: Int,
+        result: CheckPledgeResult // 조회
+    ) -> PledgeCardModel {
+        PledgeCardModel(
+            galaxyServerId: galaxyId,
+            emojiImageName: result.emojiId,
+            pledges: result.resolutionList.map {
+                Pledge(content: $0.content)
+            }
+        )
+    }
+
+    // MARK: - 수정 Mapping
+    private func makePledgeCard(
+        galaxyId: Int,
+        result: PatchPledgeResult
+    ) -> PledgeCardModel {
+        PledgeCardModel(
+            galaxyServerId: galaxyId,
+            emojiImageName: result.emojiId,
+            pledges: result.contents.map {
+                Pledge(content: $0)
+            }
+        )
+    }
 
     // MARK: - Pledge Count
     let minCount = 1
@@ -23,7 +187,7 @@ final class PledgeViewModel: ObservableObject {
 
     // MARK: - Pledge Drafts
     @Published var pledges: [PledgeDraft] = [
-        PledgeDraft(content: "", example: "예시: 외국인이랑 스몰토킹하기")
+//        PledgeDraft(content: "", example: "예시: 외국인이랑 스몰토킹하기")
     ]
 
     private let examples = [
@@ -95,8 +259,8 @@ final class PledgeViewModel: ObservableObject {
     }
 
     // MARK: - Card Conversion
-    func makePledgeCard(galaxyId: Int) -> PledgeCard {
-        PledgeCard(
+    func makePledgeCard(galaxyId: Int) -> PledgeCardModel {
+        PledgeCardModel(
             galaxyServerId: galaxyId,
             emojiImageName: selectedEmoji?.id ?? "",
             pledges: pledges.map {
