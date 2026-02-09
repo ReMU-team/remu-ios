@@ -19,12 +19,15 @@ class LoginViewModel {
     private let container: DIContainer
     private let kakaoLoginManager: KakaoManager
     
+    let provider: String
+    
     // MARK: - Init
     init(container: DIContainer, kakaoLoginManager: KakaoManager = .shared){
         self.container = container
         self.LoginProvider = container.apiProviderStore.auth()
         self.keychain = container.userSessionKeychain
         self.kakaoLoginManager = kakaoLoginManager
+        
     }
     
     // MARK: - Func
