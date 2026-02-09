@@ -9,6 +9,7 @@ import Foundation
 import Combine
 
 @MainActor
+@Observable
 final class CreateGalaxyViewModel: ObservableObject {
     @Published var createdGalaxy: Galaxy?
 
@@ -16,8 +17,8 @@ final class CreateGalaxyViewModel: ObservableObject {
     @Published var destination: String?
     @Published var startDate: Date?
     @Published var endDate: Date?
-    @Published var galaxyName: String = ""
-    @Published var selectedGalaxyImageName: String?
+    
+    
 
     @Published var showPlaceSearch = false
     @Published var showCalendar = false
