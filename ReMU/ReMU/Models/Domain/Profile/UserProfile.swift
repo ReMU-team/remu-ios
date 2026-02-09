@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserProfile: Decodable {
+struct UserProfile {
     let name: String
     let introduction: String?
     let imageUrl: String?

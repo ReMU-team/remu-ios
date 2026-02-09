@@ -14,28 +14,37 @@ struct AuthFlowView: View {
     
     @EnvironmentObject var appState: AppState
     
-    @StateObject private var profileViewModel =
-            ProfileViewModel(
-                networkService: NetworkServiceImpl(
-                    userSessionKeychain: UserSessionKeychainServiceImpl()
-                )
-            )
+    @StateObject private var profileViewModel: ProfileViewModel
     
     let onAuthFinished: () -> Void
     
+    init(onAuthFinished: @escaping () -> Void) {
+            self.onAuthFinished = onAuthFinished
+
+            _profileViewModel = StateObject(
+                wrappedValue: ProfileViewModel(
+                    networkService: NetworkServiceImpl(
+                        userSessionKeychain: UserSessionKeychainServiceImpl()
+                    ),
+                    appState: AppState()
+                )
+            )
+        }
+    
     var body: some View {
         if showCreateProfile {
-            CreateProfileView(
-                    onBack: {
-                        showCreateProfile = false
-                        showOnboarding = true
-                    },
-                    onFinish: {
-                        onAuthFinished()
-                    }
-            )
-            .environmentObject(profileViewModel)
-        } else if showOnboarding {
+                    CreateProfileView(
+                        viewModel: profileViewModel,
+                        onBack: {
+                            showCreateProfile = false
+                            showOnboarding = true
+                        },
+                        onFinish: {
+                            onAuthFinished()
+                        }
+                    )
+                }
+        else if showOnboarding {
             OnboardingView(
                 onExit: { showOnboarding = false },
                 onFinish: {

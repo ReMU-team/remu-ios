@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateProfileView: View {
     
-    @EnvironmentObject var viewModel: ProfileViewModel
+    @StateObject var viewModel: ProfileViewModel
 
     let onBack: () -> Void
     let onFinish: () -> Void
@@ -121,14 +121,18 @@ struct CreateProfileView: View {
         .padding(.top, 16)
     }
 }
+
 #Preview {
     CreateProfileView(
-        onBack: {
-            print("Back tapped")
-        },
-        onFinish: {
-            print("Finish tapped")
-        }
+        viewModel: ProfileViewModel(
+            networkService: NetworkServiceImpl(
+                userSessionKeychain: UserSessionKeychainServiceImpl()
+            ),
+            appState: AppState()
+        ),
+        onBack: {},
+        onFinish: {}
     )
 }
+
 

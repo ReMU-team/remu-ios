@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct UserResponse: Codable {
-    let id: Int
-    let nickname: String
+struct UserProfileResponse: Decodable {
+    let name: String
+    let introduction: String?
+    let imageUrl: String?
 }

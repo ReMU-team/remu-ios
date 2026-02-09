@@ -15,7 +15,7 @@ final class AppState: ObservableObject {
         case auth
         case main
     }
-
+    @Published var userProfile: UserProfile? = nil
     @Published var route: AppRoute = .splash
     @Published var currentGalaxy: Galaxy?
 

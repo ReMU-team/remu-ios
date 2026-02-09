@@ -16,9 +16,14 @@ final class ProfileViewModel: ObservableObject {
     
     // MARK: - Network
     private let provider: MoyaProvider<UserTargetType>
+    private let appState: AppState
     
-    init(networkService: NetworkService) {
+    init(
+        networkService: NetworkService,
+        appState: AppState
+    ) {
         self.provider = networkService.createProvider(for: UserTargetType.self)
+        self.appState = appState
     }
     
     // MARK: - Input
@@ -106,7 +111,7 @@ final class ProfileViewModel: ObservableObject {
             isNicknameValid = false
         }
     
-    // MARK: - Profile Create
+    // MARK: - 프로필 생성 & 수정
         func updateProfile() async -> Bool {
             let request = PatchUserRequest(
                 imageUrl: nil,
@@ -118,7 +123,16 @@ final class ProfileViewModel: ObservableObject {
                 let response = try await provider.requestAsync(
                     .patchUser(request: request)
                 )
-                let decoded = try response.map(BaseResponse<UserProfile>.self)
+                let decoded = try response.map(BaseResponse<UserProfileResponse>.self)
+                
+                guard let result = decoded.result else { return false }
+                
+                appState.userProfile = UserProfile(
+                                name: result.name,
+                                introduction: result.introduction,
+                                imageUrl: result.imageUrl
+                            )
+                
                 return decoded.isSuccess
             } catch {
                 return false
