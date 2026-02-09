@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct HomeGalaxyView: View {
+    @EnvironmentObject var container: DIContainer
     @EnvironmentObject var appState: AppState
     
     @StateObject private var viewModel = HomeViewModel()
@@ -115,8 +116,7 @@ struct HomeGalaxyView: View {
             TimeLineView()
         }
         .fullScreenCover(isPresented: $showMenu) {
-            MenuView()
-                .environmentObject(appState.profileViewModel)
+            MenuView(container: container)
         }
         .fullScreenCover (isPresented: $showGalaxyList) {
             GalaxyCheckView(galaxyList: [])
@@ -375,6 +375,10 @@ struct HomeGalaxyView: View {
         }
     }
 }
+
 #Preview {
     HomeGalaxyView()
+        .environmentObject(DIContainer.preview)
+        .environmentObject(AppState())
 }
+

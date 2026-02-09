@@ -1,5 +1,5 @@
 import SwiftUI
-
+/*
 struct ContentView: View {
     // 본인이 작업한 ViewModel
     @StateObject private var viewModel = ProfileViewModel()
@@ -79,3 +79,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
+*/
