@@ -10,7 +10,6 @@ import Combine
 import Moya
 
 @MainActor
-@Observable
 final class CreateGalaxyViewModel: ObservableObject {
     
     @Published var createdGalaxy: Galaxy?

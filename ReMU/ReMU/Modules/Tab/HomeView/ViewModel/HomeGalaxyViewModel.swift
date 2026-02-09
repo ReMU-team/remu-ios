@@ -11,20 +11,20 @@ import Combine
 import Moya
 import _Concurrency
 
-@Observable
-class GalaxyDetailViewModel {
+@MainActor
+class GalaxyDetailViewModel: ObservableObject {
     // Galaxy Model
     // var galaxyDetail : Galaxy?
-    var galaxyDetailResponse: GalaxyDetailResponse?
-    var starListResponse: StarListResponse?
+    @Published var galaxyDetailResponse: GalaxyDetailResponse?
+    @Published var starListResponse: StarListResponse?
     
     // Pagination
-    var dDay: Int = 0
-    var month: Int
-    var day: Int
+    @Published var dDay: Int = 0
+    @Published var month: Int
+    @Published var day: Int
     
     
-    private(set) var isLoading: Bool = false
+    @Published private(set) var isLoading: Bool = false
     
     // MARK: - Properties
     private let galaxyDetailProvider: MoyaProvider<GalaxyTargetType>
@@ -179,7 +179,7 @@ class HomeViewModel: ObservableObject {
             )
 
             let apiResponse = try JSONDecoder().decode(
-                StarListAPIResponse.self,
+                StarListResponse.self,
                 from: response.data
             )
 
@@ -192,7 +192,7 @@ class HomeViewModel: ObservableObject {
                 Star(
                     serverId: dto.starId,
                     name: dto.title,
-                    dayOffset: dto.dday,
+                    dayOffset: dto.dDay,
                     starIcon: dto.cardColor
                 )
             }

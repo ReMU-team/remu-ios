@@ -19,7 +19,7 @@ class LoginViewModel {
     private let container: DIContainer
     private let kakaoLoginManager: KakaoManager
     
-    let provider: String
+    //let provider: String
     
     // MARK: - Init
     init(container: DIContainer, kakaoLoginManager: KakaoManager = .shared){
