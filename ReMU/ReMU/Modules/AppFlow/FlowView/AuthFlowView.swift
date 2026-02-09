@@ -66,3 +66,12 @@ struct AuthFlowView: View {
 }
 
 
+#Preview {
+    AuthFlowView(
+        onAuthFinished: {
+            print("Auth Finished")
+        }
+    )
+}
+
+
