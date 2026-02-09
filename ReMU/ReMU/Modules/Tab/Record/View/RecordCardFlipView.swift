@@ -11,14 +11,29 @@ import SwiftUI
 struct RecordCardFlip: View {
     
     @State var flip = false
+    let model: RecordCardModel
     
+    // MARK: - body
     var body: some View {
         ZStack {
-            RecordCardOneView(flip: $flip)
+            // 뒷면
+            RecordCardOneView(
+                flip: $flip,
+                content: model.content,
+                emojis: model.emojis
+            )
                 .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
-            RecordCardTwoView(flip: $flip)
-                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
+            // 앞면
+            RecordCardTwoView(
+                flip: $flip,
+                galaxyName: model.galaxyName,
+                travelPeriodText: model.travelPeriodText,
+                title: model.title,
+                image: model.image,
+                dday: model.dday,
+                dateText: model.dateText
+            )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear : .linear.delay(0.35), value: flip)
         }
         .onTapGesture {
@@ -30,20 +45,24 @@ struct RecordCardFlip: View {
     }
 }
 
-#Preview {
-    RecordCardFlip()
-}
+
 
 // MARK: - 뒷장
 struct RecordCardOneView: View {
     
     @Binding var flip: Bool
+    
+    let content: String
+    let emojis: [String]
+    
+    // MARK: - 뒷장 body
     var body: some View {
         ZStack {
             Rectangle()
                 .fill(.white)
                 .cornerRadius(12)
                 .shadow(radius: 8)
+            
             VStack {
                 top
                 middle
@@ -53,18 +72,21 @@ struct RecordCardOneView: View {
         .frame(width: 297, height: 419)
     }
     
+    // MARK: - 뒷장 top
     var top: some View {
-        HStack (spacing: 16) {
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
+        HStack {
+            // 이모지
+            HStack(spacing: 8) {
+                ForEach(emojis, id: \.self) { emoji in
+                    Image(emoji)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                }
+            }
+            
             Spacer()
+            
+            // 생성 뷰에서는 안보일 예정
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
@@ -84,18 +106,28 @@ struct RecordCardOneView: View {
         .padding(.bottom, 22)
     }
     
+    // MARK: - 뒷장 middle
     var middle: some View {
         VStack {
-            TextBox(text: "작성내용", isExpanded: true)
+            TextBox(text: content, isExpanded: true)
         }
         .padding(.bottom, 32)
     }
 }
 
-// 앞장
+// MARK: - 앞장
 struct RecordCardTwoView: View {
     
     @Binding var flip: Bool
+    
+    let galaxyName: String
+    let travelPeriodText: String
+    let title: String
+    let image: UIImage?
+    let dday: Int
+    let dateText: String
+    
+    // MARK: - 앞장 body
     var body: some View {
         ZStack {
             Rectangle()
@@ -112,11 +144,12 @@ struct RecordCardTwoView: View {
         .frame(width: 297, height: 419)
     }
     
+    // MARK: - 앞장 top
     var top: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text("6인팟 스위스")
+                    Text(galaxyName)
                         .foregroundStyle(.grayScale9)
                         .font(.pt13)
                     
@@ -131,7 +164,7 @@ struct RecordCardTwoView: View {
                             
                     }
                 }
-                Text("25/10/29-25/11/10")
+                Text(travelPeriodText)
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
             }
@@ -141,32 +174,51 @@ struct RecordCardTwoView: View {
         .padding(.bottom, 10)
     }
     
+    // MARK: - 앞장 middle
     var middle: some View {
         VStack {
+            // TODO: 사진 연결 필요
             TextBox(text: "사진", isExpanded: true)
         }
         .padding(.bottom, 1)
     }
     
+    // MARK: - 앞장 bottom
     var bottom: some View {
         HStack {
             Spacer()
             VStack(alignment: .trailing) {
                 HStack {
-                    Text("Day 3")
+                    Text("Day \(dday)")
                         .foregroundStyle(.grayScale9)
                         .font(.pt13)
-                    Text("/ 10.31.")
+                    Text("/ \(dateText)")
                         .foregroundStyle(.grayScale5)
                         .font(.pt12)
                 }
                 .padding(.bottom, 1)
-                Text("\"작성한 제목\"")
+                Text("\"\(title)\"")
                     .foregroundStyle(.grayScale9)
                     .font(.pt16)
             }
         }
         .padding(.bottom, 25)
     }
+}
+
+#Preview {
+    RecordCardFlip(
+        model: RecordCardModel(
+            galaxyName: "6인팟 스위스",
+            travelPeriodText: "25/10/29-25/11/10",
+            title: "첫 기록",
+            image: nil,
+            dday: 3,
+            dateText: "10.31",
+            content: "오늘은 정말 좋은 하루였다.\n날씨도 좋고 음식도 맛있었다.",
+            emojis: ["smile", "heart"]
+        )
+    )
+    .padding()
 }
 

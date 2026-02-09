@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct checkDuplicateResponse: Codable{
+struct checkDuplicateResponse: Decodable{
     let available: Bool
     let message: String
 }

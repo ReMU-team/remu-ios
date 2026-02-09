@@ -11,12 +11,13 @@ import SwiftUI
 struct DynamicOrbitView: View {
     let stars: [Star]
     let orbitIndex: Int
+    let onSelectStar: (Int) -> Void
 
     @State private var rotation: Double = 0.0
     
     // 알고리즘: 궤도 인덱스에 따라 별 크기와 반지름 계산
     private var starSize: CGFloat { 18 + CGFloat(orbitIndex * 8) }
-    // TODO: 궤도 속도 조절.. 경품 이벤트..?
+    // 궤도 속도 조절
     private var rotationSpeed: Double { Double(110 - (orbitIndex * 2)) }
     
     private var orbitRadius: CGFloat {
@@ -54,26 +55,29 @@ struct DynamicOrbitView: View {
                     let yOffset = sin(currentAngle) * orbitRadius
                     
                     VStack(spacing: 2) {
-                        Button(action:{}){
+                        Button{
+                            onSelectStar(stars[starIndex].serverId)
+                        } label: {
                             Image(stars[starIndex].starIcon)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: starSize, height: starSize)
-                        }.overlay(
+                        }
+                        .overlay(
                             VStack(spacing: 1) {
-                                Text(stars[starIndex].title)
+                                Text(stars[starIndex].name)
                                     .padding(.horizontal, 4)
                                     .padding(.vertical,2)
                                     .font(.system(size: 8))
                                     .foregroundColor(.white)
                                     .background(Capsule().fill(Color.white.opacity(0.3)))
                                 
-                                Text("\(stars[starIndex].onData)Day")
+                                Text("\(stars[starIndex].dayOffset)Day")
                                     .font(.system(size: 8))
                                     .foregroundColor(.white)
                             }
-                            .fixedSize() // 텍스트가 길어져도 별의 위치에 영향을 주지 않음
-                            .offset(y: starSize / 2 + 15) // 별 중심에서 아래로 밀어내기
+                                .fixedSize() // 텍스트가 길어져도 별의 위치에 영향을 주지 않음
+                                .offset(y: starSize / 2 + 15) // 별 중심에서 아래로 밀어내기
                             , alignment: .center
                         )
                     }

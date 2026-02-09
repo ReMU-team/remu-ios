@@ -14,6 +14,7 @@ import KakaoSDKAuth
 struct ReMUApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var container: DIContainer = .init()
+    @StateObject private var appState = AppState()
     
     init() {
             // kakao sdk 초기화
@@ -30,8 +31,8 @@ struct ReMUApp: App {
                         _ = AuthController.handleOpenUrl(url: url)
                     }
                 })
-                //.environmentObject(container)
-            
+                .environmentObject(container)
+                .environmentObject(appState)
         }
     }
 }

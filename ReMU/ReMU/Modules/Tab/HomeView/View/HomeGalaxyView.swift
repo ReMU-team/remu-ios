@@ -29,11 +29,17 @@ struct HomeGalaxyView: View {
     
     @State private var galaxies: [Galaxy] = []
     
+    // 기록, 회고 여행 기간 표시
+//    let periodText = travelPeriodText(
+//        start: galaxy.startDate,
+//        end: galaxy.endDate
+//    )
+//    
     // MARK: - body
     var body: some View {
         ZStack {
             VStack {
-                if viewModel.galaxy == nil {
+                if viewModel.galaxyData == nil {
                     initialHomeView
                         .transition(.opacity)
                 }
@@ -56,6 +62,21 @@ struct HomeGalaxyView: View {
                     .zIndex(1)
             }
             
+            // 기록 카드 오버레이 띄우기
+            if viewModel.isShowingRecordCard,
+               let model = viewModel.selectedRecordCard {
+
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        viewModel.isShowingRecordCard = false
+                    }
+
+                RecordCardFlip(model: model)
+                    .zIndex(10)
+            }
+
+            // 다짐/회고 오버레이 띄우기
             if showCardOverlay {
                 CardOverlayView(
                     selectedTab: $selectedCardTab,
@@ -73,6 +94,13 @@ struct HomeGalaxyView: View {
                 .zIndex(2)
             }
 
+        }
+        .onAppear {
+            if let galaxy = viewModel.galaxyData {
+                Task {
+                    await viewModel.fetchStarsList(galaxyId: galaxy.serverId)
+                }
+            }
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
@@ -95,11 +123,15 @@ struct HomeGalaxyView: View {
         }
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
-                WriteRecordView(
-                    onFinish: {
-                        showWriteRecord = false
-                    }
-                )
+                if let galaxy = viewModel.galaxyData {
+                    WriteRecordView(
+                        galaxyId: galaxy.serverId,
+                        dday: galaxy.totalDay,
+                        onFinish: {
+                            showWriteRecord = false
+                        }
+                    )
+                }
             }
         }
         .fullScreenCover(isPresented: $showWriteResult) {
@@ -148,12 +180,14 @@ struct HomeGalaxyView: View {
                 ZStack {
                     background
                     
-                    if let data = viewModel.galaxy {
+                    if let data = viewModel.galaxyData {
                         GalaxySystemView(
                             galaxy: data,
                             partitionedStars: viewModel.partitionedStars,
-                            scale: viewModel.scale
+                            scale: viewModel.scale,
+                            onSelectStar: viewModel.onSelectStar
                         )
+
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         
                     }
@@ -258,7 +292,7 @@ struct HomeGalaxyView: View {
     private var TitleUI: some View {
         VStack(spacing: 8) {
             HStack(spacing: 4) {
-                Text(viewModel.galaxy?.title ?? "Loading...")
+                Text(viewModel.galaxyData?.title ?? "Loading...")
                     .font(.system(size: 24)) // .pt24 대신 예시
                 Button (action: {showGalaxyList = true}) {
                     Image(systemName: "greaterthan")
@@ -267,7 +301,7 @@ struct HomeGalaxyView: View {
             }
             .foregroundColor(.white)
             
-            if let data = viewModel.galaxy {
+            if let data = viewModel.galaxyData {
                 Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
                     .foregroundColor(.white)

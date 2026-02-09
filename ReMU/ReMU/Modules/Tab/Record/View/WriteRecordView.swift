@@ -9,21 +9,15 @@ import SwiftUI
 
 struct WriteRecordView: View {
     
+    let galaxyId: Int
+    let dday: Int
     let onFinish: () -> Void
     
-    // 뒤로가기
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var container: DIContainer
     
     // 뷰모델
     @StateObject private var viewModel = WriteRecordViewModel()
-
-    
-    // 제목 TODO: 뷰모델 제작 후 변경
-    @State private var title: String = ""
-    
-    // 내용 TODO: 뷰모델 제작 후 변경
-    @State private var content: String = ""
-
     
     // 다음 버튼
     @State private var goNext = false
@@ -31,6 +25,7 @@ struct WriteRecordView: View {
     var body: some View {
         VStack {
             navigationBar
+            
             Group {
                 writeTitle
                 buttonGroup
@@ -38,10 +33,17 @@ struct WriteRecordView: View {
                 writeContent
             }
             .padding(.horizontal, 32)
+            
             nextButton
         }
         .navigationDestination(isPresented: $goNext) {
-            CreateRecordCardView(onFinish: onFinish)
+            CreateRecordCardView(
+                draft: viewModel.makeDraft(),
+                galaxyId: galaxyId,
+                dday: dday,
+                onFinish: onFinish
+            )
+            .environmentObject(container)
         }
         .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
             EmojiPickerSheet(
@@ -54,8 +56,6 @@ struct WriteRecordView: View {
                 }
             )
         }
-
-
         .sheet(isPresented: $viewModel.isColorSheetPresented) {
             CardColorPickerSheet(
                 colors: viewModel.cardColors,
@@ -86,13 +86,15 @@ struct WriteRecordView: View {
             
             // 날짜 표시
             HStack (spacing: 4) {
-                Text("Day 3")
+                // 오늘 여행 며칠 째
+                Text("Day \(dday)")
                     .font(.pt18)
                     .foregroundStyle(.grayScale9)
                 Text("/")
                     .font(.pt13)
                     .foregroundStyle(.grayScale7)
-                Text("10.31")
+                // 오늘 날짜
+                Text(Date().uiFormat)
                     .font(.pt15)
                     .foregroundStyle(.grayScale5)
                 
@@ -110,7 +112,7 @@ struct WriteRecordView: View {
             .padding(.bottom, 24)
             
             // 제목 작성칸
-            TextField("제목", text: $title) // TODO: 뷰모델로 변경 필요
+            TextField("제목", text: $viewModel.title) // TODO: 뷰모델로 변경 필요
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
                 .textFieldStyle(.plain)
@@ -166,7 +168,7 @@ struct WriteRecordView: View {
     private var writeContent: some View {
         
         ZStack(alignment: .topLeading) {
-            if content.isEmpty {
+            if viewModel.content.isEmpty {
                 Text("내용을 입력하세요")
                     .font(.pt18)
                     .foregroundStyle(.grayScale4)
@@ -174,7 +176,7 @@ struct WriteRecordView: View {
                     .padding(.leading, 4)
             }
             
-            TextEditor(text: $content)
+            TextEditor(text: $viewModel.content)
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
                 .background(Color.clear)
@@ -203,10 +205,14 @@ struct WriteRecordView: View {
 #Preview {
     NavigationStack {
         WriteRecordView(
+            galaxyId: 1,
+            dday: 3,
             onFinish: {
-                print("finish")
+                print("finish from write")
             }
         )
+        .environmentObject(DIContainer.preview)
     }
 }
+
 
