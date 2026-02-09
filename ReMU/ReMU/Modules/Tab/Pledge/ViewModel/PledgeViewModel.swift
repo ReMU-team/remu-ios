@@ -233,6 +233,7 @@ final class PledgeViewModel: ObservableObject {
         let index = pledges.count % examples.count
         pledges.append(
             PledgeDraft(
+                resolutionId: nil,
                 content: "",
                 example: examples[index]
             )

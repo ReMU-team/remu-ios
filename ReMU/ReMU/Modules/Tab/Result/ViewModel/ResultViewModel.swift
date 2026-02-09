@@ -33,19 +33,19 @@ class ResultViewModel: ObservableObject {
     
     // MARK: - Emoji
     @Published var isEmojiSheetPresented = false
-    @Published var tempSelectedEmoji: EmojiItem?
-    @Published var selectedEmoji: EmojiItem?
+    @Published var tempSelectedEmojis: [EmojiItem] = []
+    @Published var selectedEmojis: [EmojiItem] = []
 
     let emojis = EmojiCatalog.all
 
     func confirmEmojiSelection() {
-        selectedEmoji = tempSelectedEmoji
-        tempSelectedEmoji = nil
+        selectedEmojis = tempSelectedEmojis
+        //tempSelectedEmoji = nil
         isEmojiSheetPresented = false
     }
 
     func openEmojiSheet() {
-        tempSelectedEmoji = selectedEmoji
+        //tempSelectedEmoji = selectedEmoji
         isEmojiSheetPresented = true
     }
 }

@@ -16,6 +16,9 @@ struct WriteResultView: View {
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
+    // 뷰모델
+    @StateObject private var viewModel = ResultViewModel()
+    
     @State private var pledge1: String = ""
     @State private var isChecked1: Bool = false
     @State private var isChecked2: Bool = false
@@ -120,15 +123,16 @@ struct WriteResultView: View {
                     }
                     .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
                         EmojiPickerSheet(
-                            emojis: viewModel.emojis,
-                            selectedEmoji: $viewModel.tempSelectedEmoji,
-                            onConfirm: {
-                                viewModel.confirmEmojiSelection()
-                            },
-                            onClose: {
-                                viewModel.isEmojiSheetPresented = false
-                            }
-                        )
+                                emojis: viewModel.emojis,
+                                selectedEmojis: $viewModel.tempSelectedEmojis,
+                                maxSelection: 1,
+                                onConfirm: {
+                                    viewModel.confirmEmojiSelection()
+                                },
+                                onClose: {
+                                    viewModel.isEmojiSheetPresented = false
+                                }
+                            )
                     }
 
                     

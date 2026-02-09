@@ -12,11 +12,6 @@ enum CardSize {
 }
 
 struct PledgeCardFlip: View {
-    
-    // 뷰모델
-    @StateObject private var pledgeViewModel = PledgeViewModel()
-    @StateObject private var galaxyViewModel = CreateGalaxyViewModel()
-    
     @State var flip = false
     
     var body: some View {
