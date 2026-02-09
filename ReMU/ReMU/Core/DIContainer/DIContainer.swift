@@ -26,7 +26,7 @@ import Combine
 final class DIContainer: ObservableObject{
     @Published var router: NavigationRouter
     
-    private let networkService: NetworkService
+    let networkService: NetworkService
     
     let userSessionKeychain: UserSessionKeychainService
     let apiProviderStore: APIProviderStore

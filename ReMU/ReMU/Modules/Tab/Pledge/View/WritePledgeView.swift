@@ -11,9 +11,19 @@ struct WritePledgeView: View {
     let onFinish: () -> Void
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var container: DIContainer
     
     // 뷰모델 연결
-    @StateObject private var viewModel = PledgeViewModel()
+    @StateObject private var viewModel: PledgeViewModel
+    
+    init(onFinish: @escaping () -> Void) {
+        self.onFinish = onFinish
+        _viewModel = StateObject(
+            wrappedValue: PledgeViewModel(
+                networkService: DIContainer.preview.networkService
+            )
+        )
+    }
     
     // 다음 버튼
     @State private var goNext = false
@@ -24,7 +34,6 @@ struct WritePledgeView: View {
         VStack {
             navigationBar
             ScrollView {
-                
                 Group {
                     description
                     writingPledge
@@ -174,6 +183,7 @@ struct WritePledgeView: View {
                 print("finish")
             }
         )
+        .environmentObject(DIContainer.preview)
     }
 }
 

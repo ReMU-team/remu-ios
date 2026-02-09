@@ -16,7 +16,8 @@ import Foundation
 //    let example: String
 //}
 
-struct PledgeDraft {
+struct PledgeDraft: Identifiable {
+    let id = UUID()
     let resolutionId: Int? // 수정 화면에서만 의미 있음
     var content: String
     let example: String
