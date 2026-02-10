@@ -9,6 +9,7 @@ import Foundation
 import Alamofire
 import Moya
 
+// 사용 X
 /// 사용자 인증과 관련된 API 요청을 정의하는 라우터
 enum AuthRouter {
     // 리프레쉬 토큰 갱신
@@ -41,7 +42,9 @@ extension AuthRouter: APITargetType {
     var headers: [String: String]? {
         switch self {
         case .tokenRefresh(let refreshToken) :
-            var headers = ["Content-Type": "application/json"]
+            var headers = [
+                "Content-Type": "application/json"
+            ]
             headers["Refresh-Token"] = "\(refreshToken)"
             return headers
         }

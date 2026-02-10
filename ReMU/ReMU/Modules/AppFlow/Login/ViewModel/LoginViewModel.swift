@@ -32,7 +32,7 @@ final class LoginViewModel: ObservableObject {
     
     // MARK: - Func
     @MainActor
-    func kakaoLogin(onSuccess: @escaping () -> Void) async {
+    func kakaoLogin(onSuccess: @escaping (Bool) -> Void) async {
         kakaoLoginManager.kakaoLogin { [weak self] tokens in
             guard
                 let self = self,
@@ -68,8 +68,8 @@ final class LoginViewModel: ObservableObject {
                     )
                     
                     print(saved ? "✅ 세션 저장 성공" : "❌ 세션 저장 실패")
-                    onSuccess()
-                    
+                    onSuccess(tokenResponse.result.isNewUser ?? false)
+
                 case .failure(let error):
                     print("❌ 서버 로그인 실패", error)
                 }

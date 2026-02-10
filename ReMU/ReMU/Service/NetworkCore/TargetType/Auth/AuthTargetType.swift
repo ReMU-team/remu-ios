@@ -45,7 +45,10 @@ extension AuthTargetType: APITargetType {
             return .requestPlain
             
         case .tokenRefresh(let refreshToken):
-            return .requestJSONEncodable(refreshToken)
+            return .requestParameters(
+                parameters: ["refreshToken": refreshToken],
+                encoding: JSONEncoding.default
+            )
         }
     }
     
