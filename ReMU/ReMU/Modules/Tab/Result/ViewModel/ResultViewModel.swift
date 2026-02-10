@@ -84,22 +84,32 @@ class ResultViewModel: ObservableObject {
     }
     
     // MARK: - Result API 수정 함수
-    func patchResult(completion: @escaping () -> Void) {
-        let request = makePatchResultRequest()
+    func checkResult() {
+        isLoading = true
 
-        resultService.patchResult(
+        resultService.checkResult(
             userId: userId,
-            galaxyId: galaxyId,
-            request: request
+            galaxyId: galaxyId
         ) { [weak self] result in
             guard let self else { return }
 
             DispatchQueue.main.async {
+                self.isLoading = false
+
                 switch result {
-                case .success:
-                    // ✅ 수정 후 최신 데이터 다시 조회
-                    self.fetchResult()
-                    completion()
+                case .success(let response):
+                    // 1️⃣ 상단 결과
+                    self.reviewResult = self.makeReviewResult(from: response)
+
+                    // 2️⃣ 다짐 리스트 매핑
+                    self.pledges = response.reviews.map {
+                        PledgeItem(
+                            reviewId: $0.reviewId,
+                            title: $0.title,
+                            content: $0.content,
+                            status: $0.isResolutionFulfilled ? .success : .fail
+                        )
+                    }
 
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
@@ -107,6 +117,7 @@ class ResultViewModel: ObservableObject {
             }
         }
     }
+
 
 
     
@@ -145,6 +156,7 @@ class ResultViewModel: ObservableObject {
             }
         )
     }
+
 
 
 

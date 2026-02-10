@@ -135,12 +135,16 @@ struct HomeGalaxyView: View {
             }
         }
         .fullScreenCover(isPresented: $showWriteResult) {
-            WriteResultView(
-                onFinish: {
-                    showWriteResult = false
-                    showCreateResultCard = true
-                }
-            )
+            if let galaxy = viewModel.galaxyData {
+                WriteResultView(
+                    userId: 0,  // TODO: 카카오 로그인 완료 후 AppState.userId로 교체
+                    galaxyId: galaxy.serverId,
+                    onFinish: {
+                        showWriteResult = false
+                        showCreateResultCard = true
+                    }
+                )
+            }
         }
         .fullScreenCover(isPresented: $showCreateResultCard) {
             CreateResultCardView(

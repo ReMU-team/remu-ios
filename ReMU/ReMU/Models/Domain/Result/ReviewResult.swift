@@ -16,12 +16,10 @@ enum PledgeStatus {
 
 // 2. 개별 다짐 데이터 모델
 struct PledgeItem: Identifiable {
-    let id = UUID()          // SwiftUI용
-    let reviewId: Int        // 서버용 ID
-    
+    let id = UUID()          // UI용
+    let reviewId: Int        // 서버용 (PATCH 필수)
     let title: String
     var content: String
-    
     var status: PledgeStatus = .none
 }
 
@@ -30,7 +28,6 @@ extension PledgeItem {
         status == .success
     }
 }
-
 
 
 // 3. 최종 결과 모델 (이전의 Result 구조체 대체)
