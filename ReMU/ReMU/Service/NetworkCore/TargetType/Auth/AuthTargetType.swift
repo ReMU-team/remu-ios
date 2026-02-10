@@ -19,11 +19,11 @@ extension AuthTargetType: APITargetType {
     var path: String {
         switch self {
         case let .socialLogin(provider,_):
-            return "/login/\(provider)"
+            return "/api/v1/auth/login/\(provider)"
         case .socialLogout:
-            return "/logout"
+            return "/api/v1/auth/logout"
         case .tokenRefresh:
-            return "/refresh"
+            return "/api/v1/auth/refresh"
         }
     }
     
@@ -36,8 +36,11 @@ extension AuthTargetType: APITargetType {
     
     var task: Moya.Task {
         switch self {
-        case .socialLogin(_, let accessToken) :
-            return .requestJSONEncodable(accessToken)
+        case .socialLogin(_, let accessToken):
+            return .requestParameters(
+                parameters: ["accessToken": accessToken],
+                encoding: JSONEncoding.default
+            )
         case .socialLogout:
             return .requestPlain
         case .tokenRefresh(let refreshToken):

@@ -6,12 +6,22 @@
 //
 
 import SwiftUI
-
     
 struct LoginView: View {
-    let onKakaoLogin: () -> Void
-    let onGoogleLogin: () -> Void
-    let onAppleLogin: () -> Void
+    
+    @StateObject private var viewModel: LoginViewModel
+    
+    let onAuthFinished: () -> Void
+    
+    init(
+            container: DIContainer,
+            onAuthFinished: @escaping () -> Void
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: LoginViewModel(container: container)
+        )
+        self.onAuthFinished = onAuthFinished
+    }
     
     
     // MARK: - body
@@ -50,14 +60,19 @@ struct LoginView: View {
             
             // 로그인 버튼
             VStack (spacing: 20){
-                SocialLoginButton(type: .kakao, action:
-                    onKakaoLogin
-                )
-                SocialLoginButton(type: .google, action: onGoogleLogin
-                )
-                SocialLoginButton(type: .apple, action:
-                    onAppleLogin
-                )
+                SocialLoginButton(type: .kakao) {
+                    Task {
+                        await viewModel.kakaoLogin {
+                            onAuthFinished()
+                        }
+                    }
+                }
+                SocialLoginButton(type: .google) {
+                    print("구글 로그인 예정")
+                }
+                SocialLoginButton(type: .apple) {
+                    print("애플 로그인 예정")
+                }
             }
         }
         .padding(.horizontal, 46)
@@ -68,16 +83,14 @@ struct LoginView: View {
 
 #Preview {
     LoginView(
-        onKakaoLogin: {
-                    // completion 인자를 처리하는 클로저를 추가해줍니다.
-                    KakaoManager.shared.kakaoLogin { success in
-                        print("카카오 로그인 결과: \(success)")
-                    }
-                },
-        onGoogleLogin: { print("google") },
-        onAppleLogin: { print("apple") }
+        container: .preview,
+        onAuthFinished: {
+            print("Preview login success")
+        }
     )
 }
+
+
 
 //import SwiftUI
 //
