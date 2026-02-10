@@ -168,6 +168,7 @@ struct CreateGalaxyView: View {
                     
                     if let galaxy = viewModel.createdGalaxy {
                         appState.currentGalaxy = galaxy
+                        LastGalaxyStore.save(galaxy.serverId)
                         showWritePledge = true // 다짐 작성으로 이동
                     }
                 }

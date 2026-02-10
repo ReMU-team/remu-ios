@@ -96,8 +96,24 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            syncHomeWithCurrentGalaxy()
+            Task {
+                // 마지막으로 보던 은하가 있으면 그걸 최우선
+                if let lastId = LastGalaxyStore.load() {
+                    let success = await viewModel.loadHome(galaxyId: lastId)
+
+                    if success {
+                        appState.currentGalaxy = viewModel.galaxyData
+                        return
+                    }
+                }
+
+                // 없거나 실패하면 은하 리스트 기준
+                await viewModel.fetchGalaxyList()
+                appState.currentGalaxy = viewModel.galaxyData
+            }
         }
+
+
         .onChange(of: appState.currentGalaxy?.serverId) { _ in
             syncHomeWithCurrentGalaxy()
         }

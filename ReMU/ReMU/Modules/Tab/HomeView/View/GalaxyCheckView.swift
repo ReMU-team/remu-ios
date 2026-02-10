@@ -100,7 +100,7 @@ struct GalaxyCheckView: View {
                                 )
                             )
                             .onTapGesture {
-                                appState.currentGalaxy = Galaxy(
+                                let galaxy = Galaxy(
                                     serverId: summary.galaxyId,
                                     title: summary.name,
                                     destination: "",
@@ -110,6 +110,9 @@ struct GalaxyCheckView: View {
                                     galaxyIcon: summary.emojiResourceName,
                                     stars: []
                                 )
+
+                                appState.currentGalaxy = galaxy
+                                LastGalaxyStore.save(galaxy.serverId)
                                 dismiss()
                             }
                         }

@@ -116,11 +116,11 @@ class HomeViewModel: ObservableObject {
 
     // MARK: - 홈 진입용 메인 로딩 함수
     @MainActor
-    func loadHome(galaxyId: Int) async {
+    func loadHome(galaxyId: Int) async -> Bool {
         isLoading = true
         defer { isLoading = false }
 
-        await fetchGalaxyDetail(galaxyId: galaxyId)
+        return await fetchGalaxyDetail(galaxyId: galaxyId)
     }
     
     //은하 선택이 없는 상태로 홈을 리셋하는 함수
@@ -142,14 +142,14 @@ class HomeViewModel: ObservableObject {
     
     // MARK: - 은하 상세 조회 API
     @MainActor
-    private func fetchGalaxyDetail(galaxyId: Int) async {
+    private func fetchGalaxyDetail(galaxyId: Int) async -> Bool {
         guard
             let session = userSession.loadSession(for: .userSession),
             let accessToken = session.accessToken
         else {
             print("❌ accessToken 없음")
             galaxyData = nil
-            return
+            return false
         }
 
         let galaxyProvider = container.apiProviderStore.galaxy()
@@ -163,7 +163,7 @@ class HomeViewModel: ObservableObject {
 
             guard let result = dto.result else {
                 galaxyData = nil
-                return
+                return false
             }
 
             guard
@@ -172,7 +172,7 @@ class HomeViewModel: ObservableObject {
             else {
                 print("❌ 날짜 파싱 실패")
                 galaxyData = nil
-                return
+                return false
             }
 
             self.galaxyData = Galaxy(
@@ -189,10 +189,11 @@ class HomeViewModel: ObservableObject {
 
             // 별 리스트 이어서 조회
             await fetchStarsList(galaxyId: result.galaxyId)
-
+            return true
         } catch {
             print("❌ 은하 상세 조회 실패:", error)
             galaxyData = nil
+            return false
         }
     }
 
