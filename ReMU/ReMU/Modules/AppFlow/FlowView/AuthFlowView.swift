@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AuthFlowView: View {
+    @EnvironmentObject private var container: DIContainer
+    
     @State private var showOnboarding = false
     @State private var showCreateProfile = false
     @State private var showProfileIntro = false
@@ -50,17 +52,10 @@ struct AuthFlowView: View {
             
         } else {
             LoginView(
-                onKakaoLogin: {
-                    // Placeholder(<#...#>)가 남아있지 않도록 주의하세요!
-                    KakaoManager.shared.kakaoLogin { success in
-                        if (success != nil) {
-                            showOnboarding = true
-                        }
-                    }
-                },
-                onGoogleLogin: { showOnboarding = true },
-                onAppleLogin: { showOnboarding = true }
-            )
+                container: container,
+                onAuthFinished: {
+                    onAuthFinished()
+                })
         }
     }
 }
@@ -72,6 +67,7 @@ struct AuthFlowView: View {
             print("Auth Finished")
         }
     )
+    .environmentObject(DIContainer.preview)
 }
 
 

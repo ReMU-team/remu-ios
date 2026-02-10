@@ -6,25 +6,25 @@
 //
 
 import Foundation
+import Combine
 import Moya
 
 // MARK:
 // 소셜 로그인으로 액세스 및 리프레쉬 토큰만 받아옴
-@Observable
-class LoginViewModel {
+final class LoginViewModel: ObservableObject {
     // MARK: - Property
     
-    private let LoginProvider: MoyaProvider<AuthTargetType>
+    private let loginProvider: MoyaProvider<AuthTargetType>
     private let keychain: UserSessionKeychainService
-    private let container: DIContainer
     private let kakaoLoginManager: KakaoManager
     
     //let provider: String
     
     // MARK: - Init
-    init(container: DIContainer, kakaoLoginManager: KakaoManager = .shared){
-        self.container = container
-        self.LoginProvider = container.apiProviderStore.auth()
+    init(container: DIContainer,
+         kakaoLoginManager: KakaoManager = .shared
+    ) {
+        self.loginProvider = container.apiProviderStore.auth()
         self.keychain = container.userSessionKeychain
         self.kakaoLoginManager = kakaoLoginManager
         
@@ -32,37 +32,49 @@ class LoginViewModel {
     
     // MARK: - Func
     @MainActor
-    func kakaoLogin() async {
-//        do {
-//            kakaoLoginManager.kakaoLogin { [weak self] tokens in
-//                guard let self = self, let tokens = tokens else {
-//                    print("토큰을 받아오지 못했습니다.")
-//                    return
-//                }
-//            }
-//        }
+    func kakaoLogin(onSuccess: @escaping () -> Void) async {
         kakaoLoginManager.kakaoLogin { [weak self] tokens in
-                guard
-                    let self = self,
-                    let tokens = tokens,
-                    let accessToken = tokens.accessToken,
-                    let refreshToken = tokens.refreshToken
-                else {
-                    print("❌ 토큰을 받아오지 못했습니다.")
-                    return
-                }
-
-                let session = UserInfo(
-                    accessToken: accessToken,
-                    refreshToken: refreshToken
-                )
-
-                let success = self.keychain.saveSession(
-                    session,
-                    for: .userSession
-                )
-
-                print(success ? "✅ 세션 저장 성공" : "❌ 세션 저장 실패")
+            guard
+                let self = self,
+                let kakaoAccessToken = tokens?.accessToken
+            else {
+                print("❌ 카카오 accessToken 없음")
+                return
             }
+
+            self.loginProvider.request(
+                .socialLogin(provider: "kakao", accessToken: kakaoAccessToken)
+            ) { result in
+                switch result {
+                case .success(let response):
+                    guard
+                        let tokenResponse = try? JSONDecoder().decode(
+                            TokenResponse.self,
+                            from: response.data
+                        )
+                    else {
+                        print("❌ 토큰 응답 디코딩 실패")
+                        return
+                    }
+                    
+                    let session = UserInfo(
+                        accessToken: tokenResponse.result.accessToken,
+                        refreshToken: tokenResponse.result.refreshToken
+                    )
+                    
+                    let saved = self.keychain.saveSession(
+                        session,
+                        for: .userSession
+                    )
+                    
+                    print(saved ? "✅ 세션 저장 성공" : "❌ 세션 저장 실패")
+                    onSuccess()
+                    
+                case .failure(let error):
+                    print("❌ 서버 로그인 실패", error)
+                }
+            }
+        }
     }
+
 }
