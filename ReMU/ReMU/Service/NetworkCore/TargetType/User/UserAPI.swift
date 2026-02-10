@@ -25,7 +25,7 @@ extension UserAPI: TargetType {
     
     // 주소 - URL
     var baseURL: URL {
-        return URL(string: "https://api.remu-app.com")!
+        return URL(string: "https://remu-travel.com")!
     }
     
     // 주소 - 경로
@@ -33,7 +33,7 @@ extension UserAPI: TargetType {
         switch self {
         case .socialLogin(let provider, _):
             // 예시: /auth/kakao/login 또는 /auth/login/apple
-            return "/auth/login/\(provider)"
+            return "/api/v1/auth/login/\(provider)"
         case .getMyProfile:
             return "/user/me"
         case .withdraw:
@@ -57,8 +57,7 @@ extension UserAPI: TargetType {
         case .socialLogin(_, let token):
             // 서버 개발자가 원하는 키 값("access_token" 등)에 맞춰서 보냄
             let params: [String: Any] = [
-                "social_token": token,
-                "fcm_token": "푸시알림토큰(필요시)"
+                "token": token
             ]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
             

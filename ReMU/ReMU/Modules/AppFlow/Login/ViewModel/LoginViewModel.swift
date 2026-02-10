@@ -43,7 +43,7 @@ final class LoginViewModel: ObservableObject {
             }
 
             self.loginProvider.request(
-                .socialLogin(provider: "kakao", accessToken: kakaoAccessToken)
+                .socialLogin(provider: "kakao", token: kakaoAccessToken)
             ) { result in
                 switch result {
                 case .success(let response):
