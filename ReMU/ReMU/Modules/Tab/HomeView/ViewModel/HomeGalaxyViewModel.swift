@@ -36,14 +36,14 @@ class HomeViewModel: ObservableObject {
     func loadHome(galaxyId: Int) async -> Bool {
         isLoading = true
         defer { isLoading = false }
-        
+
         let success = await fetchGalaxyDetail(galaxyId: galaxyId)
         if !success {
             clear()
         }
-        
         return success
     }
+
     
     //은하 선택이 없는 상태로 홈을 리셋하는 함수
     @MainActor
@@ -107,8 +107,7 @@ class HomeViewModel: ObservableObject {
                 galaxyIcon: result.emojiResourceName,
                 stars: []
             )
-            
-            NotificationScheduler.shared.evaluateTodayNotifications(galaxy: self.galaxyData!)
+
 
             // 별 리스트 이어서 조회
             await fetchStarsList(galaxyId: result.galaxyId)

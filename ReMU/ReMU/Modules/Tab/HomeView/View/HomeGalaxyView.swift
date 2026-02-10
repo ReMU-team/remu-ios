@@ -70,6 +70,7 @@ struct HomeGalaxyView: View {
                     .ignoresSafeArea()
                     .onTapGesture {
                         viewModel.isShowingRecordCard = false
+                        
                     }
 
                 RecordCardFlip(model: model)
@@ -116,6 +117,7 @@ struct HomeGalaxyView: View {
                     appState.currentGalaxyId = galaxy.serverId
                     showCreateGalaxy = false
                 }
+
             )
         }
         .fullScreenCover(isPresented: $showTimeLine) {
