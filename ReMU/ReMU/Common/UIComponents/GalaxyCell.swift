@@ -10,18 +10,20 @@ import SwiftUI
 
 //개별 은하 아이템 셀 (재사용성 및 협업 효율을 위해 분리)
 struct GalaxyCell: View {
-    let galaxy: Galaxy
+    let galaxyId: Int
+    let title: String
+    let iconName: String
     
     var body: some View {
         VStack(spacing: 8) {
             // 은하 아이콘
-            Image(galaxy.galaxyIcon)
+            Image(iconName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 60,height: 60)
             
             // 은하 이름표 (캡슐 디자인 적용)
-            Text(galaxy.title)
+            Text(title)
                 .font(.pt12)
                 .foregroundColor(.white)
                 .lineLimit(1) // 한 줄 유지

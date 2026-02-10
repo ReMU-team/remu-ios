@@ -167,9 +167,9 @@ struct CreateGalaxyView: View {
                     await viewModel.createGalaxy()
                     
                     if let galaxy = viewModel.createdGalaxy {
-                        appState.currentGalaxy = galaxy
+                        appState.currentGalaxyId = galaxy.serverId
                         LastGalaxyStore.save(galaxy.serverId)
-                        showWritePledge = true // 다짐 작성으로 이동
+                        showWritePledge = true
                     }
                 }
             }
@@ -205,7 +205,7 @@ struct GalaxySelectableItem: View {
         viewModel: CreateGalaxyViewModel(container: container),
         onFinish: { galaxy in
             print("프리뷰에서 생성된 은하:", galaxy)
-            appState.currentGalaxy = galaxy
+            appState.currentGalaxyId = galaxy.serverId
         }
     )
     .environmentObject(appState)

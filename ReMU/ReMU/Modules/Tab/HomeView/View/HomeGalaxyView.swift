@@ -40,7 +40,7 @@ struct HomeGalaxyView: View {
             VStack {
                 if viewModel.isLoading {
                         ProgressView()
-                    } else if appState.currentGalaxy == nil {
+                    } else if viewModel.galaxyData == nil {
                         initialHomeView
                             .transition(.opacity)
                     } else {
@@ -96,25 +96,16 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            Task {
-                // 마지막으로 보던 은하가 있으면 그걸 최우선
-                if let lastId = LastGalaxyStore.load() {
-                    let success = await viewModel.loadHome(galaxyId: lastId)
-
-                    if success {
-                        appState.currentGalaxy = viewModel.galaxyData
-                        return
-                    }
+            if let lastId = LastGalaxyStore.load() {
+                appState.currentGalaxyId = lastId
+            } else {
+                Task {
+                    await viewModel.fetchGalaxyList()
+                    appState.currentGalaxyId = viewModel.galaxyData?.serverId
                 }
-
-                // 없거나 실패하면 은하 리스트 기준
-                await viewModel.fetchGalaxyList()
-                appState.currentGalaxy = viewModel.galaxyData
             }
         }
-
-
-        .onChange(of: appState.currentGalaxy?.serverId) { _ in
+        .onChange(of: appState.currentGalaxyId) {
             syncHomeWithCurrentGalaxy()
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
@@ -122,7 +113,7 @@ struct HomeGalaxyView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 onFinish: { galaxy in
-                    appState.currentGalaxy = galaxy
+                    appState.currentGalaxyId = galaxy.serverId
                     showCreateGalaxy = false
                 }
             )
@@ -145,6 +136,9 @@ struct HomeGalaxyView: View {
                         dday: galaxy.totalDay,
                         onFinish: {
                             showWriteRecord = false
+                            Task {
+                                await viewModel.loadHome(galaxyId: galaxy.serverId)
+                            }
                         }
                     )
                 }
@@ -193,13 +187,14 @@ struct HomeGalaxyView: View {
     // MARK: - syncHomeWithCurrentGalaxy
     private func syncHomeWithCurrentGalaxy() {
         Task {
-            if let galaxy = appState.currentGalaxy {
-                await viewModel.loadHome(galaxyId: galaxy.serverId)
+            if let galaxyId = appState.currentGalaxyId {
+                let _ = await viewModel.loadHome(galaxyId: galaxyId)
             } else {
                 viewModel.clear()
             }
         }
     }
+
 
     // MARK: - GalaxyView
     private var GalaxyView: some View {
