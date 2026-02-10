@@ -102,17 +102,28 @@ class HomeViewModel: ObservableObject {
     
     @Published var selectedRecordCard: RecordCardModel?
     @Published var isShowingRecordCard = false
+    @Published var isLoading: Bool = false
     
     private let starProvider: MoyaProvider<StarTargetType>
     private let userSession: UserSessionKeychainService
+    private let container: DIContainer
     
     init(container: DIContainer = .preview) {
-        // 초기 데이터 로드 (추후 API 연동 시 이 함수에서 호출)
+        self.container = container
         self.starProvider = container.apiProviderStore.star()
         self.userSession = container.userSessionKeychain
-        //fetchGalaxyData()
-        self.galaxyData = Galaxy.mock // 은하 정보 mock으로 임시 처리
     }
+
+    // MARK: - 홈 진입용 메인 로딩 함수
+    @MainActor
+    func loadHome() async {
+        isLoading = true
+
+        await fetchGalaxyList()
+
+        isLoading = false
+    }
+
     
     // 별 클릭 진입 함수
     func onSelectStar(starId: Int) {
@@ -121,6 +132,97 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // MARK: - 은하 상세 조회 API
+    @MainActor
+    private func fetchGalaxyDetail(galaxyId: Int) async {
+        guard
+            let session = userSession.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else {
+            print("❌ accessToken 없음")
+            galaxyData = nil
+            return
+        }
+
+        let galaxyProvider = container.apiProviderStore.galaxy()
+
+        do {
+            let response = try await galaxyProvider.requestAsync(
+                .fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
+            )
+
+            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
+
+            guard let result = dto.result else {
+                galaxyData = nil
+                return
+            }
+
+            guard
+                let startDate = result.startDate.toDateFromServer,
+                let endDate = result.endDate.toDateFromServer
+            else {
+                print("❌ 날짜 파싱 실패")
+                galaxyData = nil
+                return
+            }
+
+            self.galaxyData = Galaxy(
+                serverId: result.galaxyId,
+                title: result.name,
+                destination: result.placeName,
+                startDate: startDate,
+                endDate: endDate,
+                totalDay: result.dDay,
+                galaxyIcon: result.emojiResourceName,
+                stars: []
+            )
+
+
+            // 별 리스트 이어서 조회
+            await fetchStarsList(galaxyId: result.galaxyId)
+
+        } catch {
+            print("❌ 은하 상세 조회 실패:", error)
+            galaxyData = nil
+        }
+    }
+
+    // MARK: - 은하 리스트 조회 API
+    @MainActor
+    func fetchGalaxyList() async {
+        guard
+            let session = userSession.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else {
+            print("❌ accessToken 없음")
+            galaxyData = nil
+            return
+        }
+
+        let galaxyProvider = container.apiProviderStore.galaxy()
+
+        do {
+            let response = try await galaxyProvider.requestAsync(
+                .fetchGalaxyList(accessToken: accessToken, page: 0, size: 10)
+            )
+
+            let dto = try JSONDecoder().decode(GalaxyListResponse.self, from: response.data)
+
+            guard let first = dto.result?.galaxies.first else {
+                galaxyData = nil   // ✅ 은하 없음
+                return
+            }
+
+            await fetchGalaxyDetail(galaxyId: first.galaxyId)
+
+        } catch {
+            print("❌ 은하 리스트 조회 실패:", error)
+            galaxyData = nil
+        }
+    }
+
+
     // MARK: - 별 상세 조회 API
     @MainActor
     private func fetchStarDetail(starId: Int) async {
@@ -206,13 +308,6 @@ class HomeViewModel: ObservableObject {
 
 
 
-    func fetchGalaxyData() {
-        // 목데이터 로드 및 궤도 분할 계산 실행
-        let data = Galaxy.mock
-        //self.galaxyData = nil
-        self.galaxyData = data
-        self.partitionedStars = partitionStars(data.stars)
-    }
     
     // 2. 궤도 배치 알고리즘: 별의 개수에 따라 2, 3, 4... 개씩 묶음
     private func partitionStars(_ stars: [Star]) -> [[Star]] {

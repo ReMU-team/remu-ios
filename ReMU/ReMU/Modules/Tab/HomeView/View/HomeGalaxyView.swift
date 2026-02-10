@@ -12,7 +12,13 @@ struct HomeGalaxyView: View {
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var appState: AppState
     
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel: HomeViewModel
+
+    init() {
+        _viewModel = StateObject(
+            wrappedValue: HomeViewModel(container: DIContainer.preview)
+        )
+    }
     
     // 카드 오버레이
     @State private var showCardOverlay = false
@@ -27,26 +33,19 @@ struct HomeGalaxyView: View {
     @State private var showGalaxyList = false
     @State private var showWriteResult = false
     @State private var showCreateResultCard = false
-    
-    @State private var galaxies: [Galaxy] = []
-    
-    // 기록, 회고 여행 기간 표시
-//    let periodText = travelPeriodText(
-//        start: galaxy.startDate,
-//        end: galaxy.endDate
-//    )
-//    
+        
     // MARK: - body
     var body: some View {
         ZStack {
             VStack {
-                if viewModel.galaxyData == nil {
-                    initialHomeView
-                        .transition(.opacity)
-                }
-                else {
-                    GalaxyView
-                }
+                if viewModel.isLoading {
+                        ProgressView()
+                    } else if viewModel.galaxyData == nil {
+                        initialHomeView
+                            .transition(.opacity)
+                    } else {
+                        GalaxyView
+                    }
             }
             .allowsHitTesting(!showCardOverlay)
             
@@ -97,18 +96,15 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            if let galaxy = viewModel.galaxyData {
-                Task {
-                    await viewModel.fetchStarsList(galaxyId: galaxy.serverId)
-                }
+            Task {
+                await viewModel.loadHome()
             }
         }
+
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
             CreateGalaxyView { galaxy in
-                galaxies.append(galaxy)
                 appState.currentGalaxy = galaxy
-                
                 showCreateGalaxy = false
             }
         }
@@ -225,20 +221,6 @@ struct HomeGalaxyView: View {
     
     // MARK: - background
     private var background: some View{
-        //        GeometryReader { geometry in
-        //            Color.blue212148
-        //
-        //            Image("Homegradation")
-        //                .resizable()
-        //                .aspectRatio(contentMode: .fill)
-        //                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
-        //                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
-        //
-        //            Image("starObjet")
-        //                .resizable()
-        //                .scaledToFit()
-        //                .frame(width: geometry.size.width)
-        //        }
         ZStack {
             // 배경 색
             Color.blue212148
