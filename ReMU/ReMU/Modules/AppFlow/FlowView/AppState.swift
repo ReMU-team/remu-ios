@@ -17,8 +17,8 @@ final class AppState: ObservableObject {
     }
     @Published var userProfile: UserProfile? = nil
     @Published var route: AppRoute = .splash
-    @Published var currentGalaxy: Galaxy?
-
+    @Published var currentGalaxyId: Int?
+    
     @MainActor
     func checkLoginStatus(keychain: UserSessionKeychainService) async {
 

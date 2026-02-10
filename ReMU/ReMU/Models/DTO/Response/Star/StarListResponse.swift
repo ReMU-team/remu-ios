@@ -12,7 +12,15 @@ struct StarListItem: Codable {
     let title: String
     let recordDate: String // "2024-05-21"
     let dDay: Int
-    let cardColor: String // "PURPLE", "BLUE" 등
+    let cardColor: String
+    
+    enum CodingKeys: String, CodingKey {
+        case starId
+        case title
+        case recordDate
+        case cardColor
+        case dDay = "dday"
+    }
 }
 
 // 전체 응답 구조체 (기존에 정의하신 BaseResponse를 사용한다고 가정)

@@ -40,7 +40,7 @@ struct HomeGalaxyView: View {
             VStack {
                 if viewModel.isLoading {
                         ProgressView()
-                    } else if appState.currentGalaxy == nil {
+                    } else if viewModel.galaxyData == nil {
                         initialHomeView
                             .transition(.opacity)
                     } else {
@@ -70,6 +70,7 @@ struct HomeGalaxyView: View {
                     .ignoresSafeArea()
                     .onTapGesture {
                         viewModel.isShowingRecordCard = false
+                        
                     }
 
                 RecordCardFlip(model: model)
@@ -96,9 +97,16 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            syncHomeWithCurrentGalaxy()
+            if let lastId = LastGalaxyStore.load() {
+                appState.currentGalaxyId = lastId
+            } else {
+                Task {
+                    await viewModel.fetchGalaxyList()
+                    appState.currentGalaxyId = viewModel.galaxyData?.serverId
+                }
+            }
         }
-        .onChange(of: appState.currentGalaxy?.serverId) { _ in
+        .onChange(of: appState.currentGalaxyId) {
             syncHomeWithCurrentGalaxy()
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
@@ -106,9 +114,10 @@ struct HomeGalaxyView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 onFinish: { galaxy in
-                    appState.currentGalaxy = galaxy
+                    appState.currentGalaxyId = galaxy.serverId
                     showCreateGalaxy = false
                 }
+
             )
         }
         .fullScreenCover(isPresented: $showTimeLine) {
@@ -129,6 +138,9 @@ struct HomeGalaxyView: View {
                         dday: galaxy.totalDay,
                         onFinish: {
                             showWriteRecord = false
+                            Task {
+                                await viewModel.loadHome(galaxyId: galaxy.serverId)
+                            }
                         }
                     )
                 }
@@ -177,13 +189,14 @@ struct HomeGalaxyView: View {
     // MARK: - syncHomeWithCurrentGalaxy
     private func syncHomeWithCurrentGalaxy() {
         Task {
-            if let galaxy = appState.currentGalaxy {
-                await viewModel.loadHome(galaxyId: galaxy.serverId)
+            if let galaxyId = appState.currentGalaxyId {
+                let _ = await viewModel.loadHome(galaxyId: galaxyId)
             } else {
                 viewModel.clear()
             }
         }
     }
+
 
     // MARK: - GalaxyView
     private var GalaxyView: some View {

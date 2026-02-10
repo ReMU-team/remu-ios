@@ -11,89 +11,6 @@ import Combine
 import Moya
 import _Concurrency
 
-@MainActor
-class GalaxyDetailViewModel: ObservableObject {
-    // Galaxy Model
-    // var galaxyDetail : Galaxy?
-    @Published var galaxyDetailResponse: GalaxyDetailResponse?
-    @Published var starListResponse: StarListResponse?
-    
-    // Pagination
-    @Published var dDay: Int = 0
-    @Published var month: Int
-    @Published var day: Int
-    
-    
-    @Published private(set) var isLoading: Bool = false
-    
-    // MARK: - Properties
-    private let galaxyDetailProvider: MoyaProvider<GalaxyTargetType>
-    private let starLIstProvider: MoyaProvider<StarTargetType>
-    private let container: DIContainer
-    
-    // MARK: - AccessToken Load KeychainService
-    private let keychain: UserSessionKeychainService
-    
-    // 의존성 주입
-    init(container: DIContainer) {
-        self.container = container
-        self.galaxyDetailProvider = container.apiProviderStore.galaxy()
-        self.starLIstProvider = container.apiProviderStore.star()
-        self.keychain = container.userSessionKeychain
-        
-        let components = Calendar.current.dateComponents([.year, .month, .day, .hour], from: Date())
-        self.month = components.month ?? 0
-        self.day = components.day ?? 0
-    }
-    
-    
-    
-    // MARK: - Func
-    @MainActor
-    func fetchGalaxyDetailData(galaxyId: Int) async {
-        // 1. 키체인에서 세션 로드 및 토큰 추출
-        guard let session = keychain.loadSession(for: .userSession),
-              let accessToken = session.accessToken else {
-            print("토큰이 없습니다.")
-            return
-        }
-        
-        self.isLoading = true
-        
-        do {
-            let response = try await galaxyDetailProvider.requestAsync(.fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
-            )
-            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
-            self.galaxyDetailResponse = dto
-                
-        } catch {
-            print("네트워크 에러: \(error)")
-        }
-        self.isLoading = false
-    }
-    
-    @MainActor
-    func fetchStarListData(galaxyId: Int) async {
-        guard let session = keychain.loadSession(for: .userSession),
-              let accessToken = session.accessToken else {
-            print("토큰이 없습니다.")
-            return
-        }
-        do{
-            let response = try await starLIstProvider.requestAsync(.fetchStarsList(accessToken: accessToken, galaxyId: galaxyId)
-            )
-            let dto = try JSONDecoder().decode(StarListResponse.self, from: response.data)
-            self.starListResponse = dto
-            
-        } catch{
-            print("네트워크 에러: \(error)")
-        }
-        
-    }
-    
-}
-
-
 class HomeViewModel: ObservableObject {
     // 1. View에서 관찰할 데이터들
     @Published var galaxyData: Galaxy?
@@ -116,12 +33,17 @@ class HomeViewModel: ObservableObject {
 
     // MARK: - 홈 진입용 메인 로딩 함수
     @MainActor
-    func loadHome(galaxyId: Int) async {
+    func loadHome(galaxyId: Int) async -> Bool {
         isLoading = true
         defer { isLoading = false }
 
-        await fetchGalaxyDetail(galaxyId: galaxyId)
+        let success = await fetchGalaxyDetail(galaxyId: galaxyId)
+        if !success {
+            clear()
+        }
+        return success
     }
+
     
     //은하 선택이 없는 상태로 홈을 리셋하는 함수
     @MainActor
@@ -142,14 +64,14 @@ class HomeViewModel: ObservableObject {
     
     // MARK: - 은하 상세 조회 API
     @MainActor
-    private func fetchGalaxyDetail(galaxyId: Int) async {
+    private func fetchGalaxyDetail(galaxyId: Int) async -> Bool {
         guard
             let session = userSession.loadSession(for: .userSession),
             let accessToken = session.accessToken
         else {
             print("❌ accessToken 없음")
             galaxyData = nil
-            return
+            return false
         }
 
         let galaxyProvider = container.apiProviderStore.galaxy()
@@ -163,7 +85,7 @@ class HomeViewModel: ObservableObject {
 
             guard let result = dto.result else {
                 galaxyData = nil
-                return
+                return false
             }
 
             guard
@@ -172,7 +94,7 @@ class HomeViewModel: ObservableObject {
             else {
                 print("❌ 날짜 파싱 실패")
                 galaxyData = nil
-                return
+                return false
             }
 
             self.galaxyData = Galaxy(
@@ -189,10 +111,11 @@ class HomeViewModel: ObservableObject {
 
             // 별 리스트 이어서 조회
             await fetchStarsList(galaxyId: result.galaxyId)
-
+            return true
         } catch {
             print("❌ 은하 상세 조회 실패:", error)
             galaxyData = nil
+            return false
         }
     }
 
@@ -218,7 +141,7 @@ class HomeViewModel: ObservableObject {
             let dto = try JSONDecoder().decode(GalaxyListResponse.self, from: response.data)
 
             guard let first = dto.result?.galaxies.first else {
-                galaxyData = nil   // ✅ 은하 없음
+                galaxyData = nil   // 은하 없음
                 return
             }
 

@@ -88,30 +88,16 @@ struct GalaxyCheckView: View {
                     LazyVGrid(columns: columns,spacing: 20){
                         ForEach(viewModel.galaxies) { summary in
                             GalaxyCell(
-                                galaxy: Galaxy(
-                                    serverId: summary.galaxyId,
-                                    title: summary.name,
-                                    destination: "",
-                                    startDate: Date(),
-                                    endDate: Date(),
-                                    totalDay: 0,
-                                    galaxyIcon: summary.emojiResourceName,
-                                    stars: []
-                                )
+                                galaxyId: summary.galaxyId,
+                                title: summary.name,
+                                iconName: summary.emojiResourceName
                             )
                             .onTapGesture {
-                                appState.currentGalaxy = Galaxy(
-                                    serverId: summary.galaxyId,
-                                    title: summary.name,
-                                    destination: "",
-                                    startDate: Date(),
-                                    endDate: Date(),
-                                    totalDay: 0,
-                                    galaxyIcon: summary.emojiResourceName,
-                                    stars: []
-                                )
+                                appState.currentGalaxyId = summary.galaxyId
+                                LastGalaxyStore.save(summary.galaxyId)
                                 dismiss()
                             }
+
                         }
                     }
                 }

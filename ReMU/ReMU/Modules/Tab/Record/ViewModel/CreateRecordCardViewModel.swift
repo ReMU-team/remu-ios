@@ -30,7 +30,7 @@ final class CreateRecordCardViewModel: ObservableObject {
         CreateRecordCardViewModel()
     }
     
-    // MARK: - POST
+    // MARK: - 기록 카드 생성 API
         func createRecord(
             galaxyId: Int,
             draft: RecordDraft
@@ -48,13 +48,7 @@ final class CreateRecordCardViewModel: ObservableObject {
                 return false
             }
             
-            guard
-                let image = model.image,
-                let imageData = image.jpegData(compressionQuality: 0.8)
-            else {
-                errorMessage = "이미지가 없습니다."
-                return false
-            }
+            let imageData = model.image?.jpegData(compressionQuality: 0.8)
             
             let request = CreateStarRequest(
                 title: model.title,
@@ -74,8 +68,8 @@ final class CreateRecordCardViewModel: ObservableObject {
                         accessToken: accessToken,
                         request: request,
                         image: imageData,
-                        fileName: "image.jpg",
-                        mimeType: "image/jpeg"
+                        fileName: imageData != nil ? "image.jpg" : nil,
+                        mimeType: imageData != nil ? "image/jpeg" : nil
                     )
                 )
                 return true

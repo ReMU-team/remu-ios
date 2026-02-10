@@ -14,10 +14,10 @@ struct AppFlowView: View {
     var body: some View {
         HomeGalaxyView(container: container)
             .environmentObject(appState)
-            .onAppear {
-                guard let galaxy = appState.currentGalaxy else { return }
-                NotificationScheduler.shared.evaluateTodayNotifications(galaxy: galaxy)
-            } // TODO: task 안정화
+//            .onAppear {
+//                guard let galaxyId = appState.currentGalaxyId else { return }
+//                NotificationScheduler.shared.evaluateTodayNotifications(galaxy: galaxy)
+//            } // TODO: task 안정화
     }
 }
 
