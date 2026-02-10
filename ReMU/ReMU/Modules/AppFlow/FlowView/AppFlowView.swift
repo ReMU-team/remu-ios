@@ -9,9 +9,10 @@ import SwiftUI
 
 struct AppFlowView: View {
     @EnvironmentObject var appState: AppState
-
+    @EnvironmentObject var container: DIContainer
+    
     var body: some View {
-        HomeGalaxyView()
+        HomeGalaxyView(container: container)
             .environmentObject(appState)
             .onAppear {
                 guard let galaxy = appState.currentGalaxy else { return }

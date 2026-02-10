@@ -15,7 +15,7 @@ import Alamofire
 /// 토큰이 만료될 경우 서버에 리프레시 요청을 보내 새로운 토큰을 갱신합니다.
 class TokenProvider: TokenProviding {
     private let userSessionKeychain: UserSessionKeychainService
-    private let provider = MoyaProvider<AuthRouter>()
+    private let provider = MoyaProvider<AuthTargetType>()
     
     init(userSessionKeychain: UserSessionKeychainService) {
         self.userSessionKeychain = userSessionKeychain

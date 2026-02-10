@@ -41,6 +41,16 @@ extension Date {
         }
 }
 
+extension String {
+    /// 서버 날짜 문자열 (yyyy-MM-dd) -> Date
+    var toDateFromServer: Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = .current
+        return formatter.date(from: self)
+    }
+}
 
 
 

@@ -8,18 +8,25 @@
 import Foundation
 import SwiftUI
 
+/// 은하 리스트를 볼 수 있는 뷰입니다.
 struct GalaxyCheckView: View {
     
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var container: DIContainer
+    @EnvironmentObject var appState: AppState
+
     
     // 네비게이션
     @State private var showCreateGalaxy = false
+    @StateObject private var viewModel: GalaxyCheckViewModel
     
-    @State private var galaxies: [Galaxy] = []
-    
-    let galaxyList: [Galaxy]
-    
+    init(container: DIContainer) {
+        _viewModel = StateObject(
+            wrappedValue: GalaxyCheckViewModel(container: container)
+        )
+    }
+
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -79,10 +86,36 @@ struct GalaxyCheckView: View {
                 }
                 ScrollView{
                     LazyVGrid(columns: columns,spacing: 20){
-                        ForEach(galaxyList){galaxy in
-                            GalaxyCell(galaxy: galaxy)}
+                        ForEach(viewModel.galaxies) { summary in
+                            GalaxyCell(
+                                galaxy: Galaxy(
+                                    serverId: summary.galaxyId,
+                                    title: summary.name,
+                                    destination: "",
+                                    startDate: Date(),
+                                    endDate: Date(),
+                                    totalDay: 0,
+                                    galaxyIcon: summary.emojiResourceName,
+                                    stars: []
+                                )
+                            )
+                            .onTapGesture {
+                                appState.currentGalaxy = Galaxy(
+                                    serverId: summary.galaxyId,
+                                    title: summary.name,
+                                    destination: "",
+                                    startDate: Date(),
+                                    endDate: Date(),
+                                    totalDay: 0,
+                                    galaxyIcon: summary.emojiResourceName,
+                                    stars: []
+                                )
+                                dismiss()
+                            }
+                        }
                     }
-                }.padding(.horizontal,22)
+                }
+                .padding(.horizontal, 22)
                 Spacer()
                 HStack(spacing: 9){
                     PrimaryButton(title: "히스토리", action: {})
@@ -91,12 +124,21 @@ struct GalaxyCheckView: View {
                     PrimaryButton(title: "은하 생성하기",backgroundColor: .purpleC495E0 , action: {showCreateGalaxy = true})
                 }
                 .padding(.horizontal,40)
-                
+                .onAppear {
+                    Task {
+                        await viewModel.fetchGalaxyList()
+                    }
+                }
                 // 은하 생성 뷰로 이동
                 .fullScreenCover(isPresented: $showCreateGalaxy) {
-                    CreateGalaxyView { galaxy in
-                            galaxies.append(galaxy)
+                    CreateGalaxyView(
+                        viewModel: CreateGalaxyViewModel(container: container),
+                        onFinish: { _ in
+                            Task {
+                                await viewModel.fetchGalaxyList()
+                            }
                         }
+                    )
                 }
             }
         }
@@ -106,6 +148,13 @@ struct GalaxyCheckView: View {
 
 
 #Preview {
-    GalaxyCheckView(galaxyList: [Galaxy.mock])
+    let container = DIContainer.preview
+    let appState = AppState()
+
+    GalaxyCheckView(container: container)
+        .environmentObject(container)
+        .environmentObject(appState)
 }
+
+
 
