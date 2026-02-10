@@ -134,14 +134,17 @@ struct HomeGalaxyView: View {
                 }
             }
         }
+        /*
         .fullScreenCover(isPresented: $showWriteResult) {
             WriteResultView(
+                
                 onFinish: {
                     showWriteResult = false
                     showCreateResultCard = true
                 }
             )
         }
+        */
         .fullScreenCover(isPresented: $showCreateResultCard) {
             CreateResultCardView(
                 onFinish: {
