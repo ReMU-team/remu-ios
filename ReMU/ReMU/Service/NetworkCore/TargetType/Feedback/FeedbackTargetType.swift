@@ -9,13 +9,13 @@ import Foundation
 import Alamofire
 import Moya
 
-enum FeedbackTargetType{
+enum FeedbackTargetType {
     case createFeedback(accessToken: String, galaxyId: Int)
     case fetchFeedback(accessToken: String, galaxyId: Int)
     case patchFeedback(accessToken: String, galaxyId: Int)
 }
 
-extension FeedbackTargetType: APITargetType{
+extension FeedbackTargetType: APITargetType {
     var path: String {
         switch self {
         case .createFeedback(_,let galaxyId):
@@ -26,8 +26,8 @@ extension FeedbackTargetType: APITargetType{
             return "/api/v1/galaxies/\(galaxyId)/feedback"
         }
     }
-    var method: Moya.Method{
-        switch self{
+    var method: Moya.Method {
+        switch self {
         case .createFeedback:
             return .post
         case .fetchFeedback:
@@ -45,7 +45,7 @@ extension FeedbackTargetType: APITargetType{
         }
     }
     
-    var task: Moya.Task{
+    var task: Moya.Task {
         return .requestPlain
         }
     }
