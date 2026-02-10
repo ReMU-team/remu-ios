@@ -31,6 +31,9 @@ class AccessTokenRefresher: @unchecked Sendable, RequestInterceptor {
         completion: @escaping (Swift.Result<URLRequest, any Error>) -> Void
     ) {
         var urlRequest = urlRequest
+        
+        print("🔑 accessToken:", tokenProviding.accessToken ?? "nil")
+
         if let accessToken = tokenProviding.accessToken {
             urlRequest.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }

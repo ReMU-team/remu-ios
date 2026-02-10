@@ -22,11 +22,11 @@ extension UserTargetType: APITargetType {
     var path: String {
         switch self {
         case .patchUser, .checkUserProfile:
-                return "/profile"
+                return "api/v1/users/profile"
         case .verifyDuplicateName:
-            return "/name/exists"
+            return "api/v1/users/names/availability"
         case .deleteUser:
-            return "/account"
+            return "api/v1/users/account"
         }
     }
     

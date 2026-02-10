@@ -9,9 +9,10 @@ import Foundation
 import Security
 
 final class UserSessionKeychainServiceImpl: UserSessionKeychainService {
+    static let shared = UserSessionKeychainServiceImpl()
     private let manager: KeychainManager
     
-    init(manager: KeychainManager = .shared) {
+    private init(manager: KeychainManager = .shared) {
         self.manager = manager
     }
     

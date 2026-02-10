@@ -12,8 +12,8 @@ struct CreateProfileView: View {
     @StateObject private var viewModel =
             ProfileViewModel(
                 networkService: NetworkServiceImpl(
-                    userSessionKeychain: UserSessionKeychainServiceImpl()
-                )
+                        userSessionKeychain: UserSessionKeychainServiceImpl.shared
+                    )
             )
 
     let onBack: () -> Void

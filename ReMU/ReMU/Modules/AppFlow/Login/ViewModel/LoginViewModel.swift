@@ -33,13 +33,36 @@ class LoginViewModel {
     // MARK: - Func
     @MainActor
     func kakaoLogin() async {
-        do {
-            kakaoLoginManager.kakaoLogin { [weak self] tokens in
-                guard let self = self, let tokens = tokens else {
-                    print("토큰을 받아오지 못했습니다.")
+//        do {
+//            kakaoLoginManager.kakaoLogin { [weak self] tokens in
+//                guard let self = self, let tokens = tokens else {
+//                    print("토큰을 받아오지 못했습니다.")
+//                    return
+//                }
+//            }
+//        }
+        kakaoLoginManager.kakaoLogin { [weak self] tokens in
+                guard
+                    let self = self,
+                    let tokens = tokens,
+                    let accessToken = tokens.accessToken,
+                    let refreshToken = tokens.refreshToken
+                else {
+                    print("❌ 토큰을 받아오지 못했습니다.")
                     return
                 }
+
+                let session = UserInfo(
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                )
+
+                let success = self.keychain.saveSession(
+                    session,
+                    for: .userSession
+                )
+
+                print(success ? "✅ 세션 저장 성공" : "❌ 세션 저장 실패")
             }
-        }
     }
 }
