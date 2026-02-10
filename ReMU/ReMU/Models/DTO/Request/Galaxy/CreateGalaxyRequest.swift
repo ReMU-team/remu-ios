@@ -10,7 +10,6 @@ import Foundation
 struct CreateGalaxyRequest: Codable {
     let name: String
     let startDate: Date
-    let arrivalDate: Date
     let endDate: Date
     let emojiResourceName: String
     let googlePlaceId: String

@@ -11,7 +11,6 @@ struct CreateGalaxyItem : Codable {
     let galaxyId: Int
     let name: String
     let startDate: String
-    let arrivalDate: String
     let endDate: String
 }
 

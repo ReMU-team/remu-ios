@@ -60,9 +60,8 @@ extension GalaxyTargetType: APITargetType {
         switch self {
         case .fetchGalaxyDetail, .deleteGalaxy:
             return .requestPlain
-        case let .fetchGalaxyList(userId, page, size):
-            var params: [String: Any] = [
-                "userId": userId,
+        case let .fetchGalaxyList(_, page, size):
+            let params: [String: Any] = [
                 "page": page,
                 "size": size
             ]
@@ -88,7 +87,6 @@ extension GalaxyTargetType: APITargetType {
                     "emojiResourceName": "string",
                     "dDay": 0,
                     "startDate": "2026-01-27",
-                    "arrivalDate": "2026-01-27",
                     "endDate": "2026-01-27",
                     "placeName": "string"
                   }

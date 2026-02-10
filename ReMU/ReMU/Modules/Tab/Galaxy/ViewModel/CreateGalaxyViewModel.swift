@@ -54,7 +54,6 @@ final class CreateGalaxyViewModel: ObservableObject {
         let request = CreateGalaxyRequest(
             name: galaxyName,
             startDate: startDate,
-            arrivalDate: startDate,
             endDate: endDate,
             emojiResourceName: icon,
             googlePlaceId: "temp",
