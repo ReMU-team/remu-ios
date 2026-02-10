@@ -17,5 +17,5 @@ enum Config{
 //            }
 //            return baseURL
 //        }()
-    static let baseURl: String = "https://api.example.com"
+    static let baseURL: String = "https://api.example.com"
 }

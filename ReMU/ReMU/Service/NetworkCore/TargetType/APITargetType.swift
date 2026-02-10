@@ -14,7 +14,7 @@ protocol APITargetType: TargetType {}
 extension APITargetType {
     
     var baseURL: URL {
-        guard let url = URL(string: Config.baseURl) else {
+        guard let url = URL(string: Config.baseURL) else {
             fatalError("Invail baseURL")
         }
             return url
