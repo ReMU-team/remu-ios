@@ -10,9 +10,9 @@ import Security
 
 final class UserSessionKeychainServiceImpl: UserSessionKeychainService {
     static let shared = UserSessionKeychainServiceImpl()
-    private let manager: KeychainManager
+    let manager: KeychainManager
     
-    private init(manager: KeychainManager = .shared) {
+    init(manager: KeychainManager = .shared) {
         self.manager = manager
     }
     
