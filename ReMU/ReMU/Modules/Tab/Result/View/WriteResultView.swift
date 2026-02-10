@@ -13,16 +13,21 @@ struct WriteResultView: View {
     
     let onFinish: () -> Void
     
+    init(userId: Int, galaxyId: Int, onFinish: @escaping () -> Void) {
+        self.onFinish = onFinish
+        _viewModel = StateObject(
+            wrappedValue: ResultViewModel(
+                userId: userId,
+                galaxyId: galaxyId
+            )
+        )
+    }
+    
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
     // 뷰모델
-    @StateObject private var viewModel = ResultViewModel()
-    
-    @State private var pledge1: String = ""
-    @State private var isChecked1: Bool = false
-    @State private var isChecked2: Bool = false
-    @State private var review: String = ""
+    @StateObject private var viewModel: ResultViewModel
     
     var body: some View {
         VStack {
@@ -166,9 +171,10 @@ struct WriteResultView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "회고 분석하기", backgroundColor: .purpleC495E0
-            ) {
-                onFinish()
+            PrimaryButton(title: "회고 분석하기", backgroundColor: .purpleC495E0) {
+                viewModel.submitResult {
+                    onFinish()
+                }
             }
             .padding(.bottom, 54)
             
@@ -180,8 +186,11 @@ struct WriteResultView: View {
 
 #Preview {
     WriteResultView(
+        userId: 1, // 가짜 값 (실제 실행 시 반영되는 값X)
+        galaxyId: 42,
         onFinish: {
             print("다음 버튼")
         }
     )
 }
+

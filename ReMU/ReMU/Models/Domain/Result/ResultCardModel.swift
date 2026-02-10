@@ -27,5 +27,3 @@ struct Review: Identifiable {
     var reviewContent: String   // 회고 내용
     var isFulfilled: Bool
 }
-
-
