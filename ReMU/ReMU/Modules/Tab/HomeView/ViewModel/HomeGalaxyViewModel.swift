@@ -116,12 +116,20 @@ class HomeViewModel: ObservableObject {
 
     // MARK: - 홈 진입용 메인 로딩 함수
     @MainActor
-    func loadHome() async {
+    func loadHome(galaxyId: Int) async {
         isLoading = true
+        defer { isLoading = false }
 
-        await fetchGalaxyList()
-
-        isLoading = false
+        await fetchGalaxyDetail(galaxyId: galaxyId)
+    }
+    
+    //은하 선택이 없는 상태로 홈을 리셋하는 함수
+    @MainActor
+    func clear() {
+        galaxyData = nil
+        partitionedStars = []
+        selectedRecordCard = nil
+        isShowingRecordCard = false
     }
 
     

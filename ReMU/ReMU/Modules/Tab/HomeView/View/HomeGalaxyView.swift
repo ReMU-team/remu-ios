@@ -14,9 +14,9 @@ struct HomeGalaxyView: View {
     
     @StateObject private var viewModel: HomeViewModel
 
-    init() {
+    init(container: DIContainer) {
         _viewModel = StateObject(
-            wrappedValue: HomeViewModel(container: DIContainer.preview)
+            wrappedValue: HomeViewModel(container: container)
         )
     }
     
@@ -40,7 +40,7 @@ struct HomeGalaxyView: View {
             VStack {
                 if viewModel.isLoading {
                         ProgressView()
-                    } else if viewModel.galaxyData == nil {
+                    } else if appState.currentGalaxy == nil {
                         initialHomeView
                             .transition(.opacity)
                     } else {
@@ -96,17 +96,20 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            Task {
-                await viewModel.loadHome()
-            }
+            syncHomeWithCurrentGalaxy()
         }
-
+        .onChange(of: appState.currentGalaxy?.serverId) { _ in
+            syncHomeWithCurrentGalaxy()
+        }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
-            CreateGalaxyView { galaxy in
-                appState.currentGalaxy = galaxy
-                showCreateGalaxy = false
-            }
+            CreateGalaxyView(
+                viewModel: CreateGalaxyViewModel(container: container),
+                onFinish: { galaxy in
+                    appState.currentGalaxy = galaxy
+                    showCreateGalaxy = false
+                }
+            )
         }
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
@@ -114,8 +117,9 @@ struct HomeGalaxyView: View {
         .fullScreenCover(isPresented: $showMenu) {
             MenuView(container: container)
         }
-        .fullScreenCover (isPresented: $showGalaxyList) {
-            GalaxyCheckView(galaxyList: [])
+        .fullScreenCover(isPresented: $showGalaxyList) {
+            GalaxyCheckView(container: container)
+                .environmentObject(container)
         }
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
@@ -167,6 +171,17 @@ struct HomeGalaxyView: View {
         }
     }
     
+    // MARK: - syncHomeWithCurrentGalaxy
+    private func syncHomeWithCurrentGalaxy() {
+        Task {
+            if let galaxy = appState.currentGalaxy {
+                await viewModel.loadHome(galaxyId: galaxy.serverId)
+            } else {
+                viewModel.clear()
+            }
+        }
+    }
+
     // MARK: - GalaxyView
     private var GalaxyView: some View {
         // 전체를 감싸는 GeometryReader를 사용해 화면의 실제 크기를 확보합니다.
@@ -183,7 +198,6 @@ struct HomeGalaxyView: View {
                             scale: viewModel.scale,
                             onSelectStar: viewModel.onSelectStar
                         )
-
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         
                     }
@@ -359,8 +373,12 @@ struct HomeGalaxyView: View {
 }
 
 #Preview {
-    HomeGalaxyView()
-        .environmentObject(DIContainer.preview)
-        .environmentObject(AppState())
+    let container = DIContainer.preview
+    let appState = AppState()
+
+    HomeGalaxyView(container: container)
+        .environmentObject(container)
+        .environmentObject(appState)
 }
+
 
