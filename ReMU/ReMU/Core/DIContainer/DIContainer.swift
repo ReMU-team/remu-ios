@@ -33,8 +33,7 @@ final class DIContainer: ObservableObject{
     
     init(
         router: NavigationRouter = .init(),
-        userSessionKeychain: UserSessionKeychainService = UserSessionKeychainServiceImpl()
-    ) {
+        userSessionKeychain: UserSessionKeychainService = UserSessionKeychainServiceImpl.shared    ) {
         self.router = router
         self.userSessionKeychain = userSessionKeychain
         self.networkService = NetworkServiceImpl(userSessionKeychain: userSessionKeychain)
@@ -47,7 +46,7 @@ extension DIContainer {
     static var preview: DIContainer {
         DIContainer(
             router: NavigationRouter(),
-            userSessionKeychain: UserSessionKeychainServiceImpl()
+            userSessionKeychain: UserSessionKeychainServiceImpl.shared
         )
     }
 }

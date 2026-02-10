@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RootView: View {
-    @StateObject private var appState = AppState()
-    @StateObject private var container: DIContainer = .init()
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var container: DIContainer
 
     
     var body: some View {
@@ -28,11 +28,9 @@ struct RootView: View {
             AuthFlowView {
                 appState.route = .main // 인증/온보딩 끝
             }
-            .environmentObject(appState)
             
         case .main:
             AppFlowView()
-                .environmentObject(appState)
             
         }
     }
