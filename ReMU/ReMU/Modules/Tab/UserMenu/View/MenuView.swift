@@ -173,7 +173,9 @@ struct MenuView: View {
 
 
             Button {
-                AlertManager.shared.show(.logout {})
+                AlertManager.shared.show(.logout {
+                    viewModel.logout(appState: appState)
+                })
             } label: {
                 Text("로그아웃")
                     .font(.pt16)

@@ -73,6 +73,13 @@ final class MenuViewModel: ObservableObject {
             AlertManager.shared.showError(message: "탈퇴에 실패했어요.")
         }
     }
+    
+    // MARK: - 로그아웃 API
+    func logout(appState: AppState) {
+        tokenProvider.clearSession()
+        appState.route = .auth
+    }
+
 
 }
 
