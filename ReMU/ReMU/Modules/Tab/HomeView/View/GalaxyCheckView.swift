@@ -119,10 +119,11 @@ struct GalaxyCheckView: View {
                 .fullScreenCover(isPresented: $showCreateGalaxy) {
                     CreateGalaxyView(
                         viewModel: CreateGalaxyViewModel(container: container),
-                        onFinish: { _ in
-                            Task {
-                                await viewModel.fetchGalaxyList()
-                            }
+                        onFinish: { galaxy in
+                            appState.currentGalaxyId = galaxy.serverId
+                            LastGalaxyStore.save(galaxy.serverId)
+                            showCreateGalaxy = false
+                            dismiss()
                         }
                     )
                 }

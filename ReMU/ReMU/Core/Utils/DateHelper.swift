@@ -50,17 +50,12 @@ extension String {
         formatter.timeZone = .current
         return formatter.date(from: self)
     }
+    
+    
 }
-
-
 
 // 날짜 범위 표시 텍스트
 func dateRangeText(start: Date?, end: Date?) -> String? {
     guard let start, let end else { return nil }
     return "\(start.uiFormat) ~ \(end.uiFormat)"
-}
-
-// 기록 카드에서 쓰이는 여행 기간 UI
-func travelPeriodText(start: Date, end: Date) -> String {
-    "\(start.serverFormat)-\(end.serverFormat)"
 }

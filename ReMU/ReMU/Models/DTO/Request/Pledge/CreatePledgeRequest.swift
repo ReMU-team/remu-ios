@@ -10,5 +10,5 @@ import Foundation
 struct CreatePledgeRequest: Codable {
     let emojiId: String
     let illustId: String
-    let content: [String]
+    let contents: [String]
 }

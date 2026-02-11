@@ -9,9 +9,11 @@ import SwiftUI
 
 struct CardOverlayView: View {
     @Binding var selectedTab: CardTab
+    let pledgeCard: PledgeCardModel?
     let onClose: () -> Void
     let onWriteResult: () -> Void
-    
+    let onEdit: () -> Void
+
     var body: some View {
         ZStack {
             
@@ -57,8 +59,19 @@ struct CardOverlayView: View {
     @ViewBuilder
     private var content: some View {
         switch selectedTab {
+            
         case .pledge:
-            PledgeCardFlip()
+            if let pledgeCard {
+                PledgeCardFlip(
+                    card: pledgeCard,
+                    onEdit: onEdit
+                )
+
+            } else {
+                Text("다짐 카드가 없습니다")
+                    .foregroundStyle(.white)
+            }
+            
         case .review:
             ReviewCardGuideView{
                 onWriteResult()
@@ -150,6 +163,7 @@ struct CardOverlayView: View {
 }
 
 
+// MARK: - Preview
 #Preview {
     CardOverlayPreview()
 }
@@ -157,19 +171,44 @@ struct CardOverlayView: View {
 private struct CardOverlayPreview: View {
     @State private var selectedTab: CardTab = .pledge
 
+    private var mockGalaxy: Galaxy {
+        Galaxy(
+            serverId: 1,
+            title: "경주 여행",
+            destination: "경주",
+            startDate: Date(),
+            endDate: Date().addingTimeInterval(60*60*24*3),
+            totalDay: 4,
+            galaxyIcon: "galaxy_1",
+            stars: []
+        )
+    }
+
+    private var mockCard: PledgeCardModel {
+        PledgeCardModel(
+            galaxy: mockGalaxy,
+            emojiImageName: "emoji_1",
+            pledges: [
+                Pledge(resolutionId: 1, content: "외국인이랑 스몰토킹하기"),
+                Pledge(resolutionId: 2, content: "현지인 맛집 가보기")
+            ]
+
+        )
+    }
+
     var body: some View {
         ZStack {
-            // 홈 배경 흉내 (어두운 배경 위에 오버레이 느낌)
             Color.blue212148
                 .ignoresSafeArea()
 
             CardOverlayView(
                 selectedTab: $selectedTab,
-                onClose: {
-                    print("닫기 눌림")
-                },
-                onWriteResult: {}
+                pledgeCard: mockCard,
+                onClose: { print("닫기 눌림") },
+                onWriteResult: {},
+                onEdit: { print("수정 눌림") }
             )
+
         }
     }
 }

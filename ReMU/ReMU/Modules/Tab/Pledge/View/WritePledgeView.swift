@@ -8,28 +8,39 @@
 import SwiftUI
 
 struct WritePledgeView: View {
+    let galaxy: Galaxy
+    let mode: PledgeMode
+    let existingCard: PledgeCardModel?
     let onFinish: () -> Void
+    
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var container: DIContainer
     
     // 뷰모델 연결
     @StateObject private var viewModel: PledgeViewModel
     
-    init(onFinish: @escaping () -> Void) {
-        self.onFinish = onFinish
-        _viewModel = StateObject(
-            wrappedValue: PledgeViewModel(
-                networkService: DIContainer.preview.networkService
-            )
-        )
-    }
-    
     // 다음 버튼
     @State private var goNext = false
     
-    
-    
+    init(
+        galaxy: Galaxy,
+        container: DIContainer,
+        mode: PledgeMode = .create,
+        existingCard: PledgeCardModel? = nil,
+        onFinish: @escaping () -> Void
+    ) {
+        self.galaxy = galaxy
+        self.mode = mode
+        self.existingCard = existingCard
+        self.onFinish = onFinish
+
+        _viewModel = StateObject(
+            wrappedValue: PledgeViewModel(
+                networkService: container.networkService
+            )
+        )
+    }
+
     var body: some View {
         VStack {
             navigationBar
@@ -47,9 +58,24 @@ struct WritePledgeView: View {
                 nextButton // 버튼 뒤로도 내용이 보이게 설정해놓음
             }
         }
+        .onAppear {
+            if mode == .edit,
+               let card = existingCard {
+                viewModel.setExistingCard(card)
+            }
+        }
         .navigationDestination(isPresented: $goNext) {
-                    CreatePledgeCardView(onFinish: onFinish)
+            CreatePledgeCardView(
+                galaxy: galaxy,
+                viewModel: viewModel,
+                onFinish: {
+                    goNext = false      // 먼저 CreatePledgeCardView 닫고
+                    dismiss()           // WritePledgeView도 닫고
+                    onFinish()          // Home으로 알림
                 }
+            )
+        }
+
         .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
         
     }
@@ -98,26 +124,26 @@ struct WritePledgeView: View {
             
             
             // 다짐 삭제/추가 버튼
-            HStack {
-                Spacer()
-                
-                // 다짐 삭제하기
-                Button {
-                    viewModel.removeLastPledge()
-                } label: {
-                    Image("minus_icon")
-                }
-                .disabled(!viewModel.canRemove)
+            if mode == .create {
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        viewModel.removeLastPledge()
+                    } label: {
+                        Image("minus_icon")
+                    }
+                    .disabled(!viewModel.canRemove)
+                    
+                    Button(action: viewModel.addPledge) {
+                        Image("plus_icon")
+                    }
+                    .disabled(!viewModel.canAdd)
 
-                
-                // 다짐 추가하기
-                Button(action: viewModel.addPledge) {
-                    Image("plus_icon")
+                    
                 }
-                .disabled(!viewModel.canAdd)
-
-                
             }
+
         }
     }
     
@@ -162,11 +188,26 @@ struct WritePledgeView: View {
         VStack {
             Spacer()
             // 다짐 1개 이상 작성 시 클릭 가능
-            PrimaryButton(title: "다음",
-                          backgroundColor: viewModel.isNextEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4)
+            PrimaryButton(
+                title: mode == .create ? "다음" : "수정하기",
+                backgroundColor: viewModel.isNextEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4)
             ) {
-                goNext = true
+                if mode == .create {
+                    goNext = true
+                } else {
+                    viewModel.patchPledge(galaxy: galaxy) { result in
+                        switch result {
+                        case .success:
+                            LastGalaxyStore.save(galaxy.serverId) 
+                            dismiss()
+                            onFinish()
+                        case .failure(let error):
+                            print("❌ 수정 실패:", error)
+                        }
+                    }
+                }
             }
+
             .disabled(!viewModel.isNextEnabled)
             .padding(.bottom, 54)
             
@@ -177,13 +218,29 @@ struct WritePledgeView: View {
 }
 
 #Preview {
+    let container = DIContainer.preview
+    
+    let mockGalaxy = Galaxy(
+        serverId: 1,
+        title: "경주 여행",
+        destination: "경주",
+        startDate: Date(),
+        endDate: Date().addingTimeInterval(60*60*24*3),
+        totalDay: 4,
+        galaxyIcon: "galaxy_1",
+        stars: []
+    )
+
     NavigationStack {
         WritePledgeView(
+            galaxy: mockGalaxy,
+            container: container,
             onFinish: {
-                print("finish")
+                print("다짐 작성 완료")
             }
         )
-        .environmentObject(DIContainer.preview)
+        .environmentObject(container)
     }
 }
+
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Galaxy: Identifiable {
+struct Galaxy: Identifiable, Hashable {
     let id: UUID = UUID() // 로컬 식별 id (UI용)
     let serverId: Int // 서버 식별 id (API용)
     
@@ -25,14 +25,19 @@ extension Galaxy {
     var month: Int {
         Calendar.current.component(.month, from: startDate)
     }
-
+    
     var day: Int {
         Calendar.current.component(.day, from: startDate)
+    }
+    
+    // 여행 기간 UI
+    var travelPeriodText: String {
+        "\(startDate.uiFormat)-\(endDate.uiFormat)"
     }
 }
 
 // 별 리스트
-struct Star {
+struct Star: Hashable {
     let serverId: Int
     let name: String // 별 이름
     let dayOffset: Int // ?일차 (ex.DAY3)

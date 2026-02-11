@@ -78,23 +78,27 @@ class ResultViewModel: ObservableObject {
     }
     
     // MARK: - Result API 수정 함수
-    func patchResult() {
-        guard let galaxyId = appState.currentGalaxyId else { return }
-        isLoading = true
-        let request = makePatchResultRequest()
-        resultService.patchResult(galaxyId: galaxyId, request: request) { [weak self] result in
-            guard let self else { return }
+func patchResult(completion: @escaping () -> Void = {}) {
+    guard let galaxyId = appState.currentGalaxyId else { return }
+
+    isLoading = true
+    let request = makePatchResultRequest()
+
+    resultService.patchResult(galaxyId: galaxyId, request: request) { [weak self] result in
+        guard let self else { return }
+
+        DispatchQueue.main.async {
             switch result {
             case .success:
-                self.fetchResult() // 수정 후 회고 + AI 피드백 갱신
+                self.fetchResult()
+                completion()
             case .failure(let error):
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.errorMessage = error.localizedDescription
-                }
+                self.isLoading = false
+                self.errorMessage = error.localizedDescription
             }
         }
     }
+}
 
     
     // MARK: - 생성 Mapping
