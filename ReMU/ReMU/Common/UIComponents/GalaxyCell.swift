@@ -25,7 +25,7 @@ struct GalaxyCell: View {
             // 은하 이름표 (캡슐 디자인 적용)
             Text(title)
                 .font(.pt12)
-                .foregroundColor(.white)
+                .foregroundStyle(Color.white)
                 .lineLimit(1) // 한 줄 유지
         }
     }

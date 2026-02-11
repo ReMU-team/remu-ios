@@ -299,7 +299,7 @@ struct HomeGalaxyView: View {
                         .frame(width: 24,height: 24)
                 }
             }
-            .foregroundColor(.white)
+            .foregroundStyle(Color.white)
         }
         .padding(.top, 16)
     }
@@ -315,12 +315,12 @@ struct HomeGalaxyView: View {
                         .padding(.leading, 7)
                 }
             }
-            .foregroundColor(.white)
+            .foregroundStyle(Color.white)
             
             if let data = viewModel.galaxyData {
                 Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
-                    .foregroundColor(.white)
+                    .foregroundStyle(Color.white)
             }
         }
         .padding(.top, 40)
@@ -339,13 +339,13 @@ struct HomeGalaxyView: View {
                         .resizable()
                         .frame(width: 35, height: 35)
                 }
-                .foregroundColor(.white) // ZStack 내부의 색상을 결정
+                .foregroundStyle(Color.white) // ZStack 내부의 색상을 결정
             }
             .padding(.bottom, 16) // Button 하단에 여백 추가 (정상 작동)
             
             Text("첫 은하 생성하기")
                 .font(.pt18)
-                .foregroundColor(.white)
+                .foregroundStyle(Color.white)
         }
     }
     
@@ -354,12 +354,12 @@ struct HomeGalaxyView: View {
         Button (action: {showWriteRecord = true}) {
             ZStack {
                 Circle()
-                    .foregroundColor(.white.opacity(0.3))
+                    .foregroundStyle(Color.white.opacity(0.3))
                     .frame(width: 54, height: 54)
                 Image(systemName: "plus")
                     .resizable()
                     .frame(width: 18, height: 18)
-                    .foregroundColor(.white)
+                    .foregroundStyle(Color.white)
             }
             // 리퀴드 글래스 효과 적용
             .glassEffect(.clear.interactive(), in: .capsule)

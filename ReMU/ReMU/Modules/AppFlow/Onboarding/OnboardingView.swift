@@ -35,7 +35,7 @@ struct OnboardingView: View {
                 }
             } label: {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.grayScale9)
+                    .foregroundStyle(Color.grayScale9)
             }
             
             Spacer()

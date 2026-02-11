@@ -66,17 +66,17 @@ struct GalaxyCheckView: View {
                     
                 }
                 .padding(22)
-                .foregroundColor(.white)
+                .foregroundStyle(Color.white)
                 Text("나의 우주")
                     .font(.pt24)
-                    .foregroundColor(.white)
+                    .foregroundStyle(Color.white)
                     .padding(.bottom,31)
                 HStack{
                     Spacer()
                     Button(action:{}){
                         Text("은하 편집")
                             .font(.pt12)
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                             .padding(.horizontal, 8) // 텍스트 좌우 여백 (글자가 길어져도 이 간격은 유지됨)
                             .padding(.vertical, 4)
                             .background(Capsule().fill(Color.white.opacity(0.3))

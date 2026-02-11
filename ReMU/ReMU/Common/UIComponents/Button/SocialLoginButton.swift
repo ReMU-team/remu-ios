@@ -19,7 +19,7 @@ struct SocialLoginButton: View {
                 Image(type.iconName)
                 Text(type.title)
                     .font(.pt16)
-                    .foregroundColor(type.textColor)
+                    .foregroundStyle(type.textColor)
 
                 Spacer()
             }
