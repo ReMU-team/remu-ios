@@ -10,13 +10,15 @@ import Combine
 import Moya
 
 struct MenuView: View {
-
+    
+    @State private var imageLoader = ImageLoaderServiceImpl()
+    @State private var showEditProfile = false
     @State private var isOn = false
     @StateObject private var viewModel: MenuViewModel
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appState: AppState
-
-
+    
+    
     init(container: DIContainer) {
         _viewModel = StateObject(
             wrappedValue: MenuViewModel(
@@ -24,11 +26,11 @@ struct MenuView: View {
                 authProvider: container.apiProviderStore.auth(),
                 tokenProvider: container.tokenProvider
             )
-
+            
         )
     }
-
-
+    
+    
     var body: some View {
         VStack(alignment: .leading) {
             
@@ -65,47 +67,92 @@ struct MenuView: View {
         .task {
             await viewModel.fetchProfile()
         }
-    }
-        
+        .fullScreenCover(isPresented: $showEditProfile) {
+            if let profile = viewModel.profile {
+                EditProfileView(
+                    initialName: profile.name,
+                    initialIntroduction: profile.introduction ?? "",
+                    imageUrl: profile.imageUrl,
+                    onBack: {
+                        showEditProfile = false
+                    },
+                    onFinish: {
+                        showEditProfile = false
+                        _Concurrency.Task {
+                            await viewModel.fetchProfile()
+                        }
+                    }
+                )
+            }
+        }
 
+    }
+    
+    
+    
+    
     // MARK: - Profile
     private var profileView: some View {
         Group {
             if viewModel.isLoading {
                 ProgressView()
+                
             } else if let profile = viewModel.profile {
+                
                 HStack {
-                    Image("StandardProfile")
-                        .resizable()
-                        .frame(width: 56, height: 56)
-
+                    
+                    ZStack {
+                        switch imageLoader.state {
+                            
+                        case .idle, .loading:
+                            Image("StandardProfile")
+                                .resizable()
+                                .scaledToFill()
+                            
+                        case .success(let image):
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                            
+                        case .failure:
+                            Image("StandardProfile")
+                                .resizable()
+                                .scaledToFill()
+                        }
+                    }
+                    .frame(width: 56, height: 56)
+                    .clipShape(Circle())
+                    .task {
+                        await imageLoader.loadImage(from: profile.imageUrl)
+                    }
+                    
                     VStack(alignment: .leading, spacing: 16) {
                         Text(profile.name)
                             .font(.pt16)
-                            .foregroundStyle(Color.grayScale9)
-
+                        
                         Text(profile.introduction ?? "")
                             .font(.pt13)
-                            .foregroundStyle(Color.grayScale7)
                     }
                     .padding(.horizontal, 16)
-
+                    
                     Spacer()
-
-                    Button(action: {}) {
+                    
+                    Button {
+                        showEditProfile = true
+                    } label: {
                         Image("pencil.line")
-                            .foregroundStyle(Color.grayScale7)
                     }
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 32)
+                
             } else if viewModel.hasError {
                 Text("프로필을 불러오지 못했어요")
-                    .foregroundStyle(Color.false3)
             }
         }
     }
-
+    
+    
     // MARK: - Alarm
     private var alarmSection: some View {
         HStack {
@@ -113,9 +160,9 @@ struct MenuView: View {
                 .resizable()
                 .frame(width: 24, height: 24)
                 .foregroundStyle(Color.grayScale9)
-
+            
             Spacer()
-
+            
             Toggle("알림 설정", isOn: $isOn)
                 .font(.pt16)
                 .foregroundStyle(Color.grayScale9)
@@ -128,7 +175,7 @@ struct MenuView: View {
         }
         .padding(.bottom, 24)
     }
-
+    
     // MARK: - Menu Section
     private var menuSection: some View {
         VStack(spacing: 24) {
@@ -137,7 +184,7 @@ struct MenuView: View {
             menuRow(icon: nil, title: "앱 버전")
         }
     }
-
+    
     private func menuRow(icon: String?, title: String) -> some View {
         HStack {
             if let icon {
@@ -147,20 +194,20 @@ struct MenuView: View {
             } else {
                 Color.clear.frame(width: 24, height: 24)
             }
-
+            
             Text(title)
                 .font(.pt16)
                 .foregroundStyle(Color.grayScale9)
-
+            
             Spacer()
-
+            
             Image("rightArrow")
         }
     }
-
+    
     // MARK: - Bottom Buttons
     private var bottomButtons: some View {
-        VStack(alignment: .center, spacing: 24) {
+        VStack(spacing: 24) {
             Button {
                 AlertManager.shared.show(.delete {
                     _Concurrency.Task {
@@ -171,24 +218,26 @@ struct MenuView: View {
                 Text("탈퇴하기")
                     .font(.pt16)
                     .foregroundStyle(Color.false3)
+                
             }
-
-
+            
+            
             Button {
                 AlertManager.shared.show(.logout {
                     _Concurrency.Task {
                         await viewModel.logout(appState: appState)
                     }
                 })
-
+                
             } label: {
                 Text("로그아웃")
                     .font(.pt16)
                     .foregroundStyle(Color.grayScale9)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
-
+    
     // MARK: - Navigation
     private var navigationBar: some View {
         CustomNavigationBar(
