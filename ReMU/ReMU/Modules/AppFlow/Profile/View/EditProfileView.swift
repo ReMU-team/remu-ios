@@ -6,13 +6,28 @@
 //
 
 import SwiftUI
+import PhotosUI
+import Kingfisher
 
 struct EditProfileView: View {
 
-    
-    let onBack: () -> Void // 뒤로가기 콜백 (온보딩 첫화면으로 이동)
-    let onFinish: () -> Void // 완료 콜백 (메인 화면으로 이동)
-    
+    @StateObject private var viewModel =
+        ProfileViewModel(
+            networkService: NetworkServiceImpl(
+                userSessionKeychain: UserSessionKeychainServiceImpl.shared
+            )
+        )
+
+    @State private var selectedItem: PhotosPickerItem? = nil
+
+
+    let initialName: String
+    let initialIntroduction: String
+    let imageUrl: String?
+
+    let onBack: () -> Void
+    let onFinish: () -> Void
+
     var body: some View {
         ZStack {
             // 배경 그라데이션
@@ -30,57 +45,23 @@ struct EditProfileView: View {
             
             VStack {
                 navigationBar
-
+                    .padding(.horizontal, -40)
                 Spacer()
+                profileImageCircle
+                nameAndIntroduction
+                Spacer()
+                finishButton
                 
-                // TODO: 포토피커 추가
-                Image("StandardProfile")
-                Text("사진 편집")
-                    .font(.pt12)
-                    .foregroundStyle(.purpleC495E0)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .frame(height: 24, alignment: .center)                    .overlay(
-                        RoundedRectangle(cornerRadius: 26)
-                    .inset(by: 0.5)
-                    .stroke(.purpleC495E0)
-
-                )
-                
-                
-                
-                // MARK: - 이름 적기
-                VStack (alignment: .leading, spacing: 5) {
-                    
-                    Text("닉네임적는칸")
-                    
-
-                    
-                    // MARK: - 한 줄 소개
-                    VStack (alignment: .leading, spacing: 5) {
-                        Text("한줄소개적는칸")
-                        
-                    }
-                    Spacer()
-                    
-                    // MARK: - 시작 버튼
-                    PrimaryButton(
-                        title: "수정하기",
-                        backgroundColor:
-                            .purpleC495E0
-                    ) {
-                        onFinish()
-                    }
-
-                    .padding(.bottom, 54)
-                }
-                .padding(.horizontal,40)
             }
-            
-            
+            .padding(.horizontal, 40)
+        }
+        .onAppear {
+            // 기존 값 세팅
+            viewModel.username = initialName
+            viewModel.description = initialIntroduction
         }
     }
-    // MARK: - navigationBar
+    // MARK: - Navigation
     private var navigationBar: some View {
         HStack {
             Button {
@@ -89,20 +70,127 @@ struct EditProfileView: View {
                 Image(systemName: "chevron.left")
                     .foregroundStyle(.white)
             }
-            
             Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
     }
+    
+    // MARK: - ProfileImage
+    private var profileImageCircle: some View {
+        VStack {
+            ZStack {
+
+                // 새 이미지 선택했으면 그걸 우선 표시
+                if let data = viewModel.selectedImageData,
+                   let uiImage = UIImage(data: data) {
+
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+
+                }
+                // 서버 이미지
+                else if let urlString = imageUrl,
+                        let url = URL(string: urlString),
+                        !urlString.isEmpty {
+
+                    KFImage(url)
+                        .placeholder {
+                            Image("StandardProfile")
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        .resizable()
+                        .scaledToFill()
+
+                }
+                // 기본 이미지
+                else {
+                    Image("StandardProfile")
+                        .resizable()
+                        .scaledToFill()
+                }
+            }
+            .frame(width: 132, height: 132)
+            .clipShape(Circle())
+
+            // 사진 선택 버튼
+            PhotosPicker(
+                selection: $selectedItem,
+                matching: .images
+            ) {
+                Text("사진 편집")
+                    .font(.pt12)
+                    .foregroundStyle(.purpleC495E0)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 26)
+                            .stroke(.purpleC495E0)
+                    )
+            }
+            .task(id: selectedItem) {
+                guard let item = selectedItem else { return }
+
+                if let data = try? await item.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+
+                    // 리사이즈 (최대 600px)
+                    let resized = image.resized(maxSize: 600)
+
+                    // 강한 압축
+                    if let compressed = resized.jpegData(compressionQuality: 0.2) {
+                        viewModel.selectedImageData = compressed
+                    }
+                }
+            }
+
+            .padding(.top, 12)
+            .padding(.bottom, 48)
+        }
+    }
+    
+    // MARK: - 이름 & 소개
+    private var nameAndIntroduction: some View {
+        VStack(spacing: 40) {
+            
+            ReMUTextField(text: $viewModel.username, placeholder: "이름을 적어주세요", height: 40)
+                .disabled(true) // 이름 수정 불가
+            
+            ReMUTextField(text: $viewModel.description, placeholder: "나에 대한 이야기 소개를 적어주세요", height: 80)
+            
+            
+            
+        }
+    }
+     // MARK: - Button
+    private var finishButton: some View {
+        VStack {
+            // 수정 버튼 (PATCH 연결)
+            PrimaryButton(
+                title: "수정하기",
+                backgroundColor: .purpleC495E0
+            ) {
+                Task {
+                    let success = await viewModel.updateProfile()
+                    if success {
+                        onFinish()
+                    }
+                }
+            }
+            .padding(.bottom, 54)
+        }
+    }
 }
+
 #Preview {
     EditProfileView(
-        onBack: {
-            print("Back tapped")
-        },
-        onFinish: {
-            print("Finish tapped")
-        }
+        initialName: "레무",
+        initialIntroduction: "우주 여행을 좋아해요 ✨",
+        imageUrl: "https://picsum.photos/300",
+        onBack: {},
+        onFinish: {}
     )
 }
+

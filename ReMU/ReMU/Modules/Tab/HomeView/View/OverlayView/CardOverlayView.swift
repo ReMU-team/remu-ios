@@ -108,10 +108,7 @@ struct CardOverlayView: View {
                 VStack(alignment: .leading) {
                     HStack {
                         Spacer()
-                        Button(action: {}) {
-                            Image("close_icon")
-                                .foregroundStyle(Color.grayScale8)
-                        }
+                        Text("")
                     }
                 }
             }

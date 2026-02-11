@@ -13,7 +13,8 @@ struct RecordCardModel {
     let galaxyName: String
     let travelPeriodText: String
     let title: String
-    let image: UIImage?
+    let image: UIImage? // 생성 직후용
+    let imageUrl: String? // 서버 조회용
     let dday: Int
     let dateText: String
     let content: String
@@ -30,6 +31,7 @@ extension RecordCardModel {
             travelPeriodText: "",
             title: draft.title,
             image: draft.image,
+            imageUrl: nil, 
             dday: dday,
             dateText: Date().uiFormat,
             content: draft.content,
@@ -48,6 +50,7 @@ extension RecordCardModel {
                 travelPeriodText: "", // 필요하면 start~end 가공
                 title: dto.title,
                 image: nil, // imageUrl → UIImage는 다음 단계
+                imageUrl: dto.imageUrl,
                 dday: dto.dday,
                 dateText: dto.recordDate,
                 content: dto.content,

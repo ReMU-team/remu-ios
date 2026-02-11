@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import Moya
+import UIKit
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
@@ -124,6 +125,29 @@ final class ProfileViewModel: ObservableObject {
 }
 
 
+
+// 해상도 줄이기
+extension UIImage {
+    func resized(maxSize: CGFloat) -> UIImage {
+        let aspectRatio = size.width / size.height
+        
+        var newWidth: CGFloat
+        var newHeight: CGFloat
+        
+        if size.width > size.height {
+            newWidth = maxSize
+            newHeight = maxSize / aspectRatio
+        } else {
+            newHeight = maxSize
+            newWidth = maxSize * aspectRatio
+        }
+        
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: newWidth, height: newHeight))
+        return renderer.image { _ in
+            draw(in: CGRect(origin: .zero, size: CGSize(width: newWidth, height: newHeight)))
+        }
+    }
+}
 
 
 

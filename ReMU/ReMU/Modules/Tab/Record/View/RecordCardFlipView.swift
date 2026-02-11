@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
+
 
 struct RecordCardFlip: View {
     
@@ -15,26 +17,29 @@ struct RecordCardFlip: View {
     
     // MARK: - body
     var body: some View {
-        ZStack {
-            // 뒷면
-            RecordCardOneView(
-                flip: $flip,
-                content: model.content,
-                emojis: model.emojis
-            )
+        VStack {
+            ZStack {
+                // 뒷면
+                RecordCardOneView(
+                    flip: $flip,
+                    content: model.content,
+                    emojis: model.emojis
+                )
                 .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
-            // 앞면
-            RecordCardTwoView(
-                flip: $flip,
-                galaxyName: model.galaxyName,
-                travelPeriodText: model.travelPeriodText,
-                title: model.title,
-                image: model.image,
-                dday: model.dday,
-                dateText: model.dateText
-            )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
-                .animation(flip ? .linear : .linear.delay(0.35), value: flip)
+                // 앞면
+                RecordCardTwoView(
+                    flip: $flip,
+                    galaxyName: model.galaxyName,
+                    travelPeriodText: model.travelPeriodText,
+                    title: model.title,
+                    image: model.image,
+                    imageUrl: model.imageUrl,
+                    dday: model.dday,
+                    dateText: model.dateText
+                )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
+                    .animation(flip ? .linear : .linear.delay(0.35), value: flip)
+            }
         }
         .onTapGesture {
             flip.toggle()
@@ -76,27 +81,22 @@ struct RecordCardOneView: View {
     var top: some View {
         HStack {
             // 이모지
-            HStack(spacing: 8) {
+            HStack(spacing: 16) {
                 ForEach(emojis, id: \.self) { emoji in
                     Image(emoji)
                         .resizable()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 45, height: 45)
                 }
             }
             
             Spacer()
             
-            // 생성 뷰에서는 안보일 예정
+            // TODO: 생성 뷰에서는 안보일 예정
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
                     Button(action: {}) {
                         Image("pencil.line")
-                    }
-                    
-                    Button(action: {}) {
-                        Image("close_icon")
-                            
                     }
                 }
             }
@@ -108,11 +108,23 @@ struct RecordCardOneView: View {
     
     // MARK: - 뒷장 middle
     var middle: some View {
-        VStack {
-            TextBox(text: content, isExpanded: true)
+        ZStack(alignment: .topLeading) {
+
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.purpleD9BCEA50)
+
+            Text(content)
+                .font(.pt16)
+                .foregroundStyle(.grayScale8)
+                .multilineTextAlignment(.leading)
+                .padding(16)
         }
-        .padding(.bottom, 32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.bottom, 24)
     }
+
+
+
 }
 
 // MARK: - 앞장
@@ -124,6 +136,7 @@ struct RecordCardTwoView: View {
     let travelPeriodText: String
     let title: String
     let image: UIImage?
+    let imageUrl: String?
     let dday: Int
     let dateText: String
     
@@ -136,7 +149,9 @@ struct RecordCardTwoView: View {
                 .shadow(radius: 8)
             VStack {
                 top
+                Spacer()
                 middle
+                Spacer()
                 bottom
             }
             .padding(.horizontal, 24)
@@ -157,11 +172,9 @@ struct RecordCardTwoView: View {
                     
                     Button(action: {}) {
                         Image("pencil.line")
-                    }
-                    
-                    Button(action: {}) {
-                        Image("close_icon")
-                            
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                            .foregroundStyle(.grayScale7)
                     }
                 }
                 Text(travelPeriodText)
@@ -177,11 +190,34 @@ struct RecordCardTwoView: View {
     // MARK: - 앞장 middle
     var middle: some View {
         VStack {
-            // TODO: 사진 연결 필요
-            TextBox(text: "사진", isExpanded: true)
+            if let image = image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 249, height: 180)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            } else if let imageUrl,
+                      let url = URL(string: imageUrl) {
+
+                KFImage(url)
+                    .placeholder {
+                        ProgressView()
+                    }
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 249, height: 180)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            } else {
+                EmptyView()
+            }
         }
-        .padding(.bottom, 1)
     }
+
+
     
     // MARK: - 앞장 bottom
     var bottom: some View {
@@ -192,7 +228,7 @@ struct RecordCardTwoView: View {
                     Text("Day \(dday)")
                         .foregroundStyle(.grayScale9)
                         .font(.pt13)
-                    Text("/ \(dateText)")
+                    Text("/ \(dateText.toDateFromServer?.uiFormat ?? "")")
                         .foregroundStyle(.grayScale5)
                         .font(.pt12)
                 }
@@ -213,6 +249,7 @@ struct RecordCardTwoView: View {
             travelPeriodText: "25/10/29-25/11/10",
             title: "첫 기록",
             image: nil,
+            imageUrl: nil,
             dday: 3,
             dateText: "10.31",
             content: "오늘은 정말 좋은 하루였다.\n날씨도 좋고 음식도 맛있었다.",

@@ -14,13 +14,15 @@ struct RecordCardOverlayView: View {
     let onEditRecord: () -> Void
     
     var body: some View {
-        ZStack {
-            
-            RecordCardFlip(model: model)
-            
+        VStack {
+            ZStack {
+                
+                RecordCardFlip(model: model)
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onTapGesture { } // 닫힘 방지
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onTapGesture { } // 닫힘 방지
     }
 }
 
@@ -45,6 +47,7 @@ private struct RecordCardOverlayPreview: View {
                     travelPeriodText: "25/10/29-25/11/10",
                     title: "첫 기록",
                     image: nil,
+                    imageUrl: nil, 
                     dday: 3,
                     dateText: "10.31",
                     content: "오늘은 정말 좋은 하루였다.",

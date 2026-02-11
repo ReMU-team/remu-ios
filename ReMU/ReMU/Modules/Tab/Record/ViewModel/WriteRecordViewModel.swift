@@ -63,14 +63,10 @@ final class WriteRecordViewModel: ObservableObject {
     }
     
     // MARK: - Photo Picker
-    func setPhoto(from item: PhotosPickerItem?) {
-        guard let item else { return }
-        
-        Task {
-            if let data = try? await item.loadTransferable(type: Data.self),
-               let image = UIImage(data: data) {
-                self.selectedPhoto = image
-            }
+    func setPhoto(from item: PhotosPickerItem) async {
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let image = UIImage(data: data) {
+            self.selectedPhoto = image
         }
     }
     
@@ -84,6 +80,19 @@ final class WriteRecordViewModel: ObservableObject {
             cardColor: selectedCardColor?.assetName ?? "planet_1"
         )
     }
+    
+    // MARK: - 버튼 활성화 조건
+    var isValid: Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return trimmedTitle.count >= 2 &&
+               trimmedTitle.count <= 32 &&
+               trimmedContent.count >= 2 &&
+               !selectedEmojis.isEmpty &&
+               selectedCardColor != nil
+    }
+
 }
 
 

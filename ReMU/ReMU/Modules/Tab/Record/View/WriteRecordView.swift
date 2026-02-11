@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct WriteRecordView: View {
     
@@ -21,6 +22,8 @@ struct WriteRecordView: View {
     
     // 다음 버튼
     @State private var goNext = false
+    @State private var selectedItem: PhotosPickerItem?
+
     
     var body: some View {
         VStack {
@@ -62,10 +65,6 @@ struct WriteRecordView: View {
                 selectedColor: $viewModel.selectedCardColor,
                 onClose: { viewModel.isColorSheetPresented = false }
             )
-        }
-
-        .sheet(isPresented: $viewModel.isPhotoPickerPresented) {
-            PhotoPickerView(viewModel: viewModel)
         }
 
         
@@ -126,13 +125,28 @@ struct WriteRecordView: View {
                 ForEach(viewModel.selectedEmojis) { emoji in
                     Image(emoji.id)
                         .resizable()
-                        .frame(width: 32, height: 32)
+                        .frame(width: 35, height: 35)
                 }
 
+                Spacer()
+
                 if viewModel.selectedPhoto != nil {
-                    Text("사진")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.purpleD9BCEA50)
+                            .frame(width: 196, height: 27)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.purpleC495E0, lineWidth: 1)
+                            )
+
+                        Text("사진")
+                            .font(.pt13)
+                            .foregroundStyle(.purpleC495E0)
+                    }
                 }
             }
+
             .padding(.top, 12)
 
         }
@@ -152,10 +166,16 @@ struct WriteRecordView: View {
                 }
 
 
-            RecordSelectionButton(title: "사진")
-                .onTapGesture {
-                    viewModel.isPhotoPickerPresented = true
-                }
+            PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .images
+                    ) {
+                        RecordSelectionButton(title: "사진")
+                    }
+                    .task(id: selectedItem) {
+                        guard let item = selectedItem else { return }
+                        await viewModel.setPhoto(from: item)
+                    }
 
         }
         .padding(.top, 71)
@@ -191,9 +211,13 @@ struct WriteRecordView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "분석하기", backgroundColor: .purpleC495E0) {
+            PrimaryButton(
+                title: "다음",
+                backgroundColor: viewModel.isValid ? .purpleC495E0 : .purpleD9BCEA50
+            ) {
                 goNext = true
             }
+            .disabled(!viewModel.isValid)
             .padding(.bottom, 54)
             
         }

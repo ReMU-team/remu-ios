@@ -48,7 +48,13 @@ final class CreateRecordCardViewModel: ObservableObject {
                 return false
             }
             
-            let imageData = model.image?.jpegData(compressionQuality: 0.8)
+            var imageData: Data? = nil
+
+            if let image = model.image {
+                let resized = image.resized(maxSize: 800)   // 800px 제한
+                imageData = resized.jpegData(compressionQuality: 0.3)
+            }
+
             
             let request = CreateStarRequest(
                 title: model.title,

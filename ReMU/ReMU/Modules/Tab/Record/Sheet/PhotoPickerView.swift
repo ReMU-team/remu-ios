@@ -20,14 +20,15 @@ struct PhotoPickerView: View {
         ) {
             EmptyView()
         }
-        .onChange(of: pickerItem) { newItem in
-            viewModel.setPhoto(from: newItem)
+        .task(id: pickerItem) {
+            guard let item = pickerItem else { return }
+            await viewModel.setPhoto(from: item)
         }
-        .padding(.bottom, 54)
         .presentationDetents([.fraction(0.5)])
         .presentationDragIndicator(.visible)
     }
 }
+
 
 
 #Preview {
