@@ -1,15 +1,15 @@
+////
+////  CreateFeedbackResponse.swift
+////  ReMU
+////
+////  Created by 김종수 on 2/4/26.
+////
 //
-//  CreateFeedbackResponse.swift
-//  ReMU
+//import Foundation
 //
-//  Created by 김종수 on 2/4/26.
+//struct FeedbackResult: Codable {
+//    let content: String
+//    let createdAt: String
+//}
 //
-
-import Foundation
-
-struct FeedbackResult: Codable {
-    let content: String
-    let createdAt: String
-}
-
-typealias FeedbackResponse = BaseResponse<FeedbackResult>
+//typealias FeedbackResponse = BaseResponse<FeedbackResult>

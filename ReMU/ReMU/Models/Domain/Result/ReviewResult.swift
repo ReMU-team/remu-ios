@@ -16,12 +16,10 @@ enum PledgeStatus {
 
 // 2. 개별 다짐 데이터 모델
 struct PledgeItem: Identifiable {
-    let id = UUID()          // SwiftUI용
-    let reviewId: Int        // 서버용 ID
-    
+    let id = UUID()          // UI용
+    let reviewId: Int        // 서버용 (PATCH 필수)
     let title: String
     var content: String
-    
     var status: PledgeStatus = .none
 }
 
@@ -32,11 +30,10 @@ extension PledgeItem {
 }
 
 
-
 // 3. 최종 결과 모델 (이전의 Result 구조체 대체)
 struct ReviewResult {
     let galaxyId: Int
     let travelEmojiImageName: String   // 여행 후 이모지
     let overallContent: String?        // 여행 후기
-    let aiFeedback: String?            // AI 분석 결과
+    let hasAIFeedback: Bool           // AI 분석 결과 존재 여부
 }

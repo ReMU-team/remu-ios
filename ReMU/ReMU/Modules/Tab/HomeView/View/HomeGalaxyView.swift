@@ -35,7 +35,6 @@ struct HomeGalaxyView: View {
     @State private var showCreateResultCard = false
     @State private var showEditPledge = false
 
-        
     // MARK: - body
     var body: some View {
         ZStack {
@@ -196,13 +195,17 @@ struct HomeGalaxyView: View {
         }
         /*
         .fullScreenCover(isPresented: $showWriteResult) {
-            WriteResultView(
-                
-                onFinish: {
-                    showWriteResult = false
-                    showCreateResultCard = true
-                }
-            )
+            if let galaxy = viewModel.galaxyData {
+                WriteResultView(
+                    galaxyId: galaxy.serverId,
+                    onFinish: {
+                        showWriteResult = false
+                        showCreateResultCard = true
+                    }
+                )
+            }
+
+
         }
         */
         .fullScreenCover(isPresented: $showCreateResultCard) {
