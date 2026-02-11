@@ -8,21 +8,27 @@
 import SwiftUI
 
 struct WritePledgeView: View {
-    let galaxyId: Int
+    let galaxy: Galaxy
     let onFinish: () -> Void
+    
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
+    
     @EnvironmentObject var container: DIContainer
     
     // 뷰모델 연결
     @StateObject private var viewModel: PledgeViewModel
     
+    // 다음 버튼
+    @State private var goNext = false
+    
     init(
-        galaxyId: Int,
+        galaxy: Galaxy,
         onFinish: @escaping () -> Void
     ) {
-        self.galaxyId = galaxyId
+        self.galaxy = galaxy
         self.onFinish = onFinish
+        
         _viewModel = StateObject(
             wrappedValue: PledgeViewModel(
                 networkService: DIContainer.preview.networkService
@@ -30,14 +36,6 @@ struct WritePledgeView: View {
         )
     }
 
-
-
-    
-    // 다음 버튼
-    @State private var goNext = false
-    
-    
-    
     var body: some View {
         VStack {
             navigationBar
@@ -57,7 +55,7 @@ struct WritePledgeView: View {
         }
         .navigationDestination(isPresented: $goNext) {
             CreatePledgeCardView(
-                galaxyId: galaxyId,
+                galaxy: galaxy,
                 viewModel: viewModel,
                 onFinish: onFinish
             )
@@ -190,14 +188,29 @@ struct WritePledgeView: View {
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        WritePledgeView(
-//            onFinish: {
-//                print("finish")
-//            }
-//        )
-//        .environmentObject(DIContainer.preview)
-//    }
-//}
+#Preview {
+    let container = DIContainer.preview
+    
+    let mockGalaxy = Galaxy(
+        serverId: 1,
+        title: "경주 여행",
+        destination: "경주",
+        startDate: Date(),
+        endDate: Date().addingTimeInterval(60*60*24*3),
+        totalDay: 4,
+        galaxyIcon: "galaxy_1",
+        stars: []
+    )
+
+    NavigationStack {
+        WritePledgeView(
+            galaxy: mockGalaxy,
+            onFinish: {
+                print("다짐 작성 완료")
+            }
+        )
+        .environmentObject(container)
+    }
+}
+
 

@@ -50,7 +50,7 @@ struct CreateGalaxyView: View {
             }
             .navigationDestination(item: $createdGalaxy) { galaxy in
                 WritePledgeView(
-                    galaxyId: galaxy.serverId,
+                    galaxy: galaxy,
                     onFinish: {
                         onFinish(galaxy)
                     }

@@ -47,7 +47,6 @@ struct HomeGalaxyView: View {
                         GalaxyView
                     }
             }
-            .allowsHitTesting(!showCardOverlay)
             
             // 카드 오버레이
             if showCardOverlay {
@@ -79,21 +78,35 @@ struct HomeGalaxyView: View {
 
             // 다짐/회고 오버레이 띄우기
             if showCardOverlay {
-                CardOverlayView(
-                    selectedTab: $selectedCardTab,
-                    onClose: {
-                        withAnimation {
-                            showCardOverlay = false
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                showCardOverlay = false
+                            }
                         }
-                    },
-                    onWriteResult: {
-                        showCardOverlay = false
-                        showWriteResult = true
-                    }
-                )
 
-                .zIndex(2)
+                    if let pledgeCard = viewModel.pledgeCard {
+                        CardOverlayView(
+                            selectedTab: $selectedCardTab,
+                            pledgeCard: pledgeCard,
+                            onClose: {
+                                withAnimation {
+                                    showCardOverlay = false
+                                }
+                            },
+                            onWriteResult: {
+                                showCardOverlay = false
+                                showWriteResult = true
+                            }
+                        )
+                    }
+                }
+                .zIndex(100)
             }
+
+
 
         }
         .onAppear {

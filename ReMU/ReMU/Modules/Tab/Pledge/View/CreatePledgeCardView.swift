@@ -11,15 +11,9 @@ struct CreatePledgeCardView: View {
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
-    let galaxyId: Int
+    let galaxy: Galaxy
     @ObservedObject var viewModel: PledgeViewModel
     let onFinish: () -> Void
-    
-
-    
-    // 완료 버튼
-    //@State private var goNext = false
-    //@Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
         VStack{
@@ -48,7 +42,12 @@ struct CreatePledgeCardView: View {
             Text("다짐 카드가 생성되었어요!")
                 .font(.pt20)
                 .foregroundStyle(.grayScale9)
-            PledgeCardFlip()
+            PledgeCardFlip(
+                card: viewModel.makeDraftCard(galaxy: galaxy)
+            )
+
+
+
                 .padding(.top, 50)
                 .padding(.bottom, 20)
             Text("카드를 클릭하면 뒷면이 보여요!")
@@ -61,7 +60,7 @@ struct CreatePledgeCardView: View {
     private var finishButton: some View {
         VStack {
             PrimaryButton(title: "완료") {
-                viewModel.createPledge(galaxyId: galaxyId) { result in
+                viewModel.createPledge(galaxy: galaxy) { result in
                     switch result {
                     case .success:
                         dismiss()
@@ -81,16 +80,34 @@ struct CreatePledgeCardView: View {
 }
 
 #Preview {
+    let mockGalaxy = Galaxy(
+        serverId: 1,
+        title: "경주 여행",
+        destination: "경주",
+        startDate: Date(),
+        endDate: Date().addingTimeInterval(60*60*24*3),
+        totalDay: 4,
+        galaxyIcon: "galaxy_1",
+        stars: []
+    )
+    
+    let mockCard = PledgeCardModel(
+        galaxy: mockGalaxy,
+        emojiImageName: "amazed_emoji",
+        pledges: [
+            Pledge(content: "맛있는거 먹기"),
+            Pledge(content: "야경 보기")
+        ]
+    )
+
     NavigationStack {
-        CreatePledgeCardView(
-            galaxyId: 1,
-            viewModel: PledgeViewModel(
-                networkService: DIContainer.preview.networkService
-            ),
-            onFinish: {
-                print("Pledge card finished")
-            }
-        )
+        VStack {
+            PledgeCardFlip(card: mockCard)
+        }
     }
 }
+
+
+
+
 

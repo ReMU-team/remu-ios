@@ -25,9 +25,14 @@ extension Galaxy {
     var month: Int {
         Calendar.current.component(.month, from: startDate)
     }
-
+    
     var day: Int {
         Calendar.current.component(.day, from: startDate)
+    }
+    
+    // 여행 기간 UI
+    var travelPeriodText: String {
+        "\(startDate.uiFormat)-\(endDate.uiFormat)"
     }
 }
 

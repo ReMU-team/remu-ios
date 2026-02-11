@@ -17,10 +17,12 @@ class HomeViewModel: ObservableObject {
     @Published var partitionedStars: [[Star]] = []
     @Published var scale: CGFloat = 1
     
+    @Published var pledgeCard: PledgeCardModel?
     @Published var selectedRecordCard: RecordCardModel?
     @Published var isShowingRecordCard = false
     @Published var isLoading: Bool = false
     
+    private let pledgeProvider: MoyaProvider<PledgeTargetType>
     private let starProvider: MoyaProvider<StarTargetType>
     private let userSession: UserSessionKeychainService
     private let container: DIContainer
@@ -29,6 +31,7 @@ class HomeViewModel: ObservableObject {
         self.container = container
         self.starProvider = container.apiProviderStore.star()
         self.userSession = container.userSessionKeychain
+        self.pledgeProvider = container.apiProviderStore.pledge()
     }
 
     // MARK: - 홈 진입용 메인 로딩 함수
@@ -52,6 +55,7 @@ class HomeViewModel: ObservableObject {
         partitionedStars = []
         selectedRecordCard = nil
         isShowingRecordCard = false
+        pledgeCard = nil
     }
 
     
@@ -62,6 +66,32 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // MARK: - 다짐 조회
+    @MainActor
+    private func fetchPledge(for galaxy: Galaxy) async {
+        do {
+            let response = try await pledgeProvider.requestAsync(
+                .checkPledge(galaxyId: galaxy.serverId)
+            )
+
+            let dto = try JSONDecoder().decode(CheckPledgeResponse.self, from: response.data)
+
+            guard let result = dto.result else { return }
+
+            self.pledgeCard = PledgeCardModel(
+                galaxy: galaxy,
+                emojiImageName: result.emojiId,
+                pledges: result.resolutionList.map {
+                    Pledge(content: $0.content)
+                }
+            )
+
+        } catch {
+            print("❌ 다짐 조회 실패:", error)
+        }
+    }
+
+
     // MARK: - 은하 상세 조회 API
     @MainActor
     private func fetchGalaxyDetail(galaxyId: Int) async -> Bool {
@@ -108,9 +138,14 @@ class HomeViewModel: ObservableObject {
                 stars: []
             )
 
+            if let galaxy = self.galaxyData {
+                await fetchPledge(for: galaxy)
+            }
 
+            
             // 별 리스트 이어서 조회
             await fetchStarsList(galaxyId: result.galaxyId)
+            
             return true
         } catch {
             print("❌ 은하 상세 조회 실패:", error)
@@ -157,6 +192,7 @@ class HomeViewModel: ObservableObject {
     // MARK: - 별 상세 조회 API
     @MainActor
     private func fetchStarDetail(starId: Int) async {
+        print("🔥 fetchStarDetail called")
         guard
                 let session = userSession.loadSession(for: .userSession),
                 let accessToken = session.accessToken
