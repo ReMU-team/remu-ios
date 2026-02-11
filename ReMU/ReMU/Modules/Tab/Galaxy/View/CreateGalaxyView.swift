@@ -10,19 +10,24 @@ import SwiftUI
 struct CreateGalaxyView: View {
     // 홈 상태
     @EnvironmentObject var appState: AppState
-    
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
+    @StateObject private var viewModel: CreateGalaxyViewModel
     // 네비게이션
     @State private var showWritePledge = false
     
     // 은하 생성
     let onFinish: (Galaxy) -> Void
     
-    // 뷰모델
-    @StateObject private var viewModel =
-        CreateGalaxyViewModel(container: DIContainer.preview)
+
+    init(
+            viewModel: CreateGalaxyViewModel,
+            onFinish: @escaping (Galaxy) -> Void
+    ) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.onFinish = onFinish
+    }
 
     
     var body: some View {
@@ -160,8 +165,11 @@ struct CreateGalaxyView: View {
             ) {
                 Task {
                     await viewModel.createGalaxy()
-                    if viewModel.createdGalaxy != nil {
-                        showWritePledge = true // 다짐 작성으로 이동
+                    
+                    if let galaxy = viewModel.createdGalaxy {
+                        appState.currentGalaxyId = galaxy.serverId
+                        LastGalaxyStore.save(galaxy.serverId)
+                        showWritePledge = true
                     }
                 }
             }
@@ -192,11 +200,14 @@ struct GalaxySelectableItem: View {
 #Preview {
     let appState = AppState()
     let container = DIContainer.preview
-
-    CreateGalaxyView { galaxy in
-        print("프리뷰에서 생성된 은하:", galaxy)
-        appState.currentGalaxy = galaxy
-    }
+    
+    CreateGalaxyView(
+        viewModel: CreateGalaxyViewModel(container: container),
+        onFinish: { galaxy in
+            print("프리뷰에서 생성된 은하:", galaxy)
+            appState.currentGalaxyId = galaxy.serverId
+        }
+    )
     .environmentObject(appState)
     .environmentObject(container)
 }

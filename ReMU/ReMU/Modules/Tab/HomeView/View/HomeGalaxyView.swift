@@ -12,7 +12,13 @@ struct HomeGalaxyView: View {
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var appState: AppState
     
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel: HomeViewModel
+
+    init(container: DIContainer) {
+        _viewModel = StateObject(
+            wrappedValue: HomeViewModel(container: container)
+        )
+    }
     
     // 카드 오버레이
     @State private var showCardOverlay = false
@@ -27,27 +33,19 @@ struct HomeGalaxyView: View {
     @State private var showGalaxyList = false
     @State private var showWriteResult = false
     @State private var showCreateResultCard = false
-    
-    @State private var galaxies: [Galaxy] = []
-    
-    
-    // 기록, 회고 여행 기간 표시
-//    let periodText = travelPeriodText(
-//        start: galaxy.startDate,
-//        end: galaxy.endDate
-//    )
-//    
+
     // MARK: - body
     var body: some View {
         ZStack {
             VStack {
-                if viewModel.galaxyData == nil {
-                    initialHomeView
-                        .transition(.opacity)
-                }
-                else {
-                    GalaxyView
-                }
+                if viewModel.isLoading {
+                        ProgressView()
+                    } else if viewModel.galaxyData == nil {
+                        initialHomeView
+                            .transition(.opacity)
+                    } else {
+                        GalaxyView
+                    }
             }
             .allowsHitTesting(!showCardOverlay)
             
@@ -72,6 +70,7 @@ struct HomeGalaxyView: View {
                     .ignoresSafeArea()
                     .onTapGesture {
                         viewModel.isShowingRecordCard = false
+                        
                     }
 
                 RecordCardFlip(model: model)
@@ -98,20 +97,28 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            if let galaxy = viewModel.galaxyData {
+            if let lastId = LastGalaxyStore.load() {
+                appState.currentGalaxyId = lastId
+            } else {
                 Task {
-                    await viewModel.fetchStarsList(galaxyId: galaxy.serverId)
+                    await viewModel.fetchGalaxyList()
+                    appState.currentGalaxyId = viewModel.galaxyData?.serverId
                 }
             }
         }
+        .onChange(of: appState.currentGalaxyId) {
+            syncHomeWithCurrentGalaxy()
+        }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             // 은하 정보 저장
-            CreateGalaxyView { galaxy in
-                galaxies.append(galaxy)
-                appState.currentGalaxy = galaxy
-                
-                showCreateGalaxy = false
-            }
+            CreateGalaxyView(
+                viewModel: CreateGalaxyViewModel(container: container),
+                onFinish: { galaxy in
+                    appState.currentGalaxyId = galaxy.serverId
+                    showCreateGalaxy = false
+                }
+
+            )
         }
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
@@ -119,8 +126,9 @@ struct HomeGalaxyView: View {
         .fullScreenCover(isPresented: $showMenu) {
             MenuView(container: container)
         }
-        .fullScreenCover (isPresented: $showGalaxyList) {
-            GalaxyCheckView(galaxyList: [])
+        .fullScreenCover(isPresented: $showGalaxyList) {
+            GalaxyCheckView(container: container)
+                .environmentObject(container)
         }
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
@@ -130,15 +138,18 @@ struct HomeGalaxyView: View {
                         dday: galaxy.totalDay,
                         onFinish: {
                             showWriteRecord = false
+                            Task {
+                                await viewModel.loadHome(galaxyId: galaxy.serverId)
+                            }
                         }
                     )
                 }
             }
         }
+        /*
         .fullScreenCover(isPresented: $showWriteResult) {
             if let galaxy = viewModel.galaxyData {
                 WriteResultView(
-                    userId: 0,  // TODO: 카카오 로그인 완료 후 AppState.userId로 교체
                     galaxyId: galaxy.serverId,
                     onFinish: {
                         showWriteResult = false
@@ -146,7 +157,10 @@ struct HomeGalaxyView: View {
                     }
                 )
             }
+
+
         }
+        */
         .fullScreenCover(isPresented: $showCreateResultCard) {
             CreateResultCardView(
                 onFinish: {
@@ -176,6 +190,18 @@ struct HomeGalaxyView: View {
         }
     }
     
+    // MARK: - syncHomeWithCurrentGalaxy
+    private func syncHomeWithCurrentGalaxy() {
+        Task {
+            if let galaxyId = appState.currentGalaxyId {
+                let _ = await viewModel.loadHome(galaxyId: galaxyId)
+            } else {
+                viewModel.clear()
+            }
+        }
+    }
+
+
     // MARK: - GalaxyView
     private var GalaxyView: some View {
         // 전체를 감싸는 GeometryReader를 사용해 화면의 실제 크기를 확보합니다.
@@ -192,7 +218,6 @@ struct HomeGalaxyView: View {
                             scale: viewModel.scale,
                             onSelectStar: viewModel.onSelectStar
                         )
-
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         
                     }
@@ -230,20 +255,6 @@ struct HomeGalaxyView: View {
     
     // MARK: - background
     private var background: some View{
-        //        GeometryReader { geometry in
-        //            Color.blue212148
-        //
-        //            Image("Homegradation")
-        //                .resizable()
-        //                .aspectRatio(contentMode: .fill)
-        //                .frame(width: geometry.size.width, height: geometry.size.height) // 화면 크기로 고정
-        //                .clipped() // 범위를 벗어나는 이미지 부분은 잘라냄
-        //
-        //            Image("starObjet")
-        //                .resizable()
-        //                .scaledToFit()
-        //                .frame(width: geometry.size.width)
-        //        }
         ZStack {
             // 배경 색
             Color.blue212148
@@ -382,8 +393,12 @@ struct HomeGalaxyView: View {
 }
 
 #Preview {
-    HomeGalaxyView()
-        .environmentObject(DIContainer.preview)
-        .environmentObject(AppState())
+    let container = DIContainer.preview
+    let appState = AppState()
+
+    HomeGalaxyView(container: container)
+        .environmentObject(container)
+        .environmentObject(appState)
 }
+
 

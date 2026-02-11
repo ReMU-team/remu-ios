@@ -9,14 +9,15 @@ import SwiftUI
 
 struct AppFlowView: View {
     @EnvironmentObject var appState: AppState
-
+    @EnvironmentObject var container: DIContainer
+    
     var body: some View {
-        HomeGalaxyView()
+        HomeGalaxyView(container: container)
             .environmentObject(appState)
-            .onAppear {
-                guard let galaxy = appState.currentGalaxy else { return }
-                NotificationScheduler.shared.evaluateTodayNotifications(galaxy: galaxy)
-            } // TODO: task 안정화
+//            .onAppear {
+//                guard let galaxyId = appState.currentGalaxyId else { return }
+//                NotificationScheduler.shared.evaluateTodayNotifications(galaxy: galaxy)
+//            } // TODO: task 안정화
     }
 }
 

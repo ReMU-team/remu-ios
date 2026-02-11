@@ -10,8 +10,13 @@ import Moya
 import Alamofire
 
 enum StarTargetType {
-    // TODO: MultiPart-Form 형태로 수정 필요함
-    case createStar(accessToken: String, request: CreateStarRequest,image: Data, fileName: String, mimeType: String)
+    case createStar(
+        accessToken: String,
+        request: CreateStarRequest,
+        image: Data?,            // optional
+        fileName: String?,
+        mimeType: String?
+    )
     case fetchStarsList(accessToken: String, galaxyId: Int)
     case fetchStarDetail(accessToken: String, starId: Int)
     // TODO: MultiPart-Form 형태로 이미지 수정 필요함
@@ -67,18 +72,25 @@ extension StarTargetType: APITargetType {
                 return .requestPlain
             }
             var parts: [Moya.MultipartFormData] = [
-                .init(provider: .data(json),
-                      name: MultipartField.request,
-                      fileName: "request.json",
-                      mimeType: "application/json")
+                .init(
+                    provider: .data(json),
+                    name: "request",
+                    fileName: "request.json",
+                    mimeType: "application/json"
+                )
             ]
-            parts.append(
-                .init(provider: .data(image),
-                      name: MultipartField.cardImage,
-                      fileName: fileName,
-                     mimeType: mimeType)
-            )
+            if let image, let fileName, let mimeType {
+                parts.append(
+                    .init(
+                        provider: .data(image),
+                        name: "image",
+                        fileName: fileName,
+                        mimeType: mimeType
+                    )
+                )
+            }
             return .uploadMultipart(parts)
+            
         case let .patchStar(_, request, _, image, fileName, mimeType):
             guard let json = try? JSONEncoder().encode(request) else {
                 return .requestPlain
@@ -93,13 +105,15 @@ extension StarTargetType: APITargetType {
                 .init(provider: .data(image),
                       name: MultipartField.cardImage,
                       fileName: fileName,
-                     mimeType: mimeType)
+                      mimeType: mimeType)
             )
             return .uploadMultipart(parts)
+            
         case .fetchStarsList, .fetchStarDetail, .deleteStar:
             return .requestPlain
         }
     }
+    
     var sampleData: Data{
         return Data("""
             {

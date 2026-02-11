@@ -10,7 +10,7 @@ import Moya
 import Alamofire
 
 enum AuthTargetType {
-    case socialLogin(provider: String, accessToken: String)
+    case socialLogin(provider: String, token: String)
     case socialLogout(refreshToken: String)
     case tokenRefresh(refreshToken: String)
 }
@@ -36,15 +36,23 @@ extension AuthTargetType: APITargetType {
     
     var task: Moya.Task {
         switch self {
-        case .socialLogin(_, let accessToken):
+        case .socialLogin(_, let token):
             return .requestParameters(
-                parameters: ["accessToken": accessToken],
+                parameters: ["token": token],
                 encoding: JSONEncoding.default
             )
-        case .socialLogout:
-            return .requestPlain
+        case .socialLogout(let refreshToken):
+            return .requestParameters(
+                parameters: ["refreshToken": refreshToken],
+                encoding: JSONEncoding.default
+            )
+
+            
         case .tokenRefresh(let refreshToken):
-            return .requestJSONEncodable(refreshToken)
+            return .requestParameters(
+                parameters: ["refreshToken": refreshToken],
+                encoding: JSONEncoding.default
+            )
         }
     }
     

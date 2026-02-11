@@ -13,7 +13,6 @@ struct GalaxyDetailItem: Codable {
     let emojiResourceName: String
     let dDay: Int
     let startDate: String // "2026-01-27" 형식
-    let arrivalDate: String
     let endDate: String
     let placeName: String
 }

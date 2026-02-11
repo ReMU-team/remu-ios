@@ -19,16 +19,16 @@ struct AuthFlowView: View {
     
     var body: some View {
         if showCreateProfile {
-                    CreateProfileView(
-                        onBack: {
-                            showCreateProfile = false
-                            showOnboarding = true
-                        },
-                        onFinish: {
-                            onAuthFinished()
-                        }
-                    )
+            CreateProfileView(
+                onBack: {
+                    showCreateProfile = false
+                    showOnboarding = true
+                },
+                onFinish: {
+                    onAuthFinished()
                 }
+            )
+        }
         else if showOnboarding {
             OnboardingView(
                 onExit: { showOnboarding = false },
@@ -37,6 +37,7 @@ struct AuthFlowView: View {
                     showProfileIntro = true
                 }
             )
+            
         } else if showProfileIntro {
             ProfileIntroView()
                 .transition(.opacity)
@@ -53,9 +54,14 @@ struct AuthFlowView: View {
         } else {
             LoginView(
                 container: container,
-                onAuthFinished: {
-                    onAuthFinished()
-                })
+                onAuthFinished: { isNewUser in
+                    if isNewUser {
+                        showOnboarding = true
+                    } else {
+                        onAuthFinished()
+                    }
+                }
+            )
         }
     }
 }

@@ -24,9 +24,11 @@ struct RootView: View {
                 }
             
         case .auth:
-            AuthFlowView {
-                appState.route = .main // 인증/온보딩 끝
-            }
+            AuthFlowView(
+                onAuthFinished: {
+                    appState.route = .main
+                }
+            )
             
         case .main:
             AppFlowView()

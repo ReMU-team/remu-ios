@@ -16,16 +16,13 @@ enum UserAPI {
     
     // 내 프로필 조회 (로그인 후 사용)
     case getMyProfile
-    
-    // 회원 탈퇴
-    case withdraw
 }
 
 extension UserAPI: TargetType {
     
     // 주소 - URL
     var baseURL: URL {
-        return URL(string: "https://api.remu-app.com")!
+        return URL(string: "https://remu-travel.com")!
     }
     
     // 주소 - 경로
@@ -33,18 +30,16 @@ extension UserAPI: TargetType {
         switch self {
         case .socialLogin(let provider, _):
             // 예시: /auth/kakao/login 또는 /auth/login/apple
-            return "/auth/login/\(provider)"
+            return "/api/v1/auth/login/\(provider)"
         case .getMyProfile:
             return "/user/me"
-        case .withdraw:
-            return "/user/withdraw"
         }
     }
     
     // 요청 행동 - HTTP 메서드
     var method: Moya.Method {
         switch self {
-        case .socialLogin, .withdraw:
+        case .socialLogin:
             return .post // 데이터 전송은 POST
         case .getMyProfile:
             return .get
@@ -57,12 +52,11 @@ extension UserAPI: TargetType {
         case .socialLogin(_, let token):
             // 서버 개발자가 원하는 키 값("access_token" 등)에 맞춰서 보냄
             let params: [String: Any] = [
-                "social_token": token,
-                "fcm_token": "푸시알림토큰(필요시)"
+                "token": token
             ]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
             
-        case .getMyProfile, .withdraw:
+        case .getMyProfile:
             // 로그인 된 상태라면 토큰은 Header에 실리므로 body는 비워둠
             return .requestPlain
         }

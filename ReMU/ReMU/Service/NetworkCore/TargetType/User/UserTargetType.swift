@@ -43,17 +43,53 @@ extension UserTargetType: APITargetType {
     
     var task: Moya.Task {
         switch self {
-        case .patchUser(request: let request):
-            return .requestJSONEncodable(request)
+
+        case .patchUser(let request):
+            var multipartData: [Moya.MultipartFormData] = []
+
+            // name (required)
+            multipartData.append(
+                Moya.MultipartFormData(
+                    provider: .data(request.name.data(using: .utf8)!),
+                    name: "name"
+                )
+            )
+
+            // introduction (optional)
+            if let intro = request.introduction {
+                multipartData.append(
+                    Moya.MultipartFormData(
+                        provider: .data(intro.data(using: .utf8)!),
+                        name: "introduction"
+                    )
+                )
+            }
+
+            // image (optional)
+            if let imageData = request.imageData {
+                multipartData.append(
+                    Moya.MultipartFormData(
+                        provider: .data(imageData),
+                        name: "image",
+                        fileName: "profile.jpg",
+                        mimeType: "image/jpeg"
+                    )
+                )
+            }
+
+            return .uploadMultipart(multipartData)
+
         case .checkUserProfile, .deleteUser:
             return .requestPlain
+
         case let .verifyDuplicateName(name):
-            var params: [String: Any] = ["name": name]
-            return .requestParameters(parameters: params, encoding: URLEncoding.default)
-            
+            return .requestParameters(
+                parameters: ["name": name],
+                encoding: URLEncoding.default
+            )
         }
-        
     }
+
     
     var sampleData: Data {
         return Data("""
