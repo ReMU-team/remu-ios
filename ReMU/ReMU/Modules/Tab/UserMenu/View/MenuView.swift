@@ -8,10 +8,10 @@
 import SwiftUI
 import Combine
 import Moya
+import Kingfisher
 
 struct MenuView: View {
     
-    @State private var imageLoader = ImageLoaderServiceImpl()
     @State private var showEditProfile = false
     @State private var isOn = false
     @StateObject private var viewModel: MenuViewModel
@@ -101,30 +101,29 @@ struct MenuView: View {
                 
                 HStack {
                     
-                    ZStack {
-                        switch imageLoader.state {
-                            
-                        case .idle, .loading:
-                            Image("StandardProfile")
-                                .resizable()
-                                .scaledToFill()
-                            
-                        case .success(let image):
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                            
-                        case .failure:
-                            Image("StandardProfile")
-                                .resizable()
-                                .scaledToFill()
-                        }
+                    if let urlString = profile.imageUrl,
+                       let url = URL(string: urlString),
+                       !urlString.isEmpty {
+
+                        KFImage(url)
+                            .placeholder {
+                                Image("StandardProfile")
+                                    .resizable()
+                                    .scaledToFill()
+                            }
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 56, height: 56)
+                            .clipShape(Circle())
+
+                    } else {
+                        Image("StandardProfile")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 56, height: 56)
+                            .clipShape(Circle())
                     }
-                    .frame(width: 56, height: 56)
-                    .clipShape(Circle())
-                    .task {
-                        await imageLoader.loadImage(from: profile.imageUrl)
-                    }
+
                     
                     VStack(alignment: .leading, spacing: 16) {
                         Text(profile.name)

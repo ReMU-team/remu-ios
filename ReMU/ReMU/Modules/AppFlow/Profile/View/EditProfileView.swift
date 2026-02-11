@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import Kingfisher
 
 struct EditProfileView: View {
 
@@ -17,7 +18,6 @@ struct EditProfileView: View {
             )
         )
 
-    @State private var imageLoader = ImageLoaderServiceImpl()
     @State private var selectedItem: PhotosPickerItem? = nil
 
 
@@ -79,45 +79,43 @@ struct EditProfileView: View {
     // MARK: - ProfileImage
     private var profileImageCircle: some View {
         VStack {
-            // 프로필 이미지 영역
             ZStack {
-                
-                // 새 이미지 선택했으면 그걸 최우선 표시
+
+                // 새 이미지 선택했으면 그걸 우선 표시
                 if let data = viewModel.selectedImageData,
                    let uiImage = UIImage(data: data) {
-                    
+
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                    
-                } else {
-                    
-                    // 서버 이미지 표시
-                    switch imageLoader.state {
-                        
-                    case .idle, .loading:
-                        Image("StandardProfile")
-                            .resizable()
-                            .scaledToFill()
-                        
-                    case .success(let image):
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                        
-                    case .failure:
-                        Image("StandardProfile")
-                            .resizable()
-                            .scaledToFill()
-                    }
+
+                }
+                // 서버 이미지
+                else if let urlString = imageUrl,
+                        let url = URL(string: urlString),
+                        !urlString.isEmpty {
+
+                    KFImage(url)
+                        .placeholder {
+                            Image("StandardProfile")
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        .resizable()
+                        .scaledToFill()
+
+                }
+                // 기본 이미지
+                else {
+                    Image("StandardProfile")
+                        .resizable()
+                        .scaledToFill()
                 }
             }
             .frame(width: 132, height: 132)
             .clipShape(Circle())
-            .task {
-                await imageLoader.loadImage(from: imageUrl)
-            }
-            // 사진 선택
+
+            // 사진 선택 버튼
             PhotosPicker(
                 selection: $selectedItem,
                 matching: .images
@@ -134,15 +132,20 @@ struct EditProfileView: View {
             }
             .task(id: selectedItem) {
                 guard let item = selectedItem else { return }
-                
+
                 if let data = try? await item.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data),
-                   let compressedData = image.jpegData(compressionQuality: 0.3) {
+                   let image = UIImage(data: data) {
 
-                    viewModel.selectedImageData = compressedData
+                    // 리사이즈 (최대 600px)
+                    let resized = image.resized(maxSize: 600)
+
+                    // 강한 압축
+                    if let compressed = resized.jpegData(compressionQuality: 0.2) {
+                        viewModel.selectedImageData = compressed
+                    }
                 }
-
             }
+
             .padding(.top, 12)
             .padding(.bottom, 48)
         }
