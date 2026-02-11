@@ -5,20 +5,18 @@
 //  Created by 김종수 on 1/23/26.
 //
 
-import Foundation
 import SwiftUI
 
-/// 은하 리스트를 볼 수 있는 뷰입니다.
 struct GalaxyCheckView: View {
     
-    // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var appState: AppState
-
     
-    // 네비게이션
     @State private var showCreateGalaxy = false
+    @State private var isEditing = false
+    @State private var selectedGalaxy: GalaxySummary?
+    
     @StateObject private var viewModel: GalaxyCheckViewModel
     
     init(container: DIContainer) {
@@ -26,113 +24,176 @@ struct GalaxyCheckView: View {
             wrappedValue: GalaxyCheckViewModel(container: container)
         )
     }
-
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-
+    
+    private let columns = Array(
+        repeating: GridItem(.flexible()),
+        count: 4
+    )
     
     var body: some View {
-        ZStack{
+        ZStack {
             Color.blue212148.ignoresSafeArea()
-            // 배경 그라데이션
+            
             GeometryReader { geometry in
-                    Image("gradation")
-                        .resizable()
-                        .scaledToFill()
-                        .scaleEffect(1.4)
-                        .offset(x: -100, y: -100)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .clipped()
-                }
-                .ignoresSafeArea() // 배경은 전체에 깔리게
-                .allowsHitTesting(false) // 터치 방해 금지
+                Image("gradation")
+                    .resizable()
+                    .scaledToFill()
+                    .scaleEffect(1.4)
+                    .offset(x: -100, y: -100)
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height)
+                    .clipped()
+            }
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
+            
             Image("starObjet")
                 .resizable()
                 .scaledToFit()
-            VStack{
-                HStack{
-                    // 뒤로가기
-                    Button {
-                        dismiss()
-                    } label: {
+            
+            VStack {
+                
+                // 상단 네비
+                HStack {
+                    Button { dismiss() } label: {
                         Image("white_left_arrow")
                     }
-                    
                     Spacer()
-                    
                 }
                 .padding(22)
-                .foregroundStyle(Color.white)
+              
                 Text("나의 우주")
                     .font(.pt24)
-                    .foregroundStyle(Color.white)
-                    .padding(.bottom,31)
-                HStack{
+                    .foregroundColor(.white)
+                    .padding(.bottom, 31)
+                
+                // 편집 버튼 영역 (높이 고정해서 흔들림 방지)
+                HStack {
                     Spacer()
-                    Button(action:{}){
-                        Text("은하 편집")
-                            .font(.pt12)
-                            .foregroundStyle(Color.white)
-                            .padding(.horizontal, 8) // 텍스트 좌우 여백 (글자가 길어져도 이 간격은 유지됨)
-                            .padding(.vertical, 4)
-                            .background(Capsule().fill(Color.white.opacity(0.3))
-                            ) // 배경색 설정
-                    }.padding(.horizontal,22)
-                        .padding(.bottom,24)
+                    
+                    if !isEditing {
+                        Button {
+                            withAnimation {
+                                isEditing = true
+                            }
+                        } label: {
+                            Text("은하 편집")
+                                .font(.pt12)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.white.opacity(0.3))
+                                )
+                        }
+                        .transition(.opacity)
+                    }
                 }
-                ScrollView{
-                    LazyVGrid(columns: columns,spacing: 20){
+                .frame(height: 32)   // 자리 고정
+                .padding(.horizontal, 22)
+                
+                // 은하 리스트
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(viewModel.galaxies) { summary in
+                            
                             GalaxyCell(
                                 galaxyId: summary.galaxyId,
                                 title: summary.name,
-                                iconName: summary.emojiResourceName
+                                iconName: summary.emojiResourceName,
+                                isEditing: isEditing,
+                                onEditTap: {
+                                    selectedGalaxy = summary   // edit 진입
+                                }
                             )
                             .onTapGesture {
-                                appState.currentGalaxyId = summary.galaxyId
-                                LastGalaxyStore.save(summary.galaxyId)
-                                dismiss()
+                                if !isEditing {
+                                    appState.currentGalaxyId = summary.galaxyId
+                                    LastGalaxyStore.save(summary.galaxyId)
+                                    dismiss()
+                                }
                             }
-
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
                 .padding(.horizontal, 22)
+                
                 Spacer()
-                HStack(spacing: 9){
-                    PrimaryButton(title: "히스토리", action: {})
-                    
-                    // 은하 생성 버튼
-                    PrimaryButton(title: "은하 생성하기",backgroundColor: .purpleC495E0 , action: {showCreateGalaxy = true})
+                
+                // 하단 버튼 영역
+                HStack(spacing: 9) {
+                    if isEditing {
+                        PrimaryButton(title: "수정 완료") {
+                            withAnimation {
+                                isEditing = false
+                            }
+                        }
+                    } else {
+                        PrimaryButton(title: "히스토리", action: {})
+                        
+                        PrimaryButton(
+                            title: "은하 생성하기",
+                            backgroundColor: .purpleC495E0
+                        ) {
+                            showCreateGalaxy = true
+                        }
+                    }
                 }
-                .padding(.horizontal,40)
-                .onAppear {
+                .padding(.horizontal, 40)
+            }
+        }
+        .onAppear {
+            Task {
+                await viewModel.fetchGalaxyList()
+            }
+        }
+        
+        // 생성 화면
+        .fullScreenCover(isPresented: $showCreateGalaxy) {
+            CreateGalaxyView(
+                viewModel: CreateGalaxyViewModel(container: container),
+                mode: .create,
+                onFinish: {
+                    Task { await viewModel.fetchGalaxyList() }
+                    showCreateGalaxy = false
+                }
+            )
+        }
+        
+        // 수정 화면 (item 방식)
+        .fullScreenCover(item: $selectedGalaxy) { galaxy in
+            CreateGalaxyView(
+                viewModel: {
+                    let vm = CreateGalaxyViewModel(container: container)
+                    vm.editingGalaxyId = galaxy.galaxyId
+                    return vm
+                }(),
+                mode: .edit(galaxyId: galaxy.galaxyId),
+                onFinish: {
+                    Task { await viewModel.fetchGalaxyList() }
+                    selectedGalaxy = nil
+                },
+                onDelete: {
                     Task {
                         await viewModel.fetchGalaxyList()
-                    }
-                }
-                // 은하 생성 뷰로 이동
-                .fullScreenCover(isPresented: $showCreateGalaxy) {
-                    CreateGalaxyView(
-                        viewModel: CreateGalaxyViewModel(container: container),
-                        onFinish: { galaxy in
-                            appState.currentGalaxyId = galaxy.serverId
-                            LastGalaxyStore.save(galaxy.serverId)
-                            showCreateGalaxy = false
-                            dismiss()
+                        
+                        if appState.currentGalaxyId == galaxy.galaxyId {
+                            if let first = viewModel.galaxies.first {
+                                appState.currentGalaxyId = first.galaxyId
+                                LastGalaxyStore.save(first.galaxyId)
+                            } else {
+                                appState.currentGalaxyId = nil
+                            }
                         }
-                    )
+                    }
+                    selectedGalaxy = nil
                 }
-            }
+            )
         }
     }
 }
-
-
 
 #Preview {
     let container = DIContainer.preview

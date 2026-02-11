@@ -29,7 +29,7 @@ struct GalaxySystemView: View {
 
             Image(galaxy.galaxyIcon)
                 .resizable()
-                .frame(width: 109, height: 109)
+                .frame(width: 150, height: 150)
         }
     }
 }

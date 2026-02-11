@@ -7,11 +7,12 @@
 
 import Foundation
 
-struct PatchGalaxyRequest: Codable {
-    let name: String?
-    let startDate: Date?
-    let endDate: Date?
+struct PatchGalaxyRequest: Encodable {
+    let name: String
+    let startDate: String?
+    let endDate: String?
     let emojiResourceName: String?
     let googlePlaceId: String?
     let placeName: String?
 }
+

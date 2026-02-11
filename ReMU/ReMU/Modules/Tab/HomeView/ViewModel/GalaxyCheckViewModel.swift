@@ -23,6 +23,7 @@ final class GalaxyCheckViewModel: ObservableObject {
         self.userSession = container.userSessionKeychain
     }
 
+    // MARK: - 은하 리스트 조회 API
     func fetchGalaxyList() async {
         guard
             let session = userSession.loadSession(for: .userSession),

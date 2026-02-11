@@ -136,16 +136,20 @@ struct HomeGalaxyView: View {
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
-                onFinish: { galaxy in
+                mode: .create,
+                onFinish: {
                     Task {
-                        appState.currentGalaxyId = galaxy.serverId
-                        LastGalaxyStore.save(galaxy.serverId)
-                        _ = await viewModel.loadHome(galaxyId: galaxy.serverId)
+                        await viewModel.fetchGalaxyList()
+                        if let id = viewModel.galaxyData?.serverId {
+                            appState.currentGalaxyId = id
+                            LastGalaxyStore.save(id)
+                        }
                     }
                     showCreateGalaxy = false
                 }
             )
         }
+
 
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
