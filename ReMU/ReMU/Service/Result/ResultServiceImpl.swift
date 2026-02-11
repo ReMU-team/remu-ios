@@ -17,14 +17,12 @@ final class ResultServiceImpl: ResultServiceProtocol {
     }
     
     func createResult(
-        userId: Int,
         galaxyId: Int,
         request: createResultRequest,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         provider.request(
             .createResult(
-                userId: userId,
                 galaxyId: galaxyId,
                 request: request
             )
@@ -39,12 +37,11 @@ final class ResultServiceImpl: ResultServiceProtocol {
     }
     
     func checkResult(
-        userId: Int,
         galaxyId: Int,
         completion: @escaping (Result<CheckResultResponse, Error>) -> Void
     ) {
         provider.request(
-            .checkResult(userId: userId, galaxyId: galaxyId)
+            .checkResult(galaxyId: galaxyId)
         ) { result in
             switch result {
             case .success(let response):
@@ -66,14 +63,12 @@ final class ResultServiceImpl: ResultServiceProtocol {
 
 
     func patchResult(
-        userId: Int,
         galaxyId: Int,
         request: patchResultRequest,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         provider.request(
             .patchResult(
-                userId: userId,
                 galaxyId: galaxyId,
                 request: request
             )

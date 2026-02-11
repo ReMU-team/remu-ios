@@ -10,24 +10,22 @@ import Moya
 
 protocol ResultServiceProtocol {
     func createResult(
-        userId: Int,
         galaxyId: Int,
         request: createResultRequest,
         completion: @escaping (Result<Void, Error>) -> Void
     )
 
     func checkResult(
-        userId: Int,
         galaxyId: Int,
         completion: @escaping (Result<CheckResultResponse, Error>) -> Void
     )
 
     func patchResult(
-        userId: Int,
         galaxyId: Int,
         request: patchResultRequest,
         completion: @escaping (Result<Void, Error>) -> Void
     )
+    
 }
 
 

@@ -53,10 +53,10 @@ struct TestView: View {
                         
                         Text("star\(i)")
                             .font(.system(size: 10))
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                         Text("star\(i)")
                             .font(.system(size: 10))
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                     }
                     // 좌표만 이동 (정면 유지)
                     .offset(x: xOffset, y: yOffset)

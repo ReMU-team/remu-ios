@@ -10,9 +10,12 @@ import SwiftUI
 
 struct CreateResultCardView: View {
     
+    @StateObject var resultVM: ResultViewModel
+    
     let onFinish: () -> Void
     
     @Environment(\.dismiss) private var dismiss
+
     
     var body: some View {
         VStack {
@@ -55,12 +58,10 @@ struct CreateResultCardView: View {
     // MARK: - middle
     private var middle: some View {
         VStack {
-            ResultCardFlip(
-                userId: 1,
-                galaxyId: 2, // TODO: userId, galaxyId 전역 관리
-            )
-                .padding(.top, 37)
-                .padding(.bottom, 20)
+            ResultCardFlip(resultVM: resultVM)
+            .padding(.top, 37)
+            .padding(.bottom, 20)
+            
             Text("카드를 클릭하면 뒷면이 보여요!")
                 .font(.pt13)
                 .foregroundStyle(.grayScale5)
@@ -85,9 +86,8 @@ struct CreateResultCardView: View {
 #Preview {
     NavigationStack {
         CreateResultCardView(
-            onFinish: {
-                print("Result card finished")
-            }
+            resultVM: DIContainer.preview.makeResultViewModel(appState: AppState()),
+            onFinish: {}
         )
     }
 }

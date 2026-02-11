@@ -61,7 +61,7 @@ struct GalaxyCheckView: View {
                     Spacer()
                 }
                 .padding(22)
-                
+              
                 Text("나의 우주")
                     .font(.pt24)
                     .foregroundColor(.white)

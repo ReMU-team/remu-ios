@@ -49,6 +49,7 @@ struct GalaxyCell: View {
                 .font(.pt12)
                 .foregroundColor(.white)
                 .lineLimit(1)
+
         }
     }
 }

@@ -69,12 +69,12 @@ struct DynamicOrbitView: View {
                                     .padding(.horizontal, 4)
                                     .padding(.vertical,2)
                                     .font(.system(size: 8))
-                                    .foregroundColor(.white)
+                                    .foregroundStyle(Color.white)
                                     .background(Capsule().fill(Color.white.opacity(0.3)))
                                 
                                 Text("\(stars[starIndex].dayOffset)Day")
                                     .font(.system(size: 8))
-                                    .foregroundColor(.white)
+                                    .foregroundStyle(Color.white)
                             }
                                 .fixedSize() // 텍스트가 길어져도 별의 위치에 영향을 주지 않음
                                 .offset(y: starSize / 2 + 15) // 별 중심에서 아래로 밀어내기
