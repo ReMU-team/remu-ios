@@ -45,6 +45,7 @@ private struct RecordCardOverlayPreview: View {
                     travelPeriodText: "25/10/29-25/11/10",
                     title: "첫 기록",
                     image: nil,
+                    imageUrl: nil, 
                     dday: 3,
                     dateText: "10.31",
                     content: "오늘은 정말 좋은 하루였다.",

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct WriteRecordView: View {
     
@@ -21,6 +22,8 @@ struct WriteRecordView: View {
     
     // 다음 버튼
     @State private var goNext = false
+    @State private var selectedItem: PhotosPickerItem?
+
     
     var body: some View {
         VStack {
@@ -62,10 +65,6 @@ struct WriteRecordView: View {
                 selectedColor: $viewModel.selectedCardColor,
                 onClose: { viewModel.isColorSheetPresented = false }
             )
-        }
-
-        .sheet(isPresented: $viewModel.isPhotoPickerPresented) {
-            PhotoPickerView(viewModel: viewModel)
         }
 
         
@@ -152,10 +151,16 @@ struct WriteRecordView: View {
                 }
 
 
-            RecordSelectionButton(title: "사진")
-                .onTapGesture {
-                    viewModel.isPhotoPickerPresented = true
-                }
+            PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .images
+                    ) {
+                        RecordSelectionButton(title: "사진")
+                    }
+                    .task(id: selectedItem) {
+                        guard let item = selectedItem else { return }
+                        await viewModel.setPhoto(from: item)
+                    }
 
         }
         .padding(.top, 71)

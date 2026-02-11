@@ -63,14 +63,10 @@ final class WriteRecordViewModel: ObservableObject {
     }
     
     // MARK: - Photo Picker
-    func setPhoto(from item: PhotosPickerItem?) {
-        guard let item else { return }
-        
-        Task {
-            if let data = try? await item.loadTransferable(type: Data.self),
-               let image = UIImage(data: data) {
-                self.selectedPhoto = image
-            }
+    func setPhoto(from item: PhotosPickerItem) async {
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let image = UIImage(data: data) {
+            self.selectedPhoto = image
         }
     }
     

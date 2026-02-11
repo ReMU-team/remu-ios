@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
+
 
 struct RecordCardFlip: View {
     
@@ -31,6 +33,7 @@ struct RecordCardFlip: View {
                 travelPeriodText: model.travelPeriodText,
                 title: model.title,
                 image: model.image,
+                imageUrl: model.imageUrl,
                 dday: model.dday,
                 dateText: model.dateText
             )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
@@ -119,6 +122,7 @@ struct RecordCardTwoView: View {
     let travelPeriodText: String
     let title: String
     let image: UIImage?
+    let imageUrl: String?
     let dday: Int
     let dateText: String
     
@@ -167,11 +171,31 @@ struct RecordCardTwoView: View {
     // MARK: - 앞장 middle
     var middle: some View {
         VStack {
-            // TODO: 사진 연결 필요
-            TextBox(text: "사진", isExpanded: true)
+            if let image = image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            } else if let imageUrl,
+                      let url = URL(string: imageUrl) {
+
+                KFImage(url)
+                    .placeholder {
+                        ProgressView()
+                    }
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            } else {
+                EmptyView()
+            }
         }
-        .padding(.bottom, 1)
     }
+
     
     // MARK: - 앞장 bottom
     var bottom: some View {
@@ -203,6 +227,7 @@ struct RecordCardTwoView: View {
             travelPeriodText: "25/10/29-25/11/10",
             title: "첫 기록",
             image: nil,
+            imageUrl: nil,
             dday: 3,
             dateText: "10.31",
             content: "오늘은 정말 좋은 하루였다.\n날씨도 좋고 음식도 맛있었다.",
