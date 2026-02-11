@@ -14,13 +14,15 @@ struct RecordCardOverlayView: View {
     let onEditRecord: () -> Void
     
     var body: some View {
-        ZStack {
-            
-            RecordCardFlip(model: model)
-            
+        VStack {
+            ZStack {
+                
+                RecordCardFlip(model: model)
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onTapGesture { } // 닫힘 방지
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onTapGesture { } // 닫힘 방지
     }
 }
 

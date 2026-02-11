@@ -56,8 +56,9 @@ struct HomeGalaxyView: View {
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        viewModel.isShowingRecordCard = false
-                        
+                        withAnimation {
+                            viewModel.isShowingRecordCard = false
+                        }
                     }
 
                 RecordCardFlip(model: model)

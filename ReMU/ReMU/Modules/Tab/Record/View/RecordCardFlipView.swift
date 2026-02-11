@@ -17,27 +17,29 @@ struct RecordCardFlip: View {
     
     // MARK: - body
     var body: some View {
-        ZStack {
-            // 뒷면
-            RecordCardOneView(
-                flip: $flip,
-                content: model.content,
-                emojis: model.emojis
-            )
+        VStack {
+            ZStack {
+                // 뒷면
+                RecordCardOneView(
+                    flip: $flip,
+                    content: model.content,
+                    emojis: model.emojis
+                )
                 .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
-            // 앞면
-            RecordCardTwoView(
-                flip: $flip,
-                galaxyName: model.galaxyName,
-                travelPeriodText: model.travelPeriodText,
-                title: model.title,
-                image: model.image,
-                imageUrl: model.imageUrl,
-                dday: model.dday,
-                dateText: model.dateText
-            )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
-                .animation(flip ? .linear : .linear.delay(0.35), value: flip)
+                // 앞면
+                RecordCardTwoView(
+                    flip: $flip,
+                    galaxyName: model.galaxyName,
+                    travelPeriodText: model.travelPeriodText,
+                    title: model.title,
+                    image: model.image,
+                    imageUrl: model.imageUrl,
+                    dday: model.dday,
+                    dateText: model.dateText
+                )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
+                    .animation(flip ? .linear : .linear.delay(0.35), value: flip)
+            }
         }
         .onTapGesture {
             flip.toggle()

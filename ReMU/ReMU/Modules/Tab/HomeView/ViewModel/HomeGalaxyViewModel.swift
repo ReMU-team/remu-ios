@@ -227,7 +227,9 @@ class HomeViewModel: ObservableObject {
                 dto: result,
                 galaxy: galaxyData
             )
-            self.isShowingRecordCard = true
+            withAnimation {
+                self.isShowingRecordCard = true
+            }
 
         } catch {
             print("❌ 별 상세 조회 실패:", error)
