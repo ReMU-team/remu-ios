@@ -19,6 +19,10 @@ struct GalaxyCheckView: View {
     
     // 네비게이션
     @State private var showCreateGalaxy = false
+    @State private var isEditing = false
+    @State private var selectedGalaxy: GalaxySummary?
+    @State private var showEditGalaxy = false
+
     @StateObject private var viewModel: GalaxyCheckViewModel
     
     init(container: DIContainer) {
@@ -71,43 +75,73 @@ struct GalaxyCheckView: View {
                     .font(.pt24)
                     .foregroundColor(.white)
                     .padding(.bottom,31)
-                HStack{
+                HStack {
                     Spacer()
-                    Button(action:{}){
-                        Text("은하 편집")
-                            .font(.pt12)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 8) // 텍스트 좌우 여백 (글자가 길어져도 이 간격은 유지됨)
-                            .padding(.vertical, 4)
-                            .background(Capsule().fill(Color.white.opacity(0.3))
-                            ) // 배경색 설정
-                    }.padding(.horizontal,22)
-                        .padding(.bottom,24)
+                    
+                    if !isEditing {
+                        Button {
+                            withAnimation {
+                                isEditing = true
+                            }
+                        } label: {
+                            Text("은하 편집")
+                                .font(.pt12)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.white.opacity(0.3))
+                                )
+                        }
+                        .transition(.opacity)
+                    }
                 }
+                .frame(height: 32)
+                .padding(.horizontal,22)
+
                 ScrollView{
-                    LazyVGrid(columns: columns,spacing: 20){
+                    LazyVGrid(columns: columns,spacing: 10){
                         ForEach(viewModel.galaxies) { summary in
                             GalaxyCell(
                                 galaxyId: summary.galaxyId,
                                 title: summary.name,
-                                iconName: summary.emojiResourceName
+                                iconName: summary.emojiResourceName,
+                                isEditing: isEditing,
+                                onEditTap: {
+                                    selectedGalaxy = summary
+                                    showEditGalaxy = true
+                                }
                             )
                             .onTapGesture {
-                                appState.currentGalaxyId = summary.galaxyId
-                                LastGalaxyStore.save(summary.galaxyId)
-                                dismiss()
+                                if !isEditing {
+                                    appState.currentGalaxyId = summary.galaxyId
+                                    LastGalaxyStore.save(summary.galaxyId)
+                                    dismiss()
+                                }
                             }
-
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
                 .padding(.horizontal, 22)
                 Spacer()
                 HStack(spacing: 9){
-                    PrimaryButton(title: "히스토리", action: {})
-                    
-                    // 은하 생성 버튼
-                    PrimaryButton(title: "은하 생성하기",backgroundColor: .purpleC495E0 , action: {showCreateGalaxy = true})
+                    if isEditing {
+                        PrimaryButton(title: "수정 완료") {
+                            withAnimation {
+                                isEditing = false
+                            }
+                        }
+                    } else {
+                        HStack(spacing: 9) {
+                            PrimaryButton(title: "히스토리", action: {})
+                            PrimaryButton(title: "은하 생성하기", backgroundColor: .purpleC495E0) {
+                                showCreateGalaxy = true
+                            }
+                        }
+                    }
+
                 }
                 .padding(.horizontal,40)
                 .onAppear {
@@ -119,14 +153,50 @@ struct GalaxyCheckView: View {
                 .fullScreenCover(isPresented: $showCreateGalaxy) {
                     CreateGalaxyView(
                         viewModel: CreateGalaxyViewModel(container: container),
-                        onFinish: { galaxy in
-                            appState.currentGalaxyId = galaxy.serverId
-                            LastGalaxyStore.save(galaxy.serverId)
+                        mode: .create,
+                        onFinish: {
+                            Task {
+                                await viewModel.fetchGalaxyList()
+                            }
                             showCreateGalaxy = false
-                            dismiss()
                         }
                     )
                 }
+                .fullScreenCover(isPresented: $showEditGalaxy) {
+                    if let galaxy = selectedGalaxy {
+                        CreateGalaxyView(
+                            viewModel: {
+                                let vm = CreateGalaxyViewModel(container: container)
+                                vm.editingGalaxyId = galaxy.galaxyId
+                                return vm
+                            }(),
+                            mode: .edit(galaxyId: galaxy.galaxyId),
+                            onFinish: {
+                                Task {
+                                    await viewModel.fetchGalaxyList()
+                                }
+                                showEditGalaxy = false
+                            },
+                            onDelete: {
+                                Task {
+                                    await viewModel.fetchGalaxyList()
+
+                                    if appState.currentGalaxyId == galaxy.galaxyId {
+                                        if let first = viewModel.galaxies.first {
+                                            appState.currentGalaxyId = first.galaxyId
+                                            LastGalaxyStore.save(first.galaxyId)
+                                        } else {
+                                            appState.currentGalaxyId = nil
+                                        }
+                                    }
+                                }
+                                showEditGalaxy = false
+                            }
+                        )
+                    }
+                }
+
+
             }
         }
     }

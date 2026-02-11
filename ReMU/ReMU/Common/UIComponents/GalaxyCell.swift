@@ -13,20 +13,43 @@ struct GalaxyCell: View {
     let galaxyId: Int
     let title: String
     let iconName: String
-    
+    var isEditing: Bool = false
+    var onEditTap: (() -> Void)? = nil
+
     var body: some View {
         VStack(spacing: 8) {
-            // 은하 아이콘
-            Image(iconName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 60,height: 60)
-            
-            // 은하 이름표 (캡슐 디자인 적용)
+
+            ZStack {
+                Image(iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+
+                if isEditing {
+                    Button {
+                        onEditTap?()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white.opacity(0.4))
+                                .frame(width: 42, height: 42)
+
+                            Image(systemName: "pencil")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(.purpleC495E0)
+
+                        }
+                    }
+                }
+            }
+
             Text(title)
                 .font(.pt12)
                 .foregroundColor(.white)
-                .lineLimit(1) // 한 줄 유지
+                .lineLimit(1)
         }
     }
 }
+

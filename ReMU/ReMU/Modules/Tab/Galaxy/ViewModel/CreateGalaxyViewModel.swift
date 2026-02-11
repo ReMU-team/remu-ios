@@ -24,6 +24,8 @@ final class CreateGalaxyViewModel: ObservableObject {
     @Published var showPlaceSearch = false
     @Published var showCalendar = false
     
+    var editingGalaxyId: Int?
+
     private let provider: MoyaProvider<GalaxyTargetType>
     private let keychain: UserSessionKeychainService
     
@@ -84,4 +86,50 @@ final class CreateGalaxyViewModel: ObservableObject {
             print("❌ 은하 생성 실패:", error)
         }
     }
+    
+    // MARK: - 은하 수정 API
+    func patchGalaxy() async {
+        guard
+            let galaxyId = editingGalaxyId,
+            let session = keychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        let request = PatchGalaxyRequest(
+            name: galaxyName,
+            startDate: startDate,
+            endDate: endDate,
+            emojiResourceName: selectedGalaxyImageName,
+            googlePlaceId: nil,
+            placeName: destination
+        )
+
+        do {
+            _ = try await provider.requestAsync(
+                .patchGalaxy(accessToken: accessToken, galaxyId: galaxyId, request: request)
+            )
+            print("✅ 수정 성공")
+        } catch {
+            print("❌ 수정 실패:", error)
+        }
+    }
+
+    // MARK: - 은하 삭제 API
+    func deleteGalaxy() async {
+        guard
+            let galaxyId = editingGalaxyId,
+            let session = keychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        do {
+            _ = try await provider.requestAsync(
+                .deleteGalaxy(accessToken: accessToken, galaxyId: galaxyId)
+            )
+            print("✅ 삭제 성공")
+        } catch {
+            print("❌ 삭제 실패:", error)
+        }
+    }
+
 }

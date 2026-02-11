@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum GalaxyFormMode {
+    case create
+    case edit(galaxyId: Int)
+}
+
 struct CreateGalaxyView: View {
     // 홈 상태
     @EnvironmentObject var appState: AppState
@@ -20,18 +25,27 @@ struct CreateGalaxyView: View {
     @State private var showWritePledge = false
     @State private var createdGalaxy: Galaxy?
     
-    
-    // 은하 생성
-    let onFinish: (Galaxy) -> Void
-    
+    let mode: GalaxyFormMode
+    let onFinish: () -> Void
+    let onDelete: (() -> Void)?
     
     init(
         viewModel: CreateGalaxyViewModel,
-        onFinish: @escaping (Galaxy) -> Void
+        mode: GalaxyFormMode,
+        onFinish: @escaping () -> Void,
+        onDelete: (() -> Void)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.mode = mode
         self.onFinish = onFinish
+        self.onDelete = onDelete
+        
+        if case .edit(let id) = mode {
+            viewModel.editingGalaxyId = id
+        }
     }
+
+
     
     
     var body: some View {
@@ -53,10 +67,11 @@ struct CreateGalaxyView: View {
                     galaxy: galaxy,
                     container: container,
                     onFinish: {
-                        onFinish(galaxy)
+                        onFinish()
                     }
                 )
             }
+
         }
     }
     
@@ -64,14 +79,32 @@ struct CreateGalaxyView: View {
     private var navigationBar: some View {
         VStack {
             CustomNavigationBar(
-                title: "은하 생성",
+                title: {
+                    switch mode {
+                    case .create:
+                        return "은하 생성"
+                    case .edit:
+                        return "은하 수정"
+                    }
+                }(),
                 onBack: {
-                    dismiss() // 뒤로가기 (home)
+                    dismiss()
                 }
             )
             .padding(.top, 11)
             .padding(.bottom, 48)
             
+            if case .edit = mode {
+                Button("은하 삭제") {
+                    Task {
+                        await viewModel.deleteGalaxy()
+                        onDelete?()
+                        dismiss()
+                    }
+                }
+                .foregroundColor(.purple)
+                .padding(.trailing, 22)
+            }
         }
     }
     
@@ -161,25 +194,31 @@ struct CreateGalaxyView: View {
     // MARK: - 완료 버튼
     private var finishButton: some View {
         VStack {
-            PrimaryButton(title: "완료",
-                          backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4),
-                          isDisabled: !viewModel.isFinishEnabled
+            PrimaryButton(
+                title: "완료",
+                backgroundColor: viewModel.isFinishEnabled ? .purpleC495E0 : .purpleC495E0.opacity(0.4),
+                isDisabled: !viewModel.isFinishEnabled
             ) {
                 Task {
-                    await viewModel.createGalaxy()
-                    
-                    if let galaxy = viewModel.createdGalaxy {
-                        print("🔥 createdGalaxy:", galaxy.serverId)
-                        createdGalaxy = galaxy
+                    switch mode {
+                    case .create:
+                        await viewModel.createGalaxy()
+                        if let galaxy = viewModel.createdGalaxy {
+                            createdGalaxy = galaxy
+                        }
+
+                    case .edit(let galaxyId):
+                        viewModel.editingGalaxyId = galaxyId
+                        await viewModel.patchGalaxy()
+                        onFinish()
+                        dismiss()
                     }
-
-
-                    
                 }
             }
         }
         .padding(.horizontal, 40)
     }
+
 }
 
 
@@ -207,12 +246,11 @@ struct GalaxySelectableItem: View {
     
     CreateGalaxyView(
         viewModel: CreateGalaxyViewModel(container: container),
-        onFinish: { galaxy in
-            print("프리뷰에서 생성된 은하:", galaxy)
-            appState.currentGalaxyId = galaxy.serverId
-        }
+        mode: .create,
+        onFinish: {}
     )
     .environmentObject(appState)
     .environmentObject(container)
 }
+
 
