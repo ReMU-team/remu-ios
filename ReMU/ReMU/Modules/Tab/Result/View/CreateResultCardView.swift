@@ -55,7 +55,10 @@ struct CreateResultCardView: View {
     // MARK: - middle
     private var middle: some View {
         VStack {
-            ResultCardFlip()
+            ResultCardFlip(
+                userId: 1,
+                galaxyId: 2, // TODO: userId, galaxyId 전역 관리
+            )
                 .padding(.top, 37)
                 .padding(.bottom, 20)
             Text("카드를 클릭하면 뒷면이 보여요!")
@@ -76,8 +79,6 @@ struct CreateResultCardView: View {
         .padding(.horizontal, 40)
         
     }
-    
-    
     
 }
 

@@ -10,22 +10,22 @@ import Alamofire
 import Moya
 
 enum FeedbackTargetType {
-    case createFeedback(accessToken: String, galaxyId: Int)
-    case fetchFeedback(accessToken: String, galaxyId: Int)
-    case patchFeedback(accessToken: String, galaxyId: Int)
+    case createFeedback(galaxyId: Int)
+    case fetchFeedback(galaxyId: Int)
+    case patchFeedback(galaxyId: Int)
 }
 
 extension FeedbackTargetType: APITargetType {
+
     var path: String {
         switch self {
-        case .createFeedback(_,let galaxyId):
-            return "/api/v1/galaxies/\(galaxyId)/feedback"
-        case .fetchFeedback(_,let galaxyId):
-            return "/api/v1/galaxies/\(galaxyId)/feedback"
-        case .patchFeedback(_,let galaxyId):
+        case .createFeedback(let galaxyId),
+             .fetchFeedback(let galaxyId),
+             .patchFeedback(let galaxyId):
             return "/api/v1/galaxies/\(galaxyId)/feedback"
         }
     }
+
     var method: Moya.Method {
         switch self {
         case .createFeedback:
@@ -36,17 +36,13 @@ extension FeedbackTargetType: APITargetType {
             return .patch
         }
     }
-    var headers: [String : String]?{
-        switch self {
-        case .createFeedback(let accessToken,_),.fetchFeedback(let accessToken,_),.patchFeedback(let accessToken,_):
-            var header = ["Accept": "application/json"]
-            header["Authorization"] = "Bearer \(accessToken)"
-            return header
-        }
-    }
-    
-    var task: Moya.Task {
-        return .requestPlain
-        }
+
+    /// Authorization은 Network / APITargetType 공통 처리
+    var headers: [String : String]? {
+        ["Accept": "application/json"]
     }
 
+    var task: Moya.Task {
+        .requestPlain
+    }
+}

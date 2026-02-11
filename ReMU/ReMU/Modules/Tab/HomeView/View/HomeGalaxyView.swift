@@ -30,6 +30,7 @@ struct HomeGalaxyView: View {
     
     @State private var galaxies: [Galaxy] = []
     
+    
     // 기록, 회고 여행 기간 표시
 //    let periodText = travelPeriodText(
 //        start: galaxy.startDate,

@@ -35,5 +35,5 @@ struct ReviewResult {
     let galaxyId: Int
     let travelEmojiImageName: String   // 여행 후 이모지
     let overallContent: String?        // 여행 후기
-    let aiFeedback: String?            // AI 분석 결과
+    let hasAIFeedback: Bool           // AI 분석 결과 존재 여부
 }
