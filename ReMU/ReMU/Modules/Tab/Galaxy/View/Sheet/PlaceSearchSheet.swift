@@ -31,7 +31,7 @@ struct PlaceSearchSheet: View {
             // 검색창
             HStack {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(Color.gray)
 
                 TextField("장소를 검색하세요", text: $keyword)
                     .font(.pt16)
@@ -41,7 +41,7 @@ struct PlaceSearchSheet: View {
                         keyword = ""
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(Color.gray)
                     }
                 }
             }
@@ -59,7 +59,7 @@ struct PlaceSearchSheet: View {
                 } label: {
                     Text(place)
                         .font(.pt16)
-                        .foregroundColor(.primary)
+                        .foregroundStyle(Color.primary)
                 }
             }
             .listStyle(.plain)

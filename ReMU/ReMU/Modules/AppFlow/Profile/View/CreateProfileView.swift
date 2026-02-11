@@ -66,7 +66,7 @@ struct CreateProfileView: View {
                     // 가능 여부 메시지
                     Text(viewModel.nicknameMessage ?? "")
                         .font(.pt13)
-                        .foregroundColor(
+                        .foregroundStyle(
                             viewModel.isNicknameValid ? .true3 : .false3
                         )
                         .opacity(viewModel.nicknameMessage == nil ? 0 : 1)

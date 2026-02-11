@@ -48,7 +48,7 @@ struct CalendarSheet: View {
                 ForEach(["Su","Mo","Tu","We","Th","Fr","Sa"], id: \.self) {
                     Text($0)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(Color.gray)
                 }
             }
 
@@ -72,7 +72,7 @@ struct CalendarSheet: View {
             // 글 설명
             Text("비행기로 이동하시나요? ✈️\n 도착 예정일을 선택해주시면, 진짜 여행이 시작되는 날에 맞춰 기록을 준비할게요!\n\n비행이 아니라면, 그대로 ‘완료’를 눌러주세요.")
                 .font(.pt15)
-                .foregroundColor(.grayScale8)
+                .foregroundStyle(Color.grayScale8)
                 .frame(width: 318, alignment: .topLeading)
                 .padding(.top, 54)
                 .padding(.bottom, 78)
@@ -178,7 +178,7 @@ struct CalendarDayCell: View {
                 Text(dayText)
                     .frame(width: 40, height: 40)
                     .background(background)
-                    .foregroundColor(foreground)
+                    .foregroundStyle(foreground)
                     .clipShape(Circle())
                     .onTapGesture {
                         onTap()

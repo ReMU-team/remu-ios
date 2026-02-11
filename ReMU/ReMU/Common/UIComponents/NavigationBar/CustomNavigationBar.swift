@@ -17,14 +17,14 @@ struct CustomNavigationBar: View {
             // 가운데 타이틀
             Text(title)
                 .font(.pt20)
-                .foregroundColor(.grayScale9)
+                .foregroundStyle(Color.grayScale9)
 
             HStack {
                 Button {
                     onBack()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.grayScale9)
+                        .foregroundStyle(Color.grayScale9)
                 }
 
                 Spacer()

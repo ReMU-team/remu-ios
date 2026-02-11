@@ -47,7 +47,7 @@ struct TimeLineView: View {
                 }
                 .padding(22)
                 .padding(.bottom,134)
-                .foregroundColor(.white)
+                .foregroundStyle(Color.white)
                 VStack{
                     Image("home_star")
                         .padding(.bottom,20)
@@ -60,7 +60,7 @@ struct TimeLineView: View {
 
                     Text("‘공동 타임라인’. 함께한 여행을 더욱 특별하게.")
                         .font(.pt16)
-                        .foregroundColor(.white)
+                        .foregroundStyle(Color.white)
                         .padding(.bottom,56)
                     Button(action: {}){
                         Text("출시 시 알림받기")

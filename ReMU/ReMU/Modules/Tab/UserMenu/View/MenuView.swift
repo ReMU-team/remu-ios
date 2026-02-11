@@ -45,7 +45,7 @@ struct MenuView: View {
             
             Text("설명")
                 .font(.pt18)
-                .foregroundColor(.grayScale9)
+                .foregroundStyle(Color.grayScale9)
             
             alarmSection
             
@@ -82,11 +82,11 @@ struct MenuView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         Text(profile.name)
                             .font(.pt16)
-                            .foregroundColor(.grayScale9)
+                            .foregroundStyle(Color.grayScale9)
 
                         Text(profile.introduction ?? "")
                             .font(.pt13)
-                            .foregroundColor(.grayScale7)
+                            .foregroundStyle(Color.grayScale7)
                     }
                     .padding(.horizontal, 16)
 
@@ -94,14 +94,14 @@ struct MenuView: View {
 
                     Button(action: {}) {
                         Image("pencil.line")
-                            .foregroundColor(.grayScale7)
+                            .foregroundStyle(Color.grayScale7)
                     }
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 32)
             } else if viewModel.hasError {
                 Text("프로필을 불러오지 못했어요")
-                    .foregroundColor(.false3)
+                    .foregroundStyle(Color.false3)
             }
         }
     }
@@ -112,13 +112,13 @@ struct MenuView: View {
             Image(systemName: "bell")
                 .resizable()
                 .frame(width: 24, height: 24)
-                .foregroundColor(.grayScale9)
+                .foregroundStyle(Color.grayScale9)
 
             Spacer()
 
             Toggle("알림 설정", isOn: $isOn)
                 .font(.pt16)
-                .foregroundColor(.grayScale9)
+                .foregroundStyle(Color.grayScale9)
                 .tint(.purpleD9BCEA)
                 .onChange(of: isOn) { _, newValue in
                     if newValue {
@@ -150,7 +150,7 @@ struct MenuView: View {
 
             Text(title)
                 .font(.pt16)
-                .foregroundColor(.grayScale9)
+                .foregroundStyle(Color.grayScale9)
 
             Spacer()
 
@@ -170,7 +170,7 @@ struct MenuView: View {
             } label: {
                 Text("탈퇴하기")
                     .font(.pt16)
-                    .foregroundColor(.false3)
+                    .foregroundStyle(Color.false3)
             }
 
 
@@ -184,7 +184,7 @@ struct MenuView: View {
             } label: {
                 Text("로그아웃")
                     .font(.pt16)
-                    .foregroundColor(.grayScale9)
+                    .foregroundStyle(Color.grayScale9)
             }
         }
     }

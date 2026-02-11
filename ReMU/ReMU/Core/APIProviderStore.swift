@@ -40,4 +40,8 @@ extension APIProviderStore {
     func result() -> MoyaProvider<ResultTargetType> {
         return networkService.createProvider(for: ResultTargetType.self)
     }
+    func resultService() -> ResultServiceProtocol {
+        return ResultServiceImpl(provider: result())
+    }
+
 }

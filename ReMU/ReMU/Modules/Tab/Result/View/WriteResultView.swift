@@ -8,26 +8,13 @@
 import Foundation
 import SwiftUI
 
-
 struct WriteResultView: View {
+    
+    @StateObject var viewModel: ResultViewModel
     
     let onFinish: () -> Void
     
-    init(userId: Int, galaxyId: Int, onFinish: @escaping () -> Void) {
-        self.onFinish = onFinish
-        _viewModel = StateObject(
-            wrappedValue: ResultViewModel(
-                userId: userId,
-                galaxyId: galaxyId
-            )
-        )
-    }
-    
-    // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
-    
-    // 뷰모델
-    @StateObject private var viewModel: ResultViewModel
     
     var body: some View {
         VStack {
@@ -185,12 +172,12 @@ struct WriteResultView: View {
 }
 
 #Preview {
+    let container = DIContainer.preview
+    
     WriteResultView(
-        userId: 1, // 가짜 값 (실제 실행 시 반영되는 값X)
-        galaxyId: 42,
-        onFinish: {
-            print("다음 버튼")
-        }
+        viewModel: container.makeResultViewModel(),
+        onFinish: {}
     )
 }
+
 
