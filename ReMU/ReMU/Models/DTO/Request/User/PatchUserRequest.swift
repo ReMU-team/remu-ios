@@ -8,7 +8,7 @@
 import Foundation
 
 struct PatchUserRequest: Codable {
-    let imageUrl: String?
-    let name : String 
+    let name : String
     let introduction : String?
+    let imageData: Data?
 }
