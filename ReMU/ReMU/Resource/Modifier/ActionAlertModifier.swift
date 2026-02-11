@@ -47,7 +47,7 @@ struct ActionAlertModifier: ViewModifier {
 
     private func getRole(for type: ActionAlertType) -> ButtonRole? {
         switch type {
-        case .delete, .redelete, .logout: return .destructive
+        case .delete, .redelete, .logout, .withdraw: return .destructive
         default: return nil
         }
     }

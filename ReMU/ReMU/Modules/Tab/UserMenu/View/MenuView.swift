@@ -14,14 +14,18 @@ struct MenuView: View {
     @State private var isOn = false
     @StateObject private var viewModel: MenuViewModel
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appState: AppState
+
 
     init(container: DIContainer) {
         _viewModel = StateObject(
             wrappedValue: MenuViewModel(
-                provider: container.apiProviderStore.user()
+                provider: container.apiProviderStore.user(),
+                tokenProvider: container.tokenProvider
             )
         )
     }
+
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -154,14 +158,19 @@ struct MenuView: View {
 
     // MARK: - Bottom Buttons
     private var bottomButtons: some View {
-        VStack(spacing: 24) {
+        VStack(alignment: .center, spacing: 24) {
             Button {
-                AlertManager.shared.show(.delete {})
+                AlertManager.shared.show(.delete {
+                    _Concurrency.Task {
+                        await viewModel.deleteAccount(appState: appState)
+                    }
+                })
             } label: {
                 Text("탈퇴하기")
                     .font(.pt16)
                     .foregroundColor(.false3)
             }
+
 
             Button {
                 AlertManager.shared.show(.logout {})
