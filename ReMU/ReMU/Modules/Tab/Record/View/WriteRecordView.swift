@@ -125,13 +125,28 @@ struct WriteRecordView: View {
                 ForEach(viewModel.selectedEmojis) { emoji in
                     Image(emoji.id)
                         .resizable()
-                        .frame(width: 32, height: 32)
+                        .frame(width: 35, height: 35)
                 }
 
+                Spacer()
+
                 if viewModel.selectedPhoto != nil {
-                    Text("사진")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.purpleD9BCEA50)
+                            .frame(width: 196, height: 27)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.purpleC495E0, lineWidth: 1)
+                            )
+
+                        Text("사진")
+                            .font(.pt13)
+                            .foregroundStyle(.purpleC495E0)
+                    }
                 }
             }
+
             .padding(.top, 12)
 
         }
@@ -196,7 +211,7 @@ struct WriteRecordView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "분석하기", backgroundColor: .purpleC495E0) {
+            PrimaryButton(title: "다음", backgroundColor: .purpleC495E0) {
                 goNext = true
             }
             .padding(.bottom, 54)
