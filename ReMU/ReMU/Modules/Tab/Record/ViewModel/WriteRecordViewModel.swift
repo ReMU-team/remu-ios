@@ -80,6 +80,19 @@ final class WriteRecordViewModel: ObservableObject {
             cardColor: selectedCardColor?.assetName ?? "planet_1"
         )
     }
+    
+    // MARK: - 버튼 활성화 조건
+    var isValid: Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return trimmedTitle.count >= 2 &&
+               trimmedTitle.count <= 32 &&
+               trimmedContent.count >= 2 &&
+               !selectedEmojis.isEmpty &&
+               selectedCardColor != nil
+    }
+
 }
 
 

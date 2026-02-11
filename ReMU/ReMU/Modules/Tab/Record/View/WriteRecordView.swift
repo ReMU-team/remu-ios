@@ -211,9 +211,13 @@ struct WriteRecordView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "다음", backgroundColor: .purpleC495E0) {
+            PrimaryButton(
+                title: "다음",
+                backgroundColor: viewModel.isValid ? .purpleC495E0 : .purpleD9BCEA50
+            ) {
                 goNext = true
             }
+            .disabled(!viewModel.isValid)
             .padding(.bottom, 54)
             
         }
