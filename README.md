@@ -14,9 +14,9 @@
 ## 👥 멤버
 | 나래 | 티모 | 벨라 |  
 |:------:|:------:|:------:|  
-| <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/191358468/533741254-eaa9c875-5cb5-4da1-8944-e8dc9bf7fda3.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260109%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260109T055308Z&X-Amz-Expires=300&X-Amz-Signature=d1840a77c58392f7523b2854f6664137b9b2773f7dd40f262bf38099b7bd4dcb&X-Amz-SignedHeaders=host" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
-| FE | PL | FE |  
-| [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/bella411) |
+| <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
+| PL | FE | FE |  
+| [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/bella411) |
 
 <br>
 
