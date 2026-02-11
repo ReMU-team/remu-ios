@@ -106,10 +106,10 @@ final class ProfileViewModel: ObservableObject {
     
     // MARK: - 프로필 생성 & 수정
     func updateProfile() async -> Bool {
-            let request = PatchUserRequest(
-                imageUrl: nil,
+        let request = PatchUserRequest(
                 name: username,
-                introduction: description
+                introduction: description.isEmpty ? nil : description,
+                imageData: selectedImageData
             )
 
             do {
@@ -117,6 +117,7 @@ final class ProfileViewModel: ObservableObject {
                 let decoded = try response.map(BaseResponse<UserProfileResponse>.self)
                 return decoded.isSuccess
             } catch {
+                print("프로필 생성/수정 실패", error)
                 return false
             }
         }

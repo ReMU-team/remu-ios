@@ -12,6 +12,8 @@ protocol TokenProviding {
     var refreshToken: String? { get set }
     func refreshToken(completion: @escaping (String?, Error?) -> Void)
     func isTokenExpiringSoon(buffer: TimeInterval) -> Bool
+    func clearSession()
+
 }
 extension TokenProviding {
     func isTokenExpiringSoon() -> Bool {

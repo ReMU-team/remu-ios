@@ -17,6 +17,7 @@ enum ActionAlertType {
     case makeGalxy(onConfirm: () -> Void)
     case goBack(onConfirm: () -> Void)
     case error(title: String = "Error", message: String)
+    case withdraw(onConfirm: () -> Void)
     
     var title: String {
         switch self {
@@ -29,6 +30,8 @@ enum ActionAlertType {
         case .makeGalxy : return "아직 은하가 만들어지지 않았네요."
         case .goBack : return "정말 돌아가시겠습니까?"
         case .error(let title, _): return title
+        case .withdraw:
+            return "계정을 삭제하시겠어요?"
         }
         
     }
@@ -36,6 +39,8 @@ enum ActionAlertType {
         switch self {
         case .allowAlarm : return "경고, 사운드 및 아이콘 배치가 알림에 포함될 수 있습니다. 설정에서 이를 구성할 수 있습니다."
         case .makeGalxy : return " 여행을 생성한 뒤에 목표를 설정할 수 있어요!"
+        case .withdraw:
+            return "탈퇴 후 계정 복구는 불가능해요."
         case .error(_, let message): return message
         default : return nil
             
@@ -49,6 +54,7 @@ enum ActionAlertType {
         case .redelete : return "삭제하기"
         case .makeGalxy : return "은하 만들러 가기"
         case .goBack : return "나가기"
+        case .withdraw : return "탈퇴하기"
         default : return "확인"
         }
     }

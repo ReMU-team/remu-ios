@@ -22,8 +22,9 @@ extension APIProviderStore {
     }
     /// 로그인 플로우 Provieder
     func auth() -> MoyaProvider<AuthTargetType> {
-        return networkService.createUnauthenticatedProvider(for: AuthTargetType.self)
+        return networkService.createProvider(for: AuthTargetType.self)
     }
+
     
     func galaxy() -> MoyaProvider<GalaxyTargetType> {
         return networkService.createProvider(for: GalaxyTargetType.self)

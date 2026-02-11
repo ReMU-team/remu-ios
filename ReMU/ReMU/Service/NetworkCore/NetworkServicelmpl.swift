@@ -14,7 +14,7 @@ import Alamofire
 /// - `TokenProviding`을 통해 액세스 토큰을 주입받고, `AccessTokenRefresher`를 이용해 자동 갱신 처리 로직을 포함합니다.
 /// - `Session`과 `MoyaProvider`를 설정하여 API 요청 시 필요한 인증, 로깅, 인터셉터를 적용합니다.
 class NetworkServiceImpl: @unchecked Sendable, NetworkService {
-    private let tokenProvider: TokenProviding
+    let tokenProvider: TokenProviding
     private let accessTokenRefresher: AccessTokenRefresher
     private let session: Session
     private let loggerPlugin: PluginType

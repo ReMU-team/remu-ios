@@ -16,9 +16,6 @@ enum UserAPI {
     
     // 내 프로필 조회 (로그인 후 사용)
     case getMyProfile
-    
-    // 회원 탈퇴
-    case withdraw
 }
 
 extension UserAPI: TargetType {
@@ -36,15 +33,13 @@ extension UserAPI: TargetType {
             return "/api/v1/auth/login/\(provider)"
         case .getMyProfile:
             return "/user/me"
-        case .withdraw:
-            return "/user/withdraw"
         }
     }
     
     // 요청 행동 - HTTP 메서드
     var method: Moya.Method {
         switch self {
-        case .socialLogin, .withdraw:
+        case .socialLogin:
             return .post // 데이터 전송은 POST
         case .getMyProfile:
             return .get
@@ -61,7 +56,7 @@ extension UserAPI: TargetType {
             ]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
             
-        case .getMyProfile, .withdraw:
+        case .getMyProfile:
             // 로그인 된 상태라면 토큰은 Header에 실리므로 body는 비워둠
             return .requestPlain
         }

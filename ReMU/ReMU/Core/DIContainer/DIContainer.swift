@@ -31,6 +31,10 @@ final class DIContainer: ObservableObject{
     let userSessionKeychain: UserSessionKeychainService
     let apiProviderStore: APIProviderStore
     
+    var tokenProvider: TokenProviding {
+        (networkService as! NetworkServiceImpl).tokenProvider
+    }
+
     init(
         router: NavigationRouter = .init(),
         userSessionKeychain: UserSessionKeychainService = UserSessionKeychainServiceImpl.shared    ) {
