@@ -15,15 +15,16 @@ class ResultViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var reviewResult: ReviewResult?
+    @Published var aiFeedback: String?
+
 
     
     // MARK: - Dependency
     private let userId: Int
     private let galaxyId: Int
-    
-    // MARK: - Network Service
     private let resultService: ResultServiceProtocol
     
+    // MARK: - Network Service
     init(
         userId: Int,
         galaxyId: Int,
@@ -60,22 +61,17 @@ class ResultViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Result API 조회 함수
+    // MARK: - Result API 조회 함수 (AI 피드백 통합)
     func fetchResult() {
         isLoading = true
-
-        resultService.checkResult(
-            userId: userId,
-            galaxyId: galaxyId
-        ) { [weak self] result in
+        resultService.checkResult(userId: userId, galaxyId: galaxyId) { [weak self] result in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
-
                 switch result {
                 case .success(let response):
                     self.reviewResult = self.makeReviewResult(from: response)
-
+                    self.aiFeedback = response.aiFeedback   // AI 피드백 바로 업데이트
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }
@@ -84,30 +80,22 @@ class ResultViewModel: ObservableObject {
     }
     
     // MARK: - Result API 수정 함수
-    func patchResult(completion: @escaping () -> Void) {
+    func patchResult() {
+        isLoading = true
         let request = makePatchResultRequest()
-
-        resultService.patchResult(
-            userId: userId,
-            galaxyId: galaxyId,
-            request: request
-        ) { [weak self] result in
+        resultService.patchResult(userId: userId, galaxyId: galaxyId, request: request) { [weak self] result in
             guard let self else { return }
-
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    // ✅ 수정 후 최신 데이터 다시 조회
-                    self.fetchResult()
-                    completion()
-
-                case .failure(let error):
+            switch result {
+            case .success:
+                self.fetchResult() // 수정 후 회고 + AI 피드백 갱신
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isLoading = false
                     self.errorMessage = error.localizedDescription
                 }
             }
         }
     }
-
 
     
     // MARK: - 생성 Mapping
@@ -120,20 +108,19 @@ class ResultViewModel: ObservableObject {
     }
     
     // MARK: - 조회 Mapping
-    private func makeReviewResult(
-        from response: CheckResultResponse
-    ) -> ReviewResult {
-        ReviewResult(
+    private func makeReviewResult(from response: CheckResultResponse) -> ReviewResult {
+        return ReviewResult(
             galaxyId: response.galaxyId,
             travelEmojiImageName: response.travelEmojiImageName,
             overallContent: response.overallContent,
-            aiFeedback: response.aiFeedback
+            hasAIFeedback: response.aiFeedback != nil
         )
     }
+
     
     // MARK: - 수정 Mapping
     private func makePatchResultRequest() -> patchResultRequest {
-        patchResultRequest(
+        return patchResultRequest(
             emojiId: selectedEmoji?.id ?? "",
             reflection: review,
             reviews: pledges.map {
@@ -145,6 +132,7 @@ class ResultViewModel: ObservableObject {
             }
         )
     }
+
 
 
 

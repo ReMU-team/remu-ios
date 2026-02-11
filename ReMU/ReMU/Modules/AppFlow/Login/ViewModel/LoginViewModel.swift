@@ -12,6 +12,7 @@ import Moya
 // MARK:
 // 소셜 로그인으로 액세스 및 리프레쉬 토큰만 받아옴
 final class LoginViewModel: ObservableObject {
+    
     // MARK: - Property
     
     private let loginProvider: MoyaProvider<AuthTargetType>

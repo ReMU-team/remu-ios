@@ -9,34 +9,56 @@ import Foundation
 import SwiftUI
 
 struct ResultCardFlip: View {
-    
-    @State var flip = false
+
+    let galaxyId: Int
+    let userId: Int
+    @StateObject private var resultVM: ResultViewModel
+
+    init(userId: Int, galaxyId: Int) {
+        self.userId = userId
+        self.galaxyId = galaxyId
+        _resultVM = StateObject(
+            wrappedValue: ResultViewModel(userId: userId, galaxyId: galaxyId)
+        )
+    }
+
+    @State private var flip = false
+
     
     var body: some View {
         ZStack {
-            ResultCardOneView(flip: $flip)
-                .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
-                .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
+            ResultCardOneView(
+                flip: $flip,
+                feedbackContent: resultVM.aiFeedback
+            )
+            .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
+
             ResultCardTwoView(flip: $flip)
                 .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
-                .animation(flip ? .linear : .linear.delay(0.35), value: flip)
         }
         .onTapGesture {
             flip.toggle()
+            if flip {
+                resultVM.fetchResult()
+            }
         }
         .frame(width: 297, height: 419)
-        //.background(Color(red: 40/255, green: 40/255, blue: 40/255))
-        .background(.white) // 배경색 수정
     }
 }
 
 #Preview {
-    ResultCardFlip()
+    ResultCardOneView(
+        flip: .constant(false),
+        feedbackContent: "AI 피드백 예시입니다."
+    )
 }
+
 
 struct ResultCardOneView: View {
     
     @Binding var flip: Bool
+    let feedbackContent: String?
+    
     var body: some View {
         ZStack {
             Rectangle()
@@ -80,7 +102,7 @@ struct ResultCardOneView: View {
     
     var middle: some View {
         VStack {
-            Text("AI피드백")
+            Text(feedbackContent ?? "AI 피드백을 불러오는 중…")
                 .foregroundStyle(.blue333368)
                 .font(.pt12)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

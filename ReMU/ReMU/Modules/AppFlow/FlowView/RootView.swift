@@ -10,7 +10,6 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var container: DIContainer
-
     
     var body: some View {
         switch appState.route {
