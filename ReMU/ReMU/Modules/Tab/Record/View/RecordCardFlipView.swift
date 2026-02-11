@@ -79,17 +79,17 @@ struct RecordCardOneView: View {
     var top: some View {
         HStack {
             // 이모지
-            HStack(spacing: 8) {
+            HStack(spacing: 16) {
                 ForEach(emojis, id: \.self) { emoji in
                     Image(emoji)
                         .resizable()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 45, height: 45)
                 }
             }
             
             Spacer()
             
-            // 생성 뷰에서는 안보일 예정
+            // TODO: 생성 뷰에서는 안보일 예정
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
@@ -106,11 +106,23 @@ struct RecordCardOneView: View {
     
     // MARK: - 뒷장 middle
     var middle: some View {
-        VStack {
-            TextBox(text: content, isExpanded: true)
+        ZStack(alignment: .topLeading) {
+
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.purpleD9BCEA50)
+
+            Text(content)
+                .font(.pt16)
+                .foregroundStyle(.grayScale8)
+                .multilineTextAlignment(.leading)
+                .padding(16)
         }
-        .padding(.bottom, 32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.bottom, 24)
     }
+
+
+
 }
 
 // MARK: - 앞장
@@ -135,7 +147,9 @@ struct RecordCardTwoView: View {
                 .shadow(radius: 8)
             VStack {
                 top
+                Spacer()
                 middle
+                Spacer()
                 bottom
             }
             .padding(.horizontal, 24)
@@ -156,6 +170,9 @@ struct RecordCardTwoView: View {
                     
                     Button(action: {}) {
                         Image("pencil.line")
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                            .foregroundStyle(.grayScale7)
                     }
                 }
                 Text(travelPeriodText)
@@ -175,7 +192,8 @@ struct RecordCardTwoView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 180)
+                    .frame(width: 249, height: 180)
+                    .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 8))
 
             } else if let imageUrl,
@@ -187,7 +205,8 @@ struct RecordCardTwoView: View {
                     }
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 180)
+                    .frame(width: 249, height: 180)
+                    .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 8))
 
             } else {
@@ -195,6 +214,7 @@ struct RecordCardTwoView: View {
             }
         }
     }
+
 
     
     // MARK: - 앞장 bottom
@@ -206,7 +226,7 @@ struct RecordCardTwoView: View {
                     Text("Day \(dday)")
                         .foregroundStyle(.grayScale9)
                         .font(.pt13)
-                    Text("/ \(dateText)")
+                    Text("/ \(dateText.toDateFromServer?.uiFormat ?? "")")
                         .foregroundStyle(.grayScale5)
                         .font(.pt12)
                 }
