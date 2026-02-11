@@ -16,16 +16,20 @@ final class MenuViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var hasError = false
 
+    private let authProvider: MoyaProvider<AuthTargetType>
     private let provider: MoyaProvider<UserTargetType>
     private let tokenProvider: TokenProviding
 
     init(
-        provider: MoyaProvider<UserTargetType>,
+        userProvider: MoyaProvider<UserTargetType>,
+        authProvider: MoyaProvider<AuthTargetType>,
         tokenProvider: TokenProviding
     ) {
-        self.provider = provider
+        self.provider = userProvider
+        self.authProvider = authProvider
         self.tokenProvider = tokenProvider
     }
+
 
     // MARK: - 프로필 조회 API
     func fetchProfile() async {
@@ -75,10 +79,25 @@ final class MenuViewModel: ObservableObject {
     }
     
     // MARK: - 로그아웃 API
-    func logout(appState: AppState) {
+    func logout(appState: AppState) async {
+        guard let refreshToken = tokenProvider.refreshToken else {
+            tokenProvider.clearSession()
+            appState.route = .auth
+            return
+        }
+
+        do {
+            try await authProvider.requestAsync(
+                .socialLogout(refreshToken: refreshToken)
+            )
+        } catch {
+            print("서버 로그아웃 실패:", error)
+        }
+
         tokenProvider.clearSession()
         appState.route = .auth
     }
+
 
 
 }

@@ -20,9 +20,11 @@ struct MenuView: View {
     init(container: DIContainer) {
         _viewModel = StateObject(
             wrappedValue: MenuViewModel(
-                provider: container.apiProviderStore.user(),
+                userProvider: container.apiProviderStore.user(),
+                authProvider: container.apiProviderStore.auth(),
                 tokenProvider: container.tokenProvider
             )
+
         )
     }
 
@@ -174,8 +176,11 @@ struct MenuView: View {
 
             Button {
                 AlertManager.shared.show(.logout {
-                    viewModel.logout(appState: appState)
+                    _Concurrency.Task {
+                        await viewModel.logout(appState: appState)
+                    }
                 })
+
             } label: {
                 Text("로그아웃")
                     .font(.pt16)

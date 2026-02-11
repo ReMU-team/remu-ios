@@ -41,8 +41,12 @@ extension AuthTargetType: APITargetType {
                 parameters: ["token": token],
                 encoding: JSONEncoding.default
             )
-        case .socialLogout:
-            return .requestPlain
+        case .socialLogout(let refreshToken):
+            return .requestParameters(
+                parameters: ["refreshToken": refreshToken],
+                encoding: JSONEncoding.default
+            )
+
             
         case .tokenRefresh(let refreshToken):
             return .requestParameters(
