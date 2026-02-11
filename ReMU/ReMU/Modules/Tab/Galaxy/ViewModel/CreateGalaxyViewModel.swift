@@ -42,7 +42,7 @@ final class CreateGalaxyViewModel: ObservableObject {
         selectedGalaxyImageName != nil
     }
     
-    // 은하 생성 API
+    // MARK: - 은하 생성 API
     func createGalaxy() async {
         guard
             let session = keychain.loadSession(for: .userSession),
@@ -87,6 +87,37 @@ final class CreateGalaxyViewModel: ObservableObject {
         }
     }
     
+    // MARK: - 은하 조회 API
+    func fetchGalaxyDetail() async {
+        guard
+            let galaxyId = editingGalaxyId,
+            let session = keychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        do {
+            let response = try await provider.requestAsync(
+                .fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
+            )
+
+            let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
+
+            guard let result = dto.result else { return }
+
+            self.galaxyName = result.name
+            self.destination = result.placeName
+            self.selectedGalaxyImageName = result.emojiResourceName
+            
+            self.startDate = result.startDate.toDateFromServer
+            self.endDate = result.endDate.toDateFromServer
+
+
+        } catch {
+            print("❌ 상세 조회 실패:", error)
+        }
+    }
+
+    
     // MARK: - 은하 수정 API
     func patchGalaxy() async {
         guard
@@ -97,12 +128,13 @@ final class CreateGalaxyViewModel: ObservableObject {
 
         let request = PatchGalaxyRequest(
             name: galaxyName,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: startDate?.serverFormat,
+            endDate: endDate?.serverFormat,
             emojiResourceName: selectedGalaxyImageName,
             googlePlaceId: nil,
             placeName: destination
         )
+
 
         do {
             _ = try await provider.requestAsync(

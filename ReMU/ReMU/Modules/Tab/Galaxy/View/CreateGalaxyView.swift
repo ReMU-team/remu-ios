@@ -71,9 +71,18 @@ struct CreateGalaxyView: View {
                     }
                 )
             }
-
+            
+        }
+        .onAppear {
+            if case .edit = mode {
+                Task {
+                    await viewModel.fetchGalaxyDetail()
+                }
+            }
         }
     }
+       
+
     
     // MARK: - navigationBar
     private var navigationBar: some View {
