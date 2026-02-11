@@ -36,15 +36,16 @@ class HomeViewModel: ObservableObject {
 
     // MARK: - 홈 진입용 메인 로딩 함수
     @MainActor
-    func loadHome(galaxyId: Int) async -> Bool {
-        isLoading = true
-        defer { isLoading = false }
-
-        let success = await fetchGalaxyDetail(galaxyId: galaxyId)
-        if !success {
-            clear()
+    func loadHome(galaxyId: Int) async {
+        await fetchGalaxyDetail(galaxyId: galaxyId)
+    }
+    @MainActor
+    func loadHomeIfNeeded(galaxyId: Int) async {
+        if galaxyData?.serverId == galaxyId {
+            return
         }
-        return success
+
+        await fetchGalaxyDetail(galaxyId: galaxyId)
     }
 
     
@@ -99,12 +100,11 @@ class HomeViewModel: ObservableObject {
     // MARK: - 은하 상세 조회 API
     @MainActor
     private func fetchGalaxyDetail(galaxyId: Int) async -> Bool {
+
         guard
             let session = userSession.loadSession(for: .userSession),
             let accessToken = session.accessToken
         else {
-            print("❌ accessToken 없음")
-            galaxyData = nil
             return false
         }
 
@@ -117,21 +117,14 @@ class HomeViewModel: ObservableObject {
 
             let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)
 
-            guard let result = dto.result else {
-                galaxyData = nil
-                return false
-            }
-
-            guard
-                let startDate = result.startDate.toDateFromServer,
-                let endDate = result.endDate.toDateFromServer
+            guard let result = dto.result,
+                  let startDate = result.startDate.toDateFromServer,
+                  let endDate = result.endDate.toDateFromServer
             else {
-                print("❌ 날짜 파싱 실패")
-                galaxyData = nil
                 return false
             }
 
-            self.galaxyData = Galaxy(
+            let newGalaxy = Galaxy(
                 serverId: result.galaxyId,
                 title: result.name,
                 destination: result.placeName,
@@ -142,21 +135,27 @@ class HomeViewModel: ObservableObject {
                 stars: []
             )
 
-            if let galaxy = self.galaxyData {
-                await fetchPledge(for: galaxy)
+            if galaxyData?.serverId != newGalaxy.serverId {
+                galaxyData = newGalaxy
+            } else {
+                if galaxyData?.title != newGalaxy.title ||
+                   galaxyData?.destination != newGalaxy.destination ||
+                   galaxyData?.galaxyIcon != newGalaxy.galaxyIcon {
+                    galaxyData = newGalaxy
+                }
             }
 
-            
-            // 별 리스트 이어서 조회
             await fetchStarsList(galaxyId: result.galaxyId)
             
+            await fetchPledge(for: newGalaxy)
+            
             return true
+
         } catch {
-            print("❌ 은하 상세 조회 실패:", error)
-            galaxyData = nil
             return false
         }
     }
+
 
     // MARK: - 은하 리스트 조회 API
     @MainActor
@@ -277,6 +276,31 @@ class HomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - 은하 로컬 업데이트
+    @MainActor
+    func updateGalaxyLocally(
+        name: String,
+        destination: String,
+        startDate: Date,
+        endDate: Date,
+        icon: String
+    ) {
+        guard var current = galaxyData else { return }
+
+        current = Galaxy(
+            serverId: current.serverId,
+            title: name,
+            destination: destination,
+            startDate: startDate,
+            endDate: endDate,
+            totalDay: Calendar.current
+                .dateComponents([.day], from: startDate, to: endDate).day! + 1,
+            galaxyIcon: icon,
+            stars: current.stars
+        )
+
+        galaxyData = current
+    }
 
 
     

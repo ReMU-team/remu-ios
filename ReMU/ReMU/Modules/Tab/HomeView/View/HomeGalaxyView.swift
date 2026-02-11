@@ -38,29 +38,16 @@ struct HomeGalaxyView: View {
     // MARK: - body
     var body: some View {
         ZStack {
+            background
             VStack {
-                if viewModel.isLoading {
-                        ProgressView()
-                    } else if viewModel.galaxyData == nil {
-                        initialHomeView
-                            .transition(.opacity)
-                    } else {
-                        GalaxyView
-                    }
+                if viewModel.galaxyData == nil {
+                    initialHomeView
+                        .transition(.opacity)
+                } else {
+                    GalaxyView
+                }
             }
             
-            // 카드 오버레이
-            if showCardOverlay {
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
-                    .transition(.opacity)
-                    .onTapGesture {
-                        withAnimation {
-                            showCardOverlay = false
-                        }
-                    }
-                    .zIndex(1)
-            }
             
             // 기록 카드 오버레이 띄우기
             if viewModel.isShowingRecordCard,
@@ -111,38 +98,39 @@ struct HomeGalaxyView: View {
                 }
                 .zIndex(100)
             }
-
-
-
         }
         .onAppear {
-            Task {
-                if let lastId = LastGalaxyStore.load() {
-                    appState.currentGalaxyId = lastId
-                    _ = await viewModel.loadHome(galaxyId: lastId)
-                } else {
-                    await viewModel.fetchGalaxyList()
-                    if let id = viewModel.galaxyData?.serverId {
-                        appState.currentGalaxyId = id
-                        LastGalaxyStore.save(id)
+            if viewModel.galaxyData == nil {
+                Task {
+                    if let lastId = LastGalaxyStore.load() {
+                        appState.currentGalaxyId = lastId
                     }
                 }
             }
         }
 
-        .onChange(of: appState.currentGalaxyId) {
-            syncHomeWithCurrentGalaxy()
+        .onChange(of: appState.currentGalaxyId) { _, newValue in
+            guard let galaxyId = newValue else {
+                viewModel.clear()
+                return
+            }
+
+            Task {
+                await viewModel.loadHomeIfNeeded(galaxyId: galaxyId)
+            }
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 mode: .create,
-                onFinish: {
+                onFinish: { name, destination, startDate, endDate, icon in
+
                     Task {
                         await viewModel.fetchGalaxyList()
-                        if let id = viewModel.galaxyData?.serverId {
-                            appState.currentGalaxyId = id
-                            LastGalaxyStore.save(id)
+
+                        if let newest = viewModel.galaxyData?.serverId {
+                            appState.currentGalaxyId = newest
+                            LastGalaxyStore.save(newest)
                         }
                     }
                     showCreateGalaxy = false
@@ -160,6 +148,7 @@ struct HomeGalaxyView: View {
         .fullScreenCover(isPresented: $showGalaxyList) {
             GalaxyCheckView(container: container)
                 .environmentObject(container)
+                .environmentObject(viewModel)
         }
         .fullScreenCover(isPresented: $showEditPledge) {
             NavigationStack {

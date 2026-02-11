@@ -9,6 +9,13 @@ import Foundation
 import SwiftUI
 
 struct GalaxySystemView: View {
+
+    static func == (lhs: GalaxySystemView, rhs: GalaxySystemView) -> Bool {
+        lhs.galaxy.serverId == rhs.galaxy.serverId &&
+        lhs.galaxy.galaxyIcon == rhs.galaxy.galaxyIcon &&
+        lhs.partitionedStars.count == rhs.partitionedStars.count
+    }
+
     let galaxy: Galaxy
     let partitionedStars: [[Star]]
     let scale: CGFloat
@@ -33,3 +40,4 @@ struct GalaxySystemView: View {
         }
     }
 }
+

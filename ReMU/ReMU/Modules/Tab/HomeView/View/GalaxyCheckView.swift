@@ -12,6 +12,7 @@ struct GalaxyCheckView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var container: DIContainer
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var homeViewModel: HomeViewModel
     
     @State private var showCreateGalaxy = false
     @State private var isEditing = false
@@ -155,7 +156,7 @@ struct GalaxyCheckView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 mode: .create,
-                onFinish: {
+                onFinish: { _, _, _, _, _ in
                     Task { await viewModel.fetchGalaxyList() }
                     showCreateGalaxy = false
                 }
@@ -171,8 +172,22 @@ struct GalaxyCheckView: View {
                     return vm
                 }(),
                 mode: .edit(galaxyId: galaxy.galaxyId),
-                onFinish: {
-                    Task { await viewModel.fetchGalaxyList() }
+                onFinish: { name, destination, startDate, endDate, icon in
+
+                    Task {
+                        await viewModel.fetchGalaxyList()
+                    }
+
+                    if galaxy.galaxyId == appState.currentGalaxyId {
+                        homeViewModel.updateGalaxyLocally(
+                            name: name,
+                            destination: destination,
+                            startDate: startDate,
+                            endDate: endDate,
+                            icon: icon
+                        )
+                    }
+
                     selectedGalaxy = nil
                 },
                 onDelete: {
