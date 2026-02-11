@@ -33,7 +33,7 @@ struct HomeGalaxyView: View {
     @State private var showGalaxyList = false
     @State private var showWriteResult = false
     @State private var showCreateResultCard = false
-
+    
     // MARK: - body
     var body: some View {
         ZStack {
@@ -161,15 +161,14 @@ struct HomeGalaxyView: View {
 
         }
         */
-        .fullScreenCover(isPresented: $showCreateResultCard) {
-            CreateResultCardView(
+        .fullScreenCover(isPresented: $showWriteResult) {
+            WriteResultView(
+                viewModel: container.makeResultViewModel(),
                 onFinish: {
-                    showCreateResultCard = false
+                    showWriteResult = false
                 }
             )
         }
-
-
 
     }
     // MARK: - initialHomeView

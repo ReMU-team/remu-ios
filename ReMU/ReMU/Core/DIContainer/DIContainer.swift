@@ -25,6 +25,7 @@ import Combine
 
 final class DIContainer: ObservableObject{
     @Published var router: NavigationRouter
+    @Published var appState: AppState
     
     let networkService: NetworkService
     
@@ -37,12 +38,30 @@ final class DIContainer: ObservableObject{
 
     init(
         router: NavigationRouter = .init(),
+        appState: AppState = AppState(),
         userSessionKeychain: UserSessionKeychainService = UserSessionKeychainServiceImpl.shared    ) {
         self.router = router
+        self.appState = appState
         self.userSessionKeychain = userSessionKeychain
         self.networkService = NetworkServiceImpl(userSessionKeychain: userSessionKeychain)
         self.apiProviderStore = APIProviderStore(networkService: networkService)
     }
+    
+    func makeResultViewModel() -> ResultViewModel {
+        ResultViewModel(
+            appState: appState,
+            resultService: apiProviderStore.resultService()
+        )
+    }
+    
+    func makeResultViewModel(appState: AppState) -> ResultViewModel {
+        ResultViewModel(
+            appState: appState,
+            resultService: apiProviderStore.resultService()
+        )
+    }
+
+
 }
 
 // 프리뷰를 위한

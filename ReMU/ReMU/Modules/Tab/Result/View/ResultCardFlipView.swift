@@ -9,18 +9,11 @@ import Foundation
 import SwiftUI
 
 struct ResultCardFlip: View {
+    
+    @EnvironmentObject var container: DIContainer
+    @EnvironmentObject var appState: AppState
 
-    let galaxyId: Int
-    let userId: Int
-    @StateObject private var resultVM: ResultViewModel
-
-    init(userId: Int, galaxyId: Int) {
-        self.userId = userId
-        self.galaxyId = galaxyId
-        _resultVM = StateObject(
-            wrappedValue: ResultViewModel(userId: userId, galaxyId: galaxyId)
-        )
-    }
+    @ObservedObject var resultVM: ResultViewModel
 
     @State private var flip = false
 

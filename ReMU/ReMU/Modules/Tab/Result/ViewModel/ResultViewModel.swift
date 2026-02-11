@@ -20,33 +20,29 @@ class ResultViewModel: ObservableObject {
 
     
     // MARK: - Dependency
-    private let userId: Int
-    private let galaxyId: Int
+    private let appState: AppState
     private let resultService: ResultServiceProtocol
     
     // MARK: - Network Service
     init(
-        userId: Int,
-        galaxyId: Int,
-        resultService: ResultServiceProtocol = ResultServiceImpl(
-            provider: APIProviderStore(
-                networkService: NetworkServiceImpl(
-                    userSessionKeychain: UserSessionKeychainServiceImpl()
-                )
-            ).result()
-        )
+        appState: AppState,
+        resultService: ResultServiceProtocol
     ) {
-        self.userId = userId
-        self.galaxyId = galaxyId
+        self.appState = appState
         self.resultService = resultService
     }
 
     // MARK: - Result API 생성 함수
     func submitResult(completion: @escaping () -> Void) {
+
+        guard let galaxyId = appState.currentGalaxyId else {
+            print("galaxyId 없음")
+            return
+        }
+
         let request = makeCreateResultRequest()
 
         resultService.createResult(
-            userId: userId,
             galaxyId: galaxyId,
             request: request
         ) { result in
@@ -60,11 +56,13 @@ class ResultViewModel: ObservableObject {
             }
         }
     }
+
     
     // MARK: - Result API 조회 함수 (AI 피드백 통합)
     func fetchResult() {
+        guard let galaxyId = appState.currentGalaxyId else { return }
         isLoading = true
-        resultService.checkResult(userId: userId, galaxyId: galaxyId) { [weak self] result in
+        resultService.checkResult(galaxyId: galaxyId) { [weak self] result in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -81,9 +79,10 @@ class ResultViewModel: ObservableObject {
     
     // MARK: - Result API 수정 함수
     func patchResult() {
+        guard let galaxyId = appState.currentGalaxyId else { return }
         isLoading = true
         let request = makePatchResultRequest()
-        resultService.patchResult(userId: userId, galaxyId: galaxyId, request: request) { [weak self] result in
+        resultService.patchResult(galaxyId: galaxyId, request: request) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
