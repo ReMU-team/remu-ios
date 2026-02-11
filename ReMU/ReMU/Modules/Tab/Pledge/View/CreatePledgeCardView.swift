@@ -11,8 +11,11 @@ struct CreatePledgeCardView: View {
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
+    let galaxyId: Int
+    @ObservedObject var viewModel: PledgeViewModel
     let onFinish: () -> Void
     
+
     
     // 완료 버튼
     //@State private var goNext = false
@@ -57,9 +60,18 @@ struct CreatePledgeCardView: View {
     // MARK: - finishButton
     private var finishButton: some View {
         VStack {
-            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
-                onFinish() // 홈으로 복귀
+            PrimaryButton(title: "완료") {
+                viewModel.createPledge(galaxyId: galaxyId) { result in
+                    switch result {
+                    case .success:
+                        dismiss()
+                        onFinish()
+                    case .failure(let error):
+                        print("❌ 다짐 생성 실패:", error.localizedDescription)
+                    }
+                }
             }
+
             .padding(.horizontal, 40)
             .padding(.bottom, 54)
         }
@@ -71,9 +83,14 @@ struct CreatePledgeCardView: View {
 #Preview {
     NavigationStack {
         CreatePledgeCardView(
+            galaxyId: 1,
+            viewModel: PledgeViewModel(
+                networkService: DIContainer.preview.networkService
+            ),
             onFinish: {
                 print("Pledge card finished")
             }
         )
     }
 }
+

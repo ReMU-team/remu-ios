@@ -42,8 +42,8 @@ final class PledgeViewModel: ObservableObject {
 
         let request = CreatePledgeRequest(
             emojiId: emoji.id,
-            illustId: "TODO",
-            content: pledges.map { $0.content }
+            illustId: "logo_illust_1",   // 고정 일러스트 에셋 이름
+            contents: pledges.map { $0.content }
         )
 
         provider.request(
@@ -108,14 +108,13 @@ final class PledgeViewModel: ObservableObject {
 
         let request = PatchPledgeRequest(
             emojiId: selectedEmoji?.id,
-            resolutions: pledges.enumerated().map { index, pledge in
-                ResolutionItem(
-                    resolutionId: pledge.resolutionId, // 있으면 보내고
-                    content: pledge.content             // 수정 내용
+            resolutions: pledges.map { pledge in
+                PatchResolutionItem(
+                    resolutionId: pledge.resolutionId,
+                    content: pledge.content
                 )
             }
         )
-
 
         provider.request(
             .patchPledge(galaxyId: galaxyId, request: request)
@@ -142,13 +141,13 @@ final class PledgeViewModel: ObservableObject {
     // MARK: - 생성 Mapping
     private func makePledgeCard(
         galaxyId: Int,
-        result: PledgeResult // 생성
+        result: CreatePledgeResult
     ) -> PledgeCardModel {
         PledgeCardModel(
             galaxyServerId: galaxyId,
             emojiImageName: result.emojiId,
-            pledges: result.contents.map {
-                Pledge(content: $0)
+            pledges: result.resolutions.map {
+                Pledge(content: $0.content)
             }
         )
     }

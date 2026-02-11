@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WritePledgeView: View {
+    let galaxyId: Int
     let onFinish: () -> Void
     // 네비게이션 뒤로가기
     @Environment(\.dismiss) private var dismiss
@@ -16,7 +17,11 @@ struct WritePledgeView: View {
     // 뷰모델 연결
     @StateObject private var viewModel: PledgeViewModel
     
-    init(onFinish: @escaping () -> Void) {
+    init(
+        galaxyId: Int,
+        onFinish: @escaping () -> Void
+    ) {
+        self.galaxyId = galaxyId
         self.onFinish = onFinish
         _viewModel = StateObject(
             wrappedValue: PledgeViewModel(
@@ -24,6 +29,9 @@ struct WritePledgeView: View {
             )
         )
     }
+
+
+
     
     // 다음 버튼
     @State private var goNext = false
@@ -48,8 +56,14 @@ struct WritePledgeView: View {
             }
         }
         .navigationDestination(isPresented: $goNext) {
-                    CreatePledgeCardView(onFinish: onFinish)
-                }
+            CreatePledgeCardView(
+                galaxyId: galaxyId,
+                viewModel: viewModel,
+                onFinish: onFinish
+            )
+        }
+
+
         .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
         
     }
@@ -176,14 +190,14 @@ struct WritePledgeView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        WritePledgeView(
-            onFinish: {
-                print("finish")
-            }
-        )
-        .environmentObject(DIContainer.preview)
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        WritePledgeView(
+//            onFinish: {
+//                print("finish")
+//            }
+//        )
+//        .environmentObject(DIContainer.preview)
+//    }
+//}
 
