@@ -21,6 +21,7 @@ final class PledgeViewModel: ObservableObject {
     @Published var pledgeCard: PledgeCardModel?
     // MARK: - State
     @Published var isLoading: Bool = false
+    @Published var isEditing: Bool = false
     @Published var errorMessage: String?
 
     
@@ -35,28 +36,45 @@ final class PledgeViewModel: ObservableObject {
     
     // MARK: - Pledge API 생성 함수
     func createPledge(
-        galaxyId: Int,
-        completion: @escaping (Result<CreatePledgeResponse, Error>) -> Void
+        galaxy: Galaxy,
+        completion: @escaping (Result<PledgeCardModel, Error>) -> Void
     ) {
         guard let emoji = selectedEmoji else { return }
 
         let request = CreatePledgeRequest(
             emojiId: emoji.id,
-            illustId: "TODO",
-            content: pledges.map { $0.content }
+            illustId: "logo_illust_1",
+            contents: pledges.map { $0.content }
         )
 
         provider.request(
-            .createPledge(galaxyId: galaxyId, request: request)
-        ) { result in
+            .createPledge(galaxyId: galaxy.serverId, request: request)
+        ) { [weak self] result in
+
             switch result {
+
             case .success(let response):
                 do {
                     let decoded = try JSONDecoder().decode(
                         CreatePledgeResponse.self,
                         from: response.data
                     )
-                    completion(.success(decoded))
+
+                    guard let result = decoded.result else { return }
+
+                    let card = self?.makePledgeCard(
+                        galaxy: galaxy,
+                        result: result
+                    )
+
+                    guard let card else {
+                        completion(.failure(NSError(domain: "PledgeError", code: -1)))
+                        return
+                    }
+
+                    completion(.success(card))
+
+
                 } catch {
                     completion(.failure(error))
                 }
@@ -66,12 +84,13 @@ final class PledgeViewModel: ObservableObject {
             }
         }
     }
+
     
     // MARK: - Pledge API 조회 함수
-    func fetchPledge(galaxyId: Int) {
+    func fetchPledge(galaxy: Galaxy) {
         isLoading = true
 
-        provider.request(.checkPledge(galaxyId: galaxyId)) { [weak self] result in
+        provider.request(.checkPledge(galaxyId: galaxy.serverId)) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
 
@@ -84,8 +103,9 @@ final class PledgeViewModel: ObservableObject {
                     )
 
                     guard let result = decoded.result else { return }
+
                     self.pledgeCard = self.makePledgeCard(
-                        galaxyId: galaxyId,
+                        galaxy: galaxy,
                         result: result
                     )
 
@@ -98,85 +118,128 @@ final class PledgeViewModel: ObservableObject {
             }
         }
     }
+
     
     // MARK: - Pledge API 수정 함수
     func patchPledge(
-        galaxyId: Int,
-        completion: @escaping (Result<PatchPledgeResponse, Error>) -> Void
+        galaxy: Galaxy,
+        completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        guard let emoji = selectedEmoji else { return }
-
         let request = PatchPledgeRequest(
             emojiId: selectedEmoji?.id,
-            resolutions: pledges.enumerated().map { index, pledge in
-                ResolutionItem(
-                    resolutionId: pledge.resolutionId, // 있으면 보내고
-                    content: pledge.content             // 수정 내용
+            resolutions: pledges.map {
+                PatchResolutionItem(
+                    resolutionId: $0.resolutionId ?? 0,
+                    content: $0.content
                 )
             }
         )
 
-
         provider.request(
-            .patchPledge(galaxyId: galaxyId, request: request)
+            PledgeTargetType.patchPledge(
+                galaxyId: galaxy.serverId,
+                request: request
+            )
         ) { result in
             switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(
-                        PatchPledgeResponse.self,
-                        from: response.data
-                    )
-                    completion(.success(decoded))
-                } catch {
-                    completion(.failure(error))
-                }
-
+            case .success:
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
+    
+    func loadExistingPledge(from galaxy: Galaxy) {
+        guard let card = pledgeCard else { return }
+
+        // 이모지 세팅
+        selectedEmojis = emojis.filter {
+            $0.id == card.emojiImageName
+        }
+
+        // 기존 다짐 세팅
+        pledges = card.pledges.map {
+            PledgeDraft(
+                resolutionId: $0.resolutionId,
+                content: $0.content,
+                example: ""
+            )
+        }
+    }
+    
+    func setExistingCard(_ card: PledgeCardModel) {
+        self.pledgeCard = card
+
+        selectedEmojis = emojis.filter {
+            $0.id == card.emojiImageName
+        }
+
+        pledges = card.pledges.map {
+            PledgeDraft(
+                resolutionId: $0.resolutionId,
+                content: $0.content,
+                example: ""
+            )
+        }
+    }
+
+
+
+
 
     
     // MARK: - 생성 Mapping
     private func makePledgeCard(
-        galaxyId: Int,
-        result: PledgeResult // 생성
+        galaxy: Galaxy,
+        result: CreatePledgeResult
     ) -> PledgeCardModel {
+
         PledgeCardModel(
-            galaxyServerId: galaxyId,
+            galaxy: galaxy,
             emojiImageName: result.emojiId,
-            pledges: result.contents.map {
-                Pledge(content: $0)
+            pledges: result.resolutions.map {
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
+
             }
         )
     }
 
+
     // MARK: - 조회 Mapping
     private func makePledgeCard(
-        galaxyId: Int,
+        galaxy: Galaxy,
         result: CheckPledgeResult // 조회
     ) -> PledgeCardModel {
         PledgeCardModel(
-            galaxyServerId: galaxyId,
+            galaxy: galaxy,
             emojiImageName: result.emojiId,
             pledges: result.resolutionList.map {
-                Pledge(content: $0.content)
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
             }
+
         )
     }
 
     // MARK: - 수정 Mapping
     private func makePledgeCard(
-        galaxyId: Int,
-        result: PatchPledgeResult
+        galaxy: Galaxy,
+        result: PatchPledgeResult // 수정
     ) -> PledgeCardModel {
         PledgeCardModel(
-            galaxyServerId: galaxyId,
+            galaxy: galaxy,
             emojiImageName: result.emojiId,
             pledges: result.contents.map {
-                Pledge(content: $0)
+                Pledge(
+                    resolutionId: nil,
+                    content: $0
+                )
             }
         )
     }
@@ -258,14 +321,17 @@ final class PledgeViewModel: ObservableObject {
         selectedEmojis = tempSelectedEmojis
         isEmojiSheetPresented = false
     }
-
-    // MARK: - Card Conversion
-    func makePledgeCard(galaxyId: Int) -> PledgeCardModel {
+    
+    // MARK: - Preview Card (작성 화면용)
+    func makeDraftCard(galaxy: Galaxy) -> PledgeCardModel {
         PledgeCardModel(
-            galaxyServerId: galaxyId,
+            galaxy: galaxy,
             emojiImageName: selectedEmoji?.id ?? "",
             pledges: pledges.map {
-                Pledge(content: $0.content)
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
             }
         )
     }

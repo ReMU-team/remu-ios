@@ -80,16 +80,17 @@ class ResultViewModel: ObservableObject {
     }
     
     // MARK: - Result API 수정 함수
-    func patchResult() {
+    func patchResult(completion: @escaping () -> Void = {}) {
         isLoading = true
         let request = makePatchResultRequest()
         resultService.patchResult(userId: userId, galaxyId: galaxyId, request: request) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                self.fetchResult() // 수정 후 회고 + AI 피드백 갱신
-            case .failure(let error):
-                DispatchQueue.main.async {
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.fetchResult()
+                    completion()
+                case .failure(let error):
                     self.isLoading = false
                     self.errorMessage = error.localizedDescription
                 }

@@ -10,48 +10,50 @@ import SwiftUI
 struct CreateGalaxyView: View {
     // 홈 상태
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var container: DIContainer
+    
     // 뒤로가기
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel: CreateGalaxyViewModel
     // 네비게이션
     @State private var showWritePledge = false
+    @State private var createdGalaxy: Galaxy?
+    
     
     // 은하 생성
     let onFinish: (Galaxy) -> Void
     
-
+    
     init(
-            viewModel: CreateGalaxyViewModel,
-            onFinish: @escaping (Galaxy) -> Void
+        viewModel: CreateGalaxyViewModel,
+        onFinish: @escaping (Galaxy) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onFinish = onFinish
     }
-
+    
     
     var body: some View {
-        VStack {
-            navigationBar
-            Group {
-                writeGalaxy
-                Spacer()
-                galaxyImageSelection
-                Spacer()
+        NavigationStack {
+            VStack {
+                navigationBar
+                Group {
+                    writeGalaxy
+                    Spacer()
+                    galaxyImageSelection
+                    Spacer()
+                }
+                .padding(.horizontal, 22)
+                
+                finishButton
             }
-            .padding(.horizontal, 22)
-            
-            finishButton
-        }
-        .fullScreenCover(isPresented: $showWritePledge) {
-            NavigationStack {
+            .navigationDestination(item: $createdGalaxy) { galaxy in
                 WritePledgeView(
+                    galaxy: galaxy,
+                    container: container,
                     onFinish: {
-                        if let galaxy = viewModel.createdGalaxy {
-                            onFinish(galaxy)        // HomeView로 전달
-                        }
-                        showWritePledge = false
-                        dismiss()                  // CreateGalaxyView 닫기
+                        onFinish(galaxy)
                     }
                 )
             }
@@ -167,10 +169,12 @@ struct CreateGalaxyView: View {
                     await viewModel.createGalaxy()
                     
                     if let galaxy = viewModel.createdGalaxy {
-                        appState.currentGalaxyId = galaxy.serverId
-                        LastGalaxyStore.save(galaxy.serverId)
-                        showWritePledge = true
+                        print("🔥 createdGalaxy:", galaxy.serverId)
+                        createdGalaxy = galaxy
                     }
+
+
+                    
                 }
             }
         }

@@ -25,7 +25,6 @@ extension APIProviderStore {
         return networkService.createProvider(for: AuthTargetType.self)
     }
 
-    
     func galaxy() -> MoyaProvider<GalaxyTargetType> {
         return networkService.createProvider(for: GalaxyTargetType.self)
     }

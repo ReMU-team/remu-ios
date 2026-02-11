@@ -33,6 +33,7 @@ struct HomeGalaxyView: View {
     @State private var showGalaxyList = false
     @State private var showWriteResult = false
     @State private var showCreateResultCard = false
+    @State private var showEditPledge = false
 
     // MARK: - body
     var body: some View {
@@ -47,7 +48,6 @@ struct HomeGalaxyView: View {
                         GalaxyView
                     }
             }
-            .allowsHitTesting(!showCardOverlay)
             
             // 카드 오버레이
             if showCardOverlay {
@@ -79,47 +79,74 @@ struct HomeGalaxyView: View {
 
             // 다짐/회고 오버레이 띄우기
             if showCardOverlay {
-                CardOverlayView(
-                    selectedTab: $selectedCardTab,
-                    onClose: {
-                        withAnimation {
-                            showCardOverlay = false
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                showCardOverlay = false
+                            }
                         }
-                    },
-                    onWriteResult: {
-                        showCardOverlay = false
-                        showWriteResult = true
-                    }
-                )
 
-                .zIndex(2)
+                    if let pledgeCard = viewModel.pledgeCard {
+                        CardOverlayView(
+                            selectedTab: $selectedCardTab,
+                            pledgeCard: pledgeCard,
+                            onClose: {
+                                withAnimation {
+                                    showCardOverlay = false
+                                }
+                            },
+                            onWriteResult: {
+                                showCardOverlay = false
+                                showWriteResult = true
+                            },
+                            onEdit: {
+                                showCardOverlay = false
+                                showEditPledge = true
+                            }
+
+                        )
+                    }
+                }
+                .zIndex(100)
             }
+
+
 
         }
         .onAppear {
-            if let lastId = LastGalaxyStore.load() {
-                appState.currentGalaxyId = lastId
-            } else {
-                Task {
+            Task {
+                if let lastId = LastGalaxyStore.load() {
+                    appState.currentGalaxyId = lastId
+                    _ = await viewModel.loadHome(galaxyId: lastId)
+                } else {
                     await viewModel.fetchGalaxyList()
-                    appState.currentGalaxyId = viewModel.galaxyData?.serverId
+                    if let id = viewModel.galaxyData?.serverId {
+                        appState.currentGalaxyId = id
+                        LastGalaxyStore.save(id)
+                    }
                 }
             }
         }
+
         .onChange(of: appState.currentGalaxyId) {
             syncHomeWithCurrentGalaxy()
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
-            // 은하 정보 저장
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 onFinish: { galaxy in
-                    appState.currentGalaxyId = galaxy.serverId
+                    Task {
+                        appState.currentGalaxyId = galaxy.serverId
+                        LastGalaxyStore.save(galaxy.serverId)
+                        _ = await viewModel.loadHome(galaxyId: galaxy.serverId)
+                    }
                     showCreateGalaxy = false
                 }
-
             )
         }
+
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
         }
@@ -130,6 +157,26 @@ struct HomeGalaxyView: View {
             GalaxyCheckView(container: container)
                 .environmentObject(container)
         }
+        .fullScreenCover(isPresented: $showEditPledge) {
+            NavigationStack {
+                if let galaxy = viewModel.galaxyData {
+                    WritePledgeView(
+                        galaxy: galaxy,
+                        container: container,
+                        mode: .edit,
+                        existingCard: viewModel.pledgeCard,
+                        onFinish: {
+                            showEditPledge = false
+                            showCardOverlay = true
+                            Task {
+                                await viewModel.loadHome(galaxyId: galaxy.serverId)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
                 if let galaxy = viewModel.galaxyData {

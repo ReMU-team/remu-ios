@@ -7,10 +7,11 @@
 
 import Foundation
 
-struct PledgeResult: Codable {
+struct CreatePledgeResult: Codable {
     let emojiId: String
     let illustId: String
-    let contents: [String]
+    let resolutions: [ResolutionItem]
 }
 
-typealias CreatePledgeResponse = BaseResponse<PledgeResult>
+typealias CreatePledgeResponse = BaseResponse<CreatePledgeResult>
+
