@@ -13,45 +13,50 @@ enum GalaxyFormMode {
 }
 
 struct CreateGalaxyView: View {
-    // 홈 상태
+
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var container: DIContainer
-    
-    // 뒤로가기
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: CreateGalaxyViewModel
-    // 네비게이션
-    @State private var showWritePledge = false
     @State private var createdGalaxy: Galaxy?
-    
+
     let mode: GalaxyFormMode
-    let onFinish: () -> Void
+
+    // ✅ 파라미터 5개 받도록 변경
+    let onFinish: (_ name: String,
+                   _ destination: String,
+                   _ startDate: Date,
+                   _ endDate: Date,
+                   _ icon: String) -> Void
+
     let onDelete: (() -> Void)?
-    
+
     init(
         viewModel: CreateGalaxyViewModel,
         mode: GalaxyFormMode,
-        onFinish: @escaping () -> Void,
+        onFinish: @escaping (_ name: String,
+                             _ destination: String,
+                             _ startDate: Date,
+                             _ endDate: Date,
+                             _ icon: String) -> Void,
         onDelete: (() -> Void)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.mode = mode
         self.onFinish = onFinish
         self.onDelete = onDelete
-        
+
         if case .edit(let id) = mode {
             viewModel.editingGalaxyId = id
         }
     }
 
-
-    
-    
     var body: some View {
         NavigationStack {
             VStack {
                 navigationBar
+
                 Group {
                     writeGalaxy
                     Spacer()
@@ -59,7 +64,7 @@ struct CreateGalaxyView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 22)
-                
+
                 finishButton
             }
             .navigationDestination(item: $createdGalaxy) { galaxy in
@@ -67,11 +72,17 @@ struct CreateGalaxyView: View {
                     galaxy: galaxy,
                     container: container,
                     onFinish: {
-                        onFinish()
+                        // create 모드용 전달
+                        onFinish(
+                            galaxy.title,
+                            galaxy.destination,
+                            galaxy.startDate,
+                            galaxy.endDate,
+                            galaxy.galaxyIcon
+                        )
                     }
                 )
             }
-            
         }
         .onAppear {
             if case .edit = mode {
@@ -81,28 +92,22 @@ struct CreateGalaxyView: View {
             }
         }
     }
-       
 
-    
-    // MARK: - navigationBar
+    // MARK: - Navigation Bar
     private var navigationBar: some View {
         VStack {
             CustomNavigationBar(
                 title: {
                     switch mode {
-                    case .create:
-                        return "은하 생성"
-                    case .edit:
-                        return "은하 수정"
+                    case .create: return "은하 생성"
+                    case .edit: return "은하 수정"
                     }
                 }(),
-                onBack: {
-                    dismiss()
-                }
+                onBack: { dismiss() }
             )
             .padding(.top, 11)
             .padding(.bottom, 48)
-            
+
             if case .edit = mode {
                 Button("은하 삭제") {
                     Task {
@@ -116,11 +121,10 @@ struct CreateGalaxyView: View {
             }
         }
     }
-    
-    // MARK: - writeGalaxy
+    // MARK: - 은하 정보 입력 영역
     private var writeGalaxy: some View {
-        VStack (alignment: .leading, spacing: 24) {
-            // 장소 선택
+        VStack(alignment: .leading, spacing: 24) {
+
             InputSelectRow(
                 title: "어디로 떠날까요?",
                 value: viewModel.destination,
@@ -133,8 +137,7 @@ struct CreateGalaxyView: View {
                     selectedPlace: $viewModel.destination
                 )
             }
-            
-            // 여행 기간 선택
+
             InputSelectRow(
                 title: "언제 떠날까요?",
                 value: dateRangeText(
@@ -151,43 +154,40 @@ struct CreateGalaxyView: View {
                     endDate: $viewModel.endDate
                 )
             }
-            
-            // 은하 이름 입력칸
+
             Text("은하의 이름을 입력해주세요")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-            ReMUTextField(text: $viewModel.galaxyName,
-                          placeholder: "이름을 입력해주세요", height: 46)
-                .padding(.top, -15) // TODO: 텍스트 필드 패딩 값 설정 필요
-            
-            
+
+            ReMUTextField(
+                text: $viewModel.galaxyName,
+                placeholder: "이름을 입력해주세요",
+                height: 46
+            )
         }
     }
-    
-    // MARK: - 은하 이미지 선택
     private let galaxies = GalaxyImageCatalog.all
 
-    private let columns = Array(
+    private let imageColumns = Array(
         repeating: GridItem(.flexible(), spacing: 16),
         count: 5
     )
-    
+
     private var galaxyImageSelection: some View {
         VStack(alignment: .leading, spacing: 12) {
+
             Text("당신의 은하는 어떤 모습인가요?")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
 
-            LazyVGrid(columns: columns, spacing: 12) {
+            LazyVGrid(columns: imageColumns, spacing: 12) {
                 ForEach(galaxies) { galaxy in
                     GalaxySelectableItem(
                         galaxy: galaxy,
                         isSelected: viewModel.selectedGalaxyImageName == galaxy.id
                     )
                     .onTapGesture {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                            viewModel.selectedGalaxyImageName = galaxy.id
-                        }
+                        viewModel.selectedGalaxyImageName = galaxy.id
                     }
                 }
             }
@@ -195,11 +195,9 @@ struct CreateGalaxyView: View {
             .frame(maxWidth: .infinity, minHeight: 162, maxHeight: 162, alignment: .top)
             .background(.blue505083)
             .cornerRadius(12)
-            
-            
         }
     }
-    
+
     // MARK: - 완료 버튼
     private var finishButton: some View {
         VStack {
@@ -210,6 +208,7 @@ struct CreateGalaxyView: View {
             ) {
                 Task {
                     switch mode {
+
                     case .create:
                         await viewModel.createGalaxy()
                         if let galaxy = viewModel.createdGalaxy {
@@ -219,15 +218,27 @@ struct CreateGalaxyView: View {
                     case .edit(let galaxyId):
                         viewModel.editingGalaxyId = galaxyId
                         await viewModel.patchGalaxy()
-                        onFinish()
-                        dismiss()
+
+                        guard
+                            let destination = viewModel.destination,
+                            let startDate = viewModel.startDate,
+                            let endDate = viewModel.endDate,
+                            let icon = viewModel.selectedGalaxyImageName
+                        else { return }
+
+                        onFinish(
+                            viewModel.galaxyName,
+                            destination,
+                            startDate,
+                            endDate,
+                            icon
+                        )
                     }
                 }
             }
         }
         .padding(.horizontal, 40)
     }
-
 }
 
 
@@ -256,7 +267,7 @@ struct GalaxySelectableItem: View {
     CreateGalaxyView(
         viewModel: CreateGalaxyViewModel(container: container),
         mode: .create,
-        onFinish: {}
+        onFinish: { _, _, _, _, _ in }
     )
     .environmentObject(appState)
     .environmentObject(container)
