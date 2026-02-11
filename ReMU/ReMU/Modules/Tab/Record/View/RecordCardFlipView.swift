@@ -93,11 +93,6 @@ struct RecordCardOneView: View {
                     Button(action: {}) {
                         Image("pencil.line")
                     }
-                    
-                    Button(action: {}) {
-                        Image("close_icon")
-                            
-                    }
                 }
             }
             
@@ -157,11 +152,6 @@ struct RecordCardTwoView: View {
                     
                     Button(action: {}) {
                         Image("pencil.line")
-                    }
-                    
-                    Button(action: {}) {
-                        Image("close_icon")
-                            
                     }
                 }
                 Text(travelPeriodText)
