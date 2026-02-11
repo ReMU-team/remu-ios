@@ -97,7 +97,7 @@ class ResultViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    // ✅ 수정 후 최신 데이터 다시 조회
+                    // 수정 후 최신 데이터 다시 조회
                     self.fetchResult()
                     completion()
 

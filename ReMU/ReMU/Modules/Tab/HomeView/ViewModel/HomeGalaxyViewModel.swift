@@ -82,8 +82,12 @@ class HomeViewModel: ObservableObject {
                 galaxy: galaxy,
                 emojiImageName: result.emojiId,
                 pledges: result.resolutionList.map {
-                    Pledge(content: $0.content)
+                    Pledge(
+                        resolutionId: $0.resolutionId,
+                        content: $0.content
+                    )
                 }
+
             )
 
         } catch {

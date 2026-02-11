@@ -21,6 +21,7 @@ final class PledgeViewModel: ObservableObject {
     @Published var pledgeCard: PledgeCardModel?
     // MARK: - State
     @Published var isLoading: Bool = false
+    @Published var isEditing: Bool = false
     @Published var errorMessage: String?
 
     
@@ -121,41 +122,71 @@ final class PledgeViewModel: ObservableObject {
     
     // MARK: - Pledge API 수정 함수
     func patchPledge(
-        galaxyId: Int,
-        completion: @escaping (Result<PatchPledgeResponse, Error>) -> Void
+        galaxy: Galaxy,
+        completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        guard let emoji = selectedEmoji else { return }
-
         let request = PatchPledgeRequest(
             emojiId: selectedEmoji?.id,
-            resolutions: pledges.map { pledge in
+            resolutions: pledges.map {
                 PatchResolutionItem(
-                    resolutionId: pledge.resolutionId,
-                    content: pledge.content
+                    resolutionId: $0.resolutionId ?? 0,
+                    content: $0.content
                 )
             }
         )
 
         provider.request(
-            .patchPledge(galaxyId: galaxyId, request: request)
+            PledgeTargetType.patchPledge(
+                galaxyId: galaxy.serverId,
+                request: request
+            )
         ) { result in
             switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(
-                        PatchPledgeResponse.self,
-                        from: response.data
-                    )
-                    completion(.success(decoded))
-                } catch {
-                    completion(.failure(error))
-                }
-
+            case .success:
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
+    
+    func loadExistingPledge(from galaxy: Galaxy) {
+        guard let card = pledgeCard else { return }
+
+        // 이모지 세팅
+        selectedEmojis = emojis.filter {
+            $0.id == card.emojiImageName
+        }
+
+        // 기존 다짐 세팅
+        pledges = card.pledges.map {
+            PledgeDraft(
+                resolutionId: $0.resolutionId,
+                content: $0.content,
+                example: ""
+            )
+        }
+    }
+    
+    func setExistingCard(_ card: PledgeCardModel) {
+        self.pledgeCard = card
+
+        selectedEmojis = emojis.filter {
+            $0.id == card.emojiImageName
+        }
+
+        pledges = card.pledges.map {
+            PledgeDraft(
+                resolutionId: $0.resolutionId,
+                content: $0.content,
+                example: ""
+            )
+        }
+    }
+
+
+
+
 
     
     // MARK: - 생성 Mapping
@@ -168,7 +199,11 @@ final class PledgeViewModel: ObservableObject {
             galaxy: galaxy,
             emojiImageName: result.emojiId,
             pledges: result.resolutions.map {
-                Pledge(content: $0.content)
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
+
             }
         )
     }
@@ -183,8 +218,12 @@ final class PledgeViewModel: ObservableObject {
             galaxy: galaxy,
             emojiImageName: result.emojiId,
             pledges: result.resolutionList.map {
-                Pledge(content: $0.content)
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
             }
+
         )
     }
 
@@ -197,7 +236,10 @@ final class PledgeViewModel: ObservableObject {
             galaxy: galaxy,
             emojiImageName: result.emojiId,
             pledges: result.contents.map {
-                Pledge(content: $0)
+                Pledge(
+                    resolutionId: nil,
+                    content: $0
+                )
             }
         )
     }
@@ -286,7 +328,10 @@ final class PledgeViewModel: ObservableObject {
             galaxy: galaxy,
             emojiImageName: selectedEmoji?.id ?? "",
             pledges: pledges.map {
-                Pledge(content: $0.content)
+                Pledge(
+                    resolutionId: $0.resolutionId,
+                    content: $0.content
+                )
             }
         )
     }

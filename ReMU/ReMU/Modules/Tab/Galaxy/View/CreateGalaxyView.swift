@@ -51,6 +51,7 @@ struct CreateGalaxyView: View {
             .navigationDestination(item: $createdGalaxy) { galaxy in
                 WritePledgeView(
                     galaxy: galaxy,
+                    container: container,
                     onFinish: {
                         onFinish(galaxy)
                     }

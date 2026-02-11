@@ -33,6 +33,8 @@ struct HomeGalaxyView: View {
     @State private var showGalaxyList = false
     @State private var showWriteResult = false
     @State private var showCreateResultCard = false
+    @State private var showEditPledge = false
+
         
     // MARK: - body
     var body: some View {
@@ -99,7 +101,12 @@ struct HomeGalaxyView: View {
                             onWriteResult: {
                                 showCardOverlay = false
                                 showWriteResult = true
+                            },
+                            onEdit: {
+                                showCardOverlay = false
+                                showEditPledge = true
                             }
+
                         )
                     }
                 }
@@ -143,6 +150,26 @@ struct HomeGalaxyView: View {
             GalaxyCheckView(container: container)
                 .environmentObject(container)
         }
+        .fullScreenCover(isPresented: $showEditPledge) {
+            NavigationStack {
+                if let galaxy = viewModel.galaxyData {
+                    WritePledgeView(
+                        galaxy: galaxy,
+                        container: container,
+                        mode: .edit,
+                        existingCard: viewModel.pledgeCard,
+                        onFinish: {
+                            showEditPledge = false
+                            showCardOverlay = true
+                            Task {
+                                await viewModel.loadHome(galaxyId: galaxy.serverId)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
                 if let galaxy = viewModel.galaxyData {

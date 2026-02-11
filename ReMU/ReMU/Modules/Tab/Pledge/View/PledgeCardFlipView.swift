@@ -13,16 +13,17 @@ enum CardSize {
 
 struct PledgeCardFlip: View {
     let card: PledgeCardModel
+    let onEdit: (() -> Void)?
     @State var flip = false
     
     // MARK: - body
     var body: some View {
         ZStack {
-            CardFrontView(card: card, flip: $flip)
+            CardFrontView(card: card, flip: $flip, onEdit: onEdit)
                 .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear : .linear.delay(0.35), value: flip)
             
-            CardBackView(card: card, flip: $flip)
+            CardBackView(card: card, flip: $flip, onEdit: onEdit)
                 .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
             
@@ -39,6 +40,7 @@ struct PledgeCardFlip: View {
 struct CardFrontView: View {
     let card: PledgeCardModel
     @Binding var flip: Bool
+    let onEdit: (() -> Void)?
     var body: some View {
         ZStack {
             Rectangle()
@@ -69,13 +71,11 @@ struct CardFrontView: View {
                         .padding(.horizontal, 16)
                     
                     Spacer()
-                    Button(action: {}) {
-                        Image("pencil.line")
-                            .foregroundStyle(Color.grayScale8)
-                    }
-                    Button(action: {}) {
-                        Image("close_icon")
-                            .foregroundStyle(Color.grayScale8)
+                    if let onEdit {
+                        Button (action: onEdit) {
+                            Image("pencil.line")
+                                .foregroundStyle(Color.grayScale8)
+                        }
                     }
                 }
                 Text(card.galaxy.travelPeriodText)
@@ -106,6 +106,7 @@ struct CardFrontView: View {
 struct CardBackView: View {
     let card: PledgeCardModel
     @Binding var flip: Bool
+    let onEdit: (() -> Void)?
     var body: some View {
         ZStack {
             Rectangle()
@@ -135,13 +136,10 @@ struct CardBackView: View {
                         .padding(.horizontal, 16)
                     
                     Spacer()
-                    Button(action: {}) {
-                        Image("pencil.line")
-                            .foregroundStyle(Color.grayScale8)
-                    }
-                    Button(action: {}) {
-                        Image("close_icon")
-                            .foregroundStyle(Color.grayScale8)
+                    if let onEdit {
+                        Button (action: onEdit) {
+                            Image("pencil.line")
+                        }
                     }
                 }
                 Text(card.galaxy.travelPeriodText)

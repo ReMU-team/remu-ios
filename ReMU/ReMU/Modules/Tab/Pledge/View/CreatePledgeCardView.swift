@@ -29,11 +29,11 @@ struct CreatePledgeCardView: View {
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "다짐 생성",
-                        onBack: {
-                            dismiss()
-                        }
-                    )
+            title: "다짐 생성",
+            onBack: {
+                dismiss()
+            }
+        )
     }
     
     // MARK: - pledgeCardView
@@ -43,13 +43,11 @@ struct CreatePledgeCardView: View {
                 .font(.pt20)
                 .foregroundStyle(.grayScale9)
             PledgeCardFlip(
-                card: viewModel.makeDraftCard(galaxy: galaxy)
+                card: viewModel.makeDraftCard(galaxy: galaxy),
+                onEdit: nil   // 생성 화면에서는 수정 버튼 필요 없음
             )
-
-
-
-                .padding(.top, 50)
-                .padding(.bottom, 20)
+            .padding(.top, 50)
+            .padding(.bottom, 20)
             Text("카드를 클릭하면 뒷면이 보여요!")
                 .font(.pt13)
                 .foregroundStyle(.grayScale5)
@@ -59,11 +57,11 @@ struct CreatePledgeCardView: View {
     // MARK: - finishButton
     private var finishButton: some View {
         VStack {
-            PrimaryButton(title: "완료") {
+            PrimaryButton(title: "완료", backgroundColor: .purpleC495E0) {
                 viewModel.createPledge(galaxy: galaxy) { result in
                     switch result {
                     case .success:
-                        dismiss()
+                        LastGalaxyStore.save(galaxy.serverId) 
                         onFinish()
                     case .failure(let error):
                         print("❌ 다짐 생성 실패:", error.localizedDescription)
@@ -95,14 +93,17 @@ struct CreatePledgeCardView: View {
         galaxy: mockGalaxy,
         emojiImageName: "amazed_emoji",
         pledges: [
-            Pledge(content: "맛있는거 먹기"),
-            Pledge(content: "야경 보기")
+            Pledge(resolutionId: 1, content: "맛있는거 먹기"),
+            Pledge(resolutionId: 2, content: "야경 보기")
         ]
     )
-
+    
     NavigationStack {
         VStack {
-            PledgeCardFlip(card: mockCard)
+            PledgeCardFlip(
+                card: mockCard,
+                onEdit: {}
+            )
         }
     }
 }

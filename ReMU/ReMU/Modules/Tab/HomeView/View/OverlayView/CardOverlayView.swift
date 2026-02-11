@@ -12,7 +12,8 @@ struct CardOverlayView: View {
     let pledgeCard: PledgeCardModel?
     let onClose: () -> Void
     let onWriteResult: () -> Void
-    
+    let onEdit: () -> Void
+
     var body: some View {
         ZStack {
             
@@ -61,7 +62,11 @@ struct CardOverlayView: View {
             
         case .pledge:
             if let pledgeCard {
-                PledgeCardFlip(card: pledgeCard)
+                PledgeCardFlip(
+                    card: pledgeCard,
+                    onEdit: onEdit
+                )
+
             } else {
                 Text("다짐 카드가 없습니다")
                     .foregroundStyle(.white)
@@ -184,9 +189,10 @@ private struct CardOverlayPreview: View {
             galaxy: mockGalaxy,
             emojiImageName: "emoji_1",
             pledges: [
-                Pledge(content: "외국인이랑 스몰토킹하기"),
-                Pledge(content: "현지인 맛집 가보기")
+                Pledge(resolutionId: 1, content: "외국인이랑 스몰토킹하기"),
+                Pledge(resolutionId: 2, content: "현지인 맛집 가보기")
             ]
+
         )
     }
 
@@ -199,8 +205,10 @@ private struct CardOverlayPreview: View {
                 selectedTab: $selectedTab,
                 pledgeCard: mockCard,
                 onClose: { print("닫기 눌림") },
-                onWriteResult: {}
+                onWriteResult: {},
+                onEdit: { print("수정 눌림") }
             )
+
         }
     }
 }
