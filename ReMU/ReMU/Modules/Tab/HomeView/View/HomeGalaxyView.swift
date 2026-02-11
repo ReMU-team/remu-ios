@@ -117,29 +117,37 @@ struct HomeGalaxyView: View {
 
         }
         .onAppear {
-            if let lastId = LastGalaxyStore.load() {
-                appState.currentGalaxyId = lastId
-            } else {
-                Task {
+            Task {
+                if let lastId = LastGalaxyStore.load() {
+                    appState.currentGalaxyId = lastId
+                    _ = await viewModel.loadHome(galaxyId: lastId)
+                } else {
                     await viewModel.fetchGalaxyList()
-                    appState.currentGalaxyId = viewModel.galaxyData?.serverId
+                    if let id = viewModel.galaxyData?.serverId {
+                        appState.currentGalaxyId = id
+                        LastGalaxyStore.save(id)
+                    }
                 }
             }
         }
+
         .onChange(of: appState.currentGalaxyId) {
             syncHomeWithCurrentGalaxy()
         }
         .fullScreenCover(isPresented: $showCreateGalaxy) {
-            // 은하 정보 저장
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 onFinish: { galaxy in
-                    appState.currentGalaxyId = galaxy.serverId
+                    Task {
+                        appState.currentGalaxyId = galaxy.serverId
+                        LastGalaxyStore.save(galaxy.serverId)
+                        _ = await viewModel.loadHome(galaxyId: galaxy.serverId)
+                    }
                     showCreateGalaxy = false
                 }
-
             )
         }
+
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
         }

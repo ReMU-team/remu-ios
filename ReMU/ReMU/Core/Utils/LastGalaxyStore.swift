@@ -15,7 +15,11 @@ enum LastGalaxyStore {
     }
 
     static func load() -> Int? {
-        let value = UserDefaults.standard.integer(forKey: key)
-        return value == 0 ? nil : value
+        UserDefaults.standard.object(forKey: key) as? Int
+    }
+
+    static func clear() {
+        UserDefaults.standard.removeObject(forKey: key)
     }
 }
+
