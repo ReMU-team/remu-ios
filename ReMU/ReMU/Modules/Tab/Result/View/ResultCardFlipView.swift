@@ -14,7 +14,6 @@ struct ResultCardFlip: View {
     @EnvironmentObject var appState: AppState
 
     @ObservedObject var resultVM: ResultViewModel
-
     @State private var flip = false
 
     
@@ -37,6 +36,11 @@ struct ResultCardFlip: View {
             resultVM.fetchResult()
         }
         .frame(width: 297, height: 419)
+        .onTapGesture {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                flip.toggle()
+            }
+        }
     }
 }
 
@@ -207,4 +211,3 @@ struct ResultCardTwoView: View {
         .padding(.bottom, 24)
     }
 }
-
