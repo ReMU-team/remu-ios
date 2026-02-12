@@ -14,7 +14,7 @@
 ## 👥 멤버
 | 티모 | 나래 | 벨라 |  
 |:------:|:------:|:------:|  
-| <img src="https://github.com/user-attachments/assets/71d51935-82fc-4225-b2dc-3cebbd426a5c" width="200" height="300" alt="IMG_6758" /> | <img width="522" height="698" alt="image" src="https://github.com/user-attachments/assets/95c98c91-e35a-40c4-a83f-b6b627d1d14f" width="200" height="300" alt="IMG_6758" />
+| <img src="https://github.com/user-attachments/assets/71d51935-82fc-4225-b2dc-3cebbd426a5c" width="200" height="300" alt="IMG_6758" /> | <img width="522" height="698" alt="image" src="https://github.com/user-attachments/assets/95c98c91-e35a-40c4-a83f-b6b627d1d14f" width="200" height="300" />
  | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
 | PL | FE | FE |  
 | [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/bella411) |
