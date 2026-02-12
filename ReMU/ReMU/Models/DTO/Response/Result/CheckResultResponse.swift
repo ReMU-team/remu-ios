@@ -9,11 +9,14 @@ import Foundation
 
 struct CheckResultResponse: Decodable {
     let galaxyId: Int
-    let travelEmojiImageName: String
-    let overallContent: String
+    let galaxyTitle: String?
+    let travelDate: String?
+    let travelEmojiImageName: String?
+    let overallContent: String?
     let aiFeedback: String?
     let reviews: [CheckReviewResponse]
 }
+
 
 struct CheckReviewResponse: Decodable {
     let reviewId: Int

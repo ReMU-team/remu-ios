@@ -10,7 +10,7 @@ import SwiftUI
 
 struct CreateResultCardView: View {
     
-    @StateObject var resultVM: ResultViewModel
+    @ObservedObject var resultVM: ResultViewModel 
     
     let onFinish: () -> Void
     
@@ -25,6 +25,10 @@ struct CreateResultCardView: View {
             middle
             bottom
             Spacer()
+        }
+        .task {
+            print("🔄 결과 카드 화면 진입: 데이터 다시 조회 시작")
+            resultVM.fetchResult()
         }
     }
 

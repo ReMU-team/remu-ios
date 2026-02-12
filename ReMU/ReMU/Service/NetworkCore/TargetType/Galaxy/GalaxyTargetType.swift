@@ -10,7 +10,7 @@ import Alamofire
 import Moya
 
 enum GalaxyTargetType {
-    case fetchGalaxyDetail(accessToken: String, galaxyId: Int)
+    case fetchGalaxyDetail(galaxyId: Int)
     case fetchGalaxyList(accessToken: String, page: Int, size: Int)
     case createGalaxy(accessToken: String, requset: CreateGalaxyRequest)
     case patchGalaxy(accessToken: String, galaxyId: Int,request: PatchGalaxyRequest)
@@ -23,7 +23,7 @@ extension GalaxyTargetType: APITargetType {
     
     var path: String {
         switch self {
-        case .fetchGalaxyDetail(_,let galaxyId):
+        case .fetchGalaxyDetail(let galaxyId):
             return "/api/v1/galaxies/\(galaxyId)"
         case .fetchGalaxyList:
             return "/api/v1/galaxies"
@@ -49,13 +49,12 @@ extension GalaxyTargetType: APITargetType {
     }
     
     var headers: [String : String]? {
-        switch self {
-        case .fetchGalaxyDetail(let accessToken,_), .fetchGalaxyList(let accessToken,_,_), .createGalaxy(let accessToken,_), .patchGalaxy(let accessToken,_,_), .deleteGalaxy(let accessToken,_):
-            var header = ["Accept": "application/json"]
-            header["Authorization"] = "Bearer \(accessToken)"
-            return header
-        }
+        return [
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        ]
     }
+    
     var task: Moya.Task {
         switch self {
         case .fetchGalaxyDetail, .deleteGalaxy:

@@ -10,7 +10,7 @@ import Foundation
 struct createResultRequest: Codable {
     let emojiId: String
     let reflection: String
-    let review: [String]
+    let reviews: [reviewItem]
 }
 
 struct reviewItem: Codable {

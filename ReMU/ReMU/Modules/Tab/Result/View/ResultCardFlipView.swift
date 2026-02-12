@@ -22,34 +22,30 @@ struct ResultCardFlip: View {
         ZStack {
             ResultCardOneView(
                 flip: $flip,
+                viewModel: resultVM,
                 feedbackContent: resultVM.aiFeedback
             )
             .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
 
-            ResultCardTwoView(flip: $flip)
+            ResultCardTwoView(
+                flip: $flip,
+                viewModel: resultVM
+            )
                 .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
         }
-        .onTapGesture {
-            flip.toggle()
-            if flip {
-                resultVM.fetchResult()
-            }
+        .task {
+            resultVM.fetchResult()
         }
         .frame(width: 297, height: 419)
     }
 }
 
-#Preview {
-    ResultCardOneView(
-        flip: .constant(false),
-        feedbackContent: "AI 피드백 예시입니다."
-    )
-}
 
 
 struct ResultCardOneView: View {
     
     @Binding var flip: Bool
+    @ObservedObject var viewModel: ResultViewModel
     let feedbackContent: String?
     
     var body: some View {
@@ -69,12 +65,22 @@ struct ResultCardOneView: View {
     
     var top: some View {
         HStack {
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 45, height: 45)
+                
+                if let emoji = viewModel.selectedEmoji {
+                    Image(emoji.id)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 45, height: 45)
+                        .clipShape(Circle())
+                }
+            }
             VStack(alignment: .leading) {
                 HStack {
-                    Text("6인팟 스위스")
+                    Text(viewModel.galaxyTitle)
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
@@ -83,7 +89,7 @@ struct ResultCardOneView: View {
                             .foregroundStyle(Color.grayScale8)
                     }
                 }
-                Text("25/10/29-25/11/10")
+                Text(viewModel.travelDate)
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
             }
@@ -114,6 +120,8 @@ struct ResultCardOneView: View {
 struct ResultCardTwoView: View {
     
     @Binding var flip: Bool
+    @ObservedObject var viewModel: ResultViewModel
+    
     var body: some View {
         ZStack {
             Rectangle()
@@ -132,12 +140,22 @@ struct ResultCardTwoView: View {
     
     var top: some View {
         HStack {
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 45, height: 45)
+                
+                if let emoji = viewModel.selectedEmoji {
+                    Image(emoji.id)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 45, height: 45)
+                        .clipShape(Circle())
+                }
+            }
             VStack(alignment: .leading) {
                 HStack {
-                    Text("6인팟 스위스")
+                    Text(viewModel.galaxyTitle)
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
@@ -146,7 +164,7 @@ struct ResultCardTwoView: View {
                             .foregroundStyle(Color.grayScale8)
                     }
                 }
-                Text("25/10/29-25/11/10")
+                Text(viewModel.travelDate)
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
             }
@@ -161,8 +179,20 @@ struct ResultCardTwoView: View {
             Text("나의 회고카드")
                 .foregroundStyle(.grayScale5)
                 .font(.pt12)
-            TextBox(text: "여행 전 다짐 내용", isExpanded: true)
-            Text("여행 후 회상 내용(+총평)")
+            
+            ForEach(viewModel.pledges, id: \PledgeItem.id) { (pledge: PledgeItem) in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(pledge.title)
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale8)
+
+                    Text(pledge.content)
+                        .font(.pt12)
+                        .foregroundStyle(.grayScale5)
+                }
+            }
+
+            Text(viewModel.review)
                 .foregroundStyle(.blue333368)
                 .font(.pt12)
                 .frame(maxWidth: .infinity, minHeight: 135, maxHeight: 135, alignment: .center)
