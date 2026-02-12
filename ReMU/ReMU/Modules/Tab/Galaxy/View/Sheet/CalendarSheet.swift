@@ -27,6 +27,7 @@ struct CalendarSheet: View {
                     currentMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
                 } label: {
                     Image(systemName: "chevron.left")
+                        .foregroundStyle(.grayScale9)
                 }
 
 
@@ -38,6 +39,8 @@ struct CalendarSheet: View {
                     currentMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
                 } label: {
                     Image(systemName: "chevron.right")
+                        .foregroundStyle(.grayScale9)
+
                 }
             }
             .padding(.top, 41)
@@ -66,18 +69,68 @@ struct CalendarSheet: View {
             }
             .id("\(startDate?.timeIntervalSince1970 ?? 0)-\(endDate?.timeIntervalSince1970 ?? 0)")
 
-            Spacer()
-
             
-            // 글 설명
-            Text("비행기로 이동하시나요? ✈️\n 도착 예정일을 선택해주시면, 진짜 여행이 시작되는 날에 맞춰 기록을 준비할게요!\n\n비행이 아니라면, 그대로 ‘완료’를 눌러주세요.")
-                .font(.pt15)
-                .foregroundStyle(Color.grayScale8)
-                .frame(width: 318, alignment: .topLeading)
-                .padding(.top, 54)
-                .padding(.bottom, 78)
+            VStack(spacing: 12) {
                 
-            
+                // 위 보라 Divider
+                Rectangle()
+                    .fill(Color.purpleC495E0.opacity(0.3))
+                    .frame(height: 1)
+                
+                HStack {
+                    Image(systemName: "clock")
+                        .foregroundColor(.gray)
+
+                    Spacer()
+
+                    // 출발일
+                    Text(startDate?.uiFormat ?? "출발일")
+                        .font(.pt15)
+                        .foregroundColor(startDate == nil ? .gray : .black)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(
+                            startDate != nil && endDate == nil
+                            ? Color.purpleC495E0.opacity(0.2)
+                            : Color.clear
+                        )
+                        .clipShape(Capsule())
+                        .frame(width: 90)
+
+
+                    Spacer()
+
+                    Image(systemName: "arrow.right")
+                        .foregroundColor(.gray)
+
+                    Spacer()
+
+                    // 종료일
+                    Text(endDate?.uiFormat ?? "종료일")
+                        .font(.pt15)
+                        .foregroundColor(endDate == nil ? .gray : .black)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(
+                            endDate != nil
+                            ? Color.purpleC495E0.opacity(0.2)
+                            : Color.clear
+                        )
+                        .clipShape(Capsule())
+                        .frame(width: 90)
+
+
+                    Spacer()
+                }
+                
+                // 아래 보라 Divider
+                Rectangle()
+                    .fill(Color.purpleC495E0.opacity(0.3))
+                    .frame(height: 1)
+            }
+            .padding(.vertical, 8)
+
+            Spacer()
             
             // 완료버튼
             PrimaryButton(
@@ -121,8 +174,6 @@ struct CalendarSheet: View {
         startDate = tapped
         endDate = nil
     }
-
-
 
     // MARK: - Helpers
     private var monthTitle: String {
@@ -179,6 +230,13 @@ struct CalendarDayCell: View {
                 Text(dayText)
                     .frame(width: 40, height: 40)
                     .background(background)
+                    .overlay(
+                        Circle()
+                            .stroke(
+                                isToday && !isSelected ? Color.purpleC495E0 : .clear,
+                                lineWidth: 2
+                            )
+                    )
                     .foregroundStyle(foreground)
                     .clipShape(Circle())
                     .onTapGesture {
@@ -186,6 +244,11 @@ struct CalendarDayCell: View {
                     }
             }
         }
+    }
+    
+    /// 오늘 날짜
+    private var isToday: Bool {
+        Calendar.current.isDateInToday(date)
     }
 
     private var dayText: String {
@@ -226,7 +289,14 @@ struct CalendarDayCell: View {
     }
 
     private var foreground: Color {
-        isSelected ? .white : .primary
+        if isSelected {
+            return .white
+        }
+        if isToday {
+            return .purpleC495E0
+        }
+        return .primary
     }
+
 }
 
