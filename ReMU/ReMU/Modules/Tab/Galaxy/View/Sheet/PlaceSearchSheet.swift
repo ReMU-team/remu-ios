@@ -29,27 +29,36 @@ struct PlaceSearchSheet: View {
         VStack(spacing: 16) {
 
             // 검색창
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Color.gray)
+            HStack(spacing: 8) {
 
-                TextField("장소를 검색하세요", text: $keyword)
-                    .font(.pt16)
-
-                if !keyword.isEmpty {
-                    Button {
-                        keyword = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color.gray)
+                // 검색 텍스트 영역
+                HStack(spacing: 6) {
+                    TextField("클릭하여 장소를 검색해주세요", text: $keyword)
+                        .font(.pt16)
+                        .foregroundStyle(.purpleC495E0)
+                    
+                    if !keyword.isEmpty {
+                        Button {
+                            keyword = ""
+                        } label: {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.grayScale5)
+                        }
                     }
+                    // 오른쪽 돋보기 버튼
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.blue212148)
                 }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(Color.purpleD9BCEA.opacity(0.5))
+                .cornerRadius(20)
+
+                
             }
-            .padding(12)
-            .background(Color.grayScale2)
-            .cornerRadius(10)
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 20)
             .padding(.top, 20)
+
 
             // 장소 리스트
             List(filteredPlaces, id: \.self) { place in
@@ -59,7 +68,7 @@ struct PlaceSearchSheet: View {
                 } label: {
                     Text(place)
                         .font(.pt16)
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(.black)
                 }
             }
             .listStyle(.plain)
