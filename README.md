@@ -3,8 +3,8 @@
 
 
 > ReMU: 여행의 시작, 당신만의 은하로 떠나요
-[![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)]()
-[![Xcode](https://img.shields.io/badge/Xcode-16.0-blue.svg)]()
+[![Swift](https://img.shields.io/badge/Swift-5-orange.svg)]()
+[![Xcode](https://img.shields.io/badge/Xcode-26.0.1-blue.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)]()
 
 ---
@@ -12,11 +12,11 @@
 <br>
 
 ## 👥 멤버
-| 나래 | 티모 | 벨라 |  
+| 티모 | 나래 | 벨라 |  
 |:------:|:------:|:------:|  
-| <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/191358468/533741254-eaa9c875-5cb5-4da1-8944-e8dc9bf7fda3.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260109%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260109T055308Z&X-Amz-Expires=300&X-Amz-Signature=d1840a77c58392f7523b2854f6664137b9b2773f7dd40f262bf38099b7bd4dcb&X-Amz-SignedHeaders=host" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
-| FE | FE | FE |  
-| [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/bella411) |
+| <img src="https://github.com/user-attachments/assets/71d51935-82fc-4225-b2dc-3cebbd426a5c" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> | <img src="https://github.com/user-attachments/assets/17b81e2b-766d-4358-a1ef-74052ee39027" width="200" height="300" alt="IMG_6758" /> |
+| PL | FE | FE |  
+| [GitHub](https://github.com/guingguing) | [GitHub](https://github.com/BeginnerKJS) | [GitHub](https://github.com/bella411) |
 
 <br>
 
@@ -30,8 +30,8 @@
 <br>
 
 ## 📆 프로젝트 기간
-- 전체 기간: `2025.12.22. - 2026.02.22.`
-- 개발 기간: `2026.01.05. - 2026.02.16.`
+- 전체 기간: `2025.12.22. - 2026.02.20.`
+- 개발 기간: `2026.01.05. - 2026.02.20.`
 
 <br>
 
@@ -39,42 +39,46 @@
 For building and running the application you need:
 
 iOS 26.0 <br>
-Xcode 26 <br>
-Swift 6.2
+Xcode 26.0.1 <br>
+Swift 5
 
 <br>
 
-## ⚒️ 개발 환경
-* Front : SwiftUI
-* 버전 및 이슈 관리 : Github, Github Issues
-* 협업 툴 : Discord, Notion
+## 🏗 Architecture
+
+- MVVM 기반 구조
+- Moya + Alamofire 네트워크 레이어 분리
+- DIContainer 기반 의존성 주입
+- Feature 단위 모듈화 구조
 
 <br>
 
 ## 🔎 기술 스택
-### Envrionment
-<div align="left">
-<img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" />
-<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
-<img src="https://img.shields.io/badge/SPM-FA7343?style=for-the-badge&logo=swift&logoColor=white" />
-<img src="https://img.shields.io/badge/Fastlane-n?style=for-the-badge&logo=fastlane&logoColor=black" />
-</div>
 
-### Development
+### 🖥 Development
 <div align="left">
-<img src="https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white" />
-<img src="https://img.shields.io/badge/Firebase-DD2C00?style=for-the-badge&logo=Firebase&logoColor=white" />
 <img src="https://img.shields.io/badge/SwiftUI-42A5F5?style=for-the-badge&logo=swift&logoColor=white" />
+<img src="https://img.shields.io/badge/UIKit-000000?style=for-the-badge&logo=apple&logoColor=white" />
 <img src="https://img.shields.io/badge/Alamofire-FF5722?style=for-the-badge&logo=swift&logoColor=white" />
 <img src="https://img.shields.io/badge/Moya-8A4182?style=for-the-badge&logo=swift&logoColor=white" />
 <img src="https://img.shields.io/badge/Kingfisher-0F92F3?style=for-the-badge&logo=swift&logoColor=white" />
-<img src="https://img.shields.io/badge/Combine-FF2D55?style=for-the-badge&logo=apple&logoColor=white" />
+<img src="https://img.shields.io/badge/Kakao_Login-FFCD00?style=for-the-badge&logo=kakao&logoColor=black" />
 </div>
 
-### Communication
+
+### ⚙️ Environment
 <div align="left">
-<img src="https://img.shields.io/badge/Miro-FFFC00.svg?style=for-the-badge&logo=Miro&logoColor=050038" />
-<img src="https://img.shields.io/badge/Notion-white.svg?style=for-the-badge&logo=Notion&logoColor=000000" />
+<img src="https://img.shields.io/badge/Xcode_26.0.1-007ACC?style=for-the-badge&logo=Xcode&logoColor=white" />
+<img src="https://img.shields.io/badge/iOS_26.0-000000?style=for-the-badge&logo=apple&logoColor=white" />
+<img src="https://img.shields.io/badge/Swift_5-F05138?style=for-the-badge&logo=swift&logoColor=white" />
+<img src="https://img.shields.io/badge/Swift_Package_Manager-FA7343?style=for-the-badge&logo=swift&logoColor=white" />
+<img src="https://img.shields.io/badge/Git-F05033?style=for-the-badge&logo=git&logoColor=white" />
+<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+</div>
+
+### 🤝 Collaboration
+<div align="left">
+<img src="https://img.shields.io/badge/Notion-white?style=for-the-badge&logo=Notion&logoColor=black" />
 <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white" />
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />
 </div>
@@ -117,9 +121,9 @@ Swift 6.2
 - `refactor/#5-api-structure` (5번 이슈인 API 구조 개선)
 
 
-## 이슈 컨벤션
-양식 | [커밋유형] 이슈 내용
-예시 | [FEAT] 사용자 로그인 API 구현
+## 📌 이슈 컨벤션
+- 양식 | 이모지 커밋유형: 이슈 내용
+- 예시 | 이모지 FEAT: 사용자 로그인 API 구현
 
 <br>
 
@@ -291,33 +295,50 @@ let value: Int
 
 ## 🗂️ 폴더 컨벤션
 ```
-.
-├── App/ # 앱 진입점 및 생명주기 관리
-├── Common/ # 공통 공유 자원
-│   ├── Enum/ # 상수 및 상태 타입
-│   ├── Protocol/ # 인터페이스 규격
-│   └── UIComponents/ # 재사용 UI 컴포넌트
-├── Core/ # 앱 핵심 인프라
-│   ├── Actor/ # 데이터 관리 및 동시성 제어
-│   ├── DIContainer/ # 의존성 주입 관리
-│   ├── Navigation/ # 화면 전환 및 라우팅
-│   └── Utils/ # 설정 및 유틸리티
-├── Models/ # 데이터 모델링
-│   ├── Domain/ # 비즈니스 로직용 모델
-│   └── DTO/ # API 통신용 데이터 객체
-├── Modules/ # 기능 단위 모듈 (View/VM)
-│   ├── AppFlow/ # 초기 진입 흐름 (로그인 등)
-│   └── Tab/ # 메인 기능별 화면 (홈, 주문 등)
-├── Resource/ # 정적 자원 및 기능 확장
-│   ├── Assets/ # 이미지 및 컬러 에셋
-│   ├── Extension/ # 기본 타입 기능 확장
-│   ├── Font/ # 커스텀 폰트
-│   ├── Keychain/ # 보안 데이터 저장
-│   ├── Modifier/ # SwiftUI 커스텀 수식어
-│   └── UIConstants/ # UI 수치 상수
-└── Service/ # 외부 연동 계층
-    ├── MoyaRouter/ # API 경로 정의
-    ├── MoyaService/ # 네트워크 통신 실행
-    └── Social/ # 소셜 로그인 및 외부 SDK
+ReMU
+├── App
+│   ├── AppDelegate.swift
+│   └── ReMUApp.swift
+├── Common
+│   ├── Enum
+│   ├── Protocol
+│   └── UIComponents
+├── Core
+│   ├── Actor
+│   ├── DIContainer
+│   ├── Image
+│   ├── Keychain
+│   ├── MediaPicker
+│   ├── Navigation
+│   ├── Notification
+│   ├── Utils
+│   └── APIProviderStore.swift
+├── Models
+│   ├── Domain
+│   └── DTO
+├── Modules
+│   ├── AppFlow
+│   └── Tab
+├── Resource
+│   ├── Extension
+│   ├── Font
+│   ├── Modifier
+│   ├── UIConstants
+│   └── Assets.xcassets
+├── Service
+│   ├── Feedback
+│   ├── Galaxy
+│   ├── Manager
+│   ├── NetworkCore
+│   ├── Notification
+│   ├── Pledge
+│   ├── Result
+│   ├── Social
+│   └── AccessTokenRefresher.swift
+├── ContentView.swift
+├── Info.plist
+├── NextView.swift
+├── testView.swift
+└── ReMU_Tests
 ```
 # ReMU-Frontend

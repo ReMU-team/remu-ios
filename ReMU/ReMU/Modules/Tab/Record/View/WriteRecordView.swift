@@ -1,0 +1,344 @@
+//
+//  WriteRecordView.swift
+//  ReMU
+//
+//  Created by 김진서 on 1/15/26.
+//
+
+import SwiftUI
+import PhotosUI
+
+/// 작성, 수정 모드
+enum RecordFormMode {
+    case create
+    case edit(starId: Int)
+}
+
+/// 기록 카드 작성, 수정을 담당하는 뷰
+struct WriteRecordView: View {
+    
+    let galaxyId: Int
+    let dday: Int
+    let galaxyName: String
+    let travelPeriodText: String
+    let onFinish: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var container: DIContainer
+    
+    /// 뷰모델
+    @StateObject private var viewModel = WriteRecordViewModel()
+    
+    /// 다음 버튼
+    @State private var goNext = false
+    @State private var selectedItem: PhotosPickerItem?
+
+    let mode: RecordFormMode
+    
+    init(
+        galaxyId: Int,
+        dday: Int,
+        galaxyName: String,
+        travelPeriodText: String,
+        mode: RecordFormMode = .create,
+        onFinish: @escaping () -> Void
+    ) {
+        self.galaxyId = galaxyId
+        self.dday = dday
+        self.galaxyName = galaxyName
+        self.travelPeriodText = travelPeriodText
+        self.mode = mode
+        self.onFinish = onFinish
+    }
+    
+    // MARK: - body
+    var body: some View {
+        VStack {
+            navigationBar
+            deleteButton
+            Group {
+                writeTitle
+                buttonGroup
+                    .padding(.horizontal, 41)
+                writeContent
+            }
+            .padding(.horizontal, 32)
+            
+            nextButton
+        }
+        .onAppear {
+            if case .edit(let starId) = mode {
+                Task {
+                    try? await viewModel.loadStarDetail(
+                        container: container,
+                        starId: starId
+                    )
+                }
+            }
+
+        }
+        .navigationDestination(isPresented: $goNext) {
+            CreateRecordCardView(
+                draft: viewModel.makeDraft(),
+                galaxyId: galaxyId,
+                dday: dday,
+                galaxyName: galaxyName,
+                travelPeriodText: travelPeriodText,
+                onFinish: onFinish
+            )
+            .environmentObject(container)
+        }
+        .sheet(isPresented: $viewModel.isEmojiSheetPresented) {
+            EmojiPickerSheet(
+                emojis: viewModel.emojis,
+                selectedEmojis: $viewModel.tempSelectedEmojis,
+                maxSelection: 3,
+                onConfirm: viewModel.confirmEmojiSelection,
+                onClose: {
+                    viewModel.isEmojiSheetPresented = false
+                }
+            )
+        }
+        .sheet(isPresented: $viewModel.isColorSheetPresented) {
+            CardColorPickerSheet(
+                colors: viewModel.cardColors,
+                selectedColor: $viewModel.selectedCardColor,
+                onClose: { viewModel.isColorSheetPresented = false }
+            )
+        }
+    }
+    
+    // MARK: - navigationBar
+    private var navigationBar: some View {
+        CustomNavigationBar(
+            title: {
+                /// 타이틀 분기
+                switch mode {
+                case .create: return "기록 작성"
+                case .edit: return "기록 수정"
+                }
+            }(),
+            onBack: {
+                dismiss()
+            }
+        )
+    }
+
+    // MARK: - deleteButton
+    private var deleteButton: some View {
+        HStack {
+            Spacer()
+            if case .edit(let starId) = mode {
+                Button (role: .destructive) {
+                    Task {
+                        try? await viewModel.deleteStar(
+                            container: container,
+                            starId: starId
+                        )
+                        
+                        dismiss()
+                        onFinish()   // 홈 reload (오버레이 안 띄우는 건 Home에서 처리)
+                    }
+                } label: {
+                    Text("별 삭제")
+                        .font(.pt12)
+                        .foregroundStyle(.purpleC495E0)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .frame(height: 24, alignment: .center)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 26)
+                                .stroke(.purpleC495E0)
+                        )
+                }
+                .padding(.horizontal, 24)
+            }
+        }
+
+    }
+    
+    
+    // MARK: - writeTitle
+    private var writeTitle: some View {
+        VStack (alignment: .leading) {
+            // 날짜 표시
+            HStack (spacing: 4) {
+                // 오늘 여행 며칠 째
+                Text("Day \(dday)")
+                    .font(.pt18)
+                    .foregroundStyle(.grayScale9)
+                Text("/")
+                    .font(.pt13)
+                    .foregroundStyle(.grayScale7)
+                // 오늘 날짜
+                Text(Date().uiFormat)
+                    .font(.pt15)
+                    .foregroundStyle(.grayScale5)
+                
+                Spacer()
+                
+                if let color = viewModel.selectedCardColor {
+                    Image(color.assetName)
+                        .resizable()
+                        .frame(width: 35, height: 35)
+                        .shadow(radius: 8)
+                }
+
+            }
+            .padding(.top,37)
+            .padding(.bottom, 24)
+            
+            // 제목 작성칸
+            TextField("제목", text: $viewModel.title)
+                .font(.pt18)
+                .foregroundStyle(.grayScale9)
+                .textFieldStyle(.plain)
+            
+            // 밑줄
+            Rectangle()
+                .fill(.grayScale7)
+                .frame(height: 1)
+            
+            HStack(spacing: 8) {
+                ForEach(viewModel.selectedEmojis) { emoji in
+                    Image(emoji.id)
+                        .resizable()
+                        .frame(width: 35, height: 35)
+                }
+
+                Spacer()
+
+                if viewModel.selectedPhoto != nil {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.purpleD9BCEA50)
+                            .frame(width: 196, height: 27)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.purpleC495E0, lineWidth: 1)
+                            )
+
+                        Text("사진")
+                            .font(.pt13)
+                            .foregroundStyle(.purpleC495E0)
+                    }
+                }
+            }
+
+            .padding(.top, 12)
+
+        }
+    }
+    
+    // MARK: - buttonGroup
+    private var buttonGroup: some View {
+        HStack (spacing: 8) {
+            RecordSelectionButton(title: "카드색상")
+                .onTapGesture {
+                    viewModel.isColorSheetPresented = true
+                }
+
+            RecordSelectionButton(title: "이모지")
+                .onTapGesture {
+                    viewModel.openEmojiSheet()
+                }
+
+
+            PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .images
+                    ) {
+                        RecordSelectionButton(title: "사진")
+                    }
+                    .task(id: selectedItem) {
+                        guard let item = selectedItem else { return }
+                        await viewModel.setPhoto(from: item)
+                    }
+
+        }
+        .padding(.top, 71)
+        .padding(.bottom, 48)
+    }
+    
+    
+    
+    // MARK: - writeContent
+    private var writeContent: some View {
+        
+        ZStack(alignment: .topLeading) {
+            if viewModel.content.isEmpty {
+                Text("내용을 입력하세요")
+                    .font(.pt18)
+                    .foregroundStyle(.grayScale4)
+                    .padding(.top, 8)
+                    .padding(.leading, 4)
+            }
+            
+            TextEditor(text: $viewModel.content)
+                .font(.pt18)
+                .foregroundStyle(.grayScale9)
+                .background(Color.clear)
+                .scrollContentBackground(.hidden)
+                
+        }
+        .frame(minHeight: 200)
+    }
+    
+    
+    // MARK: - nextButton
+    private var nextButton: some View {
+        VStack {
+            Spacer()
+
+            PrimaryButton(
+                title: mode.isEdit ? "완료" : "다음",
+                backgroundColor: viewModel.isValid ? .purpleC495E0 : .purpleD9BCEA50
+            ) {
+                Task {
+                    switch mode {
+
+                    case .create:
+                        goNext = true
+
+                    case .edit(let starId):
+                        try? await viewModel.patchStar(
+                            container: container,
+                            starId: starId
+                        )
+                        dismiss()
+                        onFinish()   // 홈 reload + 오버레이 다시 띄움
+                    }
+                }
+            }
+
+            .disabled(!viewModel.isValid)
+            .padding(.bottom, 54)
+        }
+        .padding(.horizontal, 40)
+    }
+    
+}
+
+private extension RecordFormMode {
+    var isEdit: Bool {
+        if case .edit = self { return true }
+        return false
+    }
+}
+
+#Preview {
+    NavigationStack {
+        WriteRecordView(
+            galaxyId: 1,
+            dday: 3,
+            galaxyName: "이것은 은하 이름",
+            travelPeriodText: "2026.01.01-2026.03.01",
+            onFinish: {
+                print("finish from write")
+            }
+        )
+        .environmentObject(DIContainer.preview)
+    }
+}
+
+

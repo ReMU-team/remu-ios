@@ -1,0 +1,20 @@
+//
+//  GalaxyDetailResponse.swift
+//  ReMU
+//
+//  Created by 김종수 on 2/2/26.
+//
+
+import Foundation
+
+struct GalaxyDetailItem: Codable {
+    let galaxyId: Int
+    let name: String
+    let emojiResourceName: String
+    let dDay: Int
+    let startDate: String // "2026-01-27" 형식
+    let endDate: String
+    let placeName: String
+}
+
+typealias GalaxyDetailResponse = BaseResponse<GalaxyDetailItem>
