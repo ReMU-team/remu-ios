@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import PhotosUI
 import Combine
+import Moya
 
 @MainActor
 final class WriteRecordViewModel: ObservableObject {
@@ -92,6 +93,95 @@ final class WriteRecordViewModel: ObservableObject {
                !selectedEmojis.isEmpty &&
                selectedCardColor != nil
     }
+    
+    // MARK: - 별 로드
+    func loadStarDetail(
+        container: DIContainer,
+        starId: Int
+    ) async throws {
+
+        guard
+            let session = container.userSessionKeychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        let provider = container.apiProviderStore.star()
+
+        let response = try await provider.requestAsync(
+            .fetchStarDetail(accessToken: accessToken, starId: starId)
+        )
+
+        let decoded = try response.map(BaseResponse<StarDetailResponse>.self)
+
+        guard let result = decoded.result else { return }
+
+        self.title = result.title
+        self.content = result.content
+
+        self.selectedEmojis = result.emojis.compactMap { emojiId in
+            EmojiCatalog.all.first { $0.id == emojiId }
+        }
+
+        self.selectedCardColor =
+            CardColor.allCases.first { $0.assetName == result.cardColor }
+    }
+
+
+    // MARK: - 기록 수정 API
+    func patchStar(
+        container: DIContainer,
+        starId: Int
+    ) async throws {
+
+        guard
+            let session = container.userSessionKeychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        let request = PatchStarRequest(
+            title: title,
+            content: content,
+            recordDate: Date().serverFormat,
+            cardColor: selectedCardColor?.assetName ?? "planet_1",
+            emojis: selectedEmojis.map { $0.id },
+            isImageDeleted: false
+        )
+
+        let imageData = selectedPhoto?.jpegData(compressionQuality: 0.8)
+
+        let provider = container.apiProviderStore.star()
+
+        _ = try await provider.requestAsync(
+            .patchStar(
+                accessToken: accessToken,
+                request: request,
+                starId: starId,
+                image: imageData,
+                fileName: imageData == nil ? nil : "image.jpg",
+                mimeType: imageData == nil ? nil : "image/jpeg"
+            )
+        )
+    }
+
+
+    // MARK: - 기록 삭제 API
+    func deleteStar(
+        container: DIContainer,
+        starId: Int
+    ) async throws {
+
+        guard
+            let session = container.userSessionKeychain.loadSession(for: .userSession),
+            let accessToken = session.accessToken
+        else { return }
+
+        let provider = container.apiProviderStore.star()
+
+        _ = try await provider.requestAsync(
+            .deleteStar(accessToken: accessToken, starId: starId)
+        )
+    }
+
 
 }
 

@@ -14,6 +14,7 @@ struct RecordCardFlip: View {
     
     @State var flip = false
     let model: RecordCardModel
+    let onEdit: () -> Void
     
     // MARK: - body
     var body: some View {
@@ -23,7 +24,8 @@ struct RecordCardFlip: View {
                 RecordCardOneView(
                     flip: $flip,
                     content: model.content,
-                    emojis: model.emojis
+                    emojis: model.emojis,
+                    onEdit: onEdit
                 )
                 .rotation3DEffect(.degrees(flip ? 0 : -90), axis: (x: 0, y: 1, z: 0))
                 .animation(flip ? .linear.delay(0.35) : .linear, value: flip)
@@ -36,9 +38,11 @@ struct RecordCardFlip: View {
                     image: model.image,
                     imageUrl: model.imageUrl,
                     dday: model.dday,
-                    dateText: model.dateText
-                )                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
-                    .animation(flip ? .linear : .linear.delay(0.35), value: flip)
+                    dateText: model.dateText,
+                    onEdit: onEdit
+                )
+                .rotation3DEffect(.degrees(flip ? 90 : 0), axis: (x: 0, y: 1, z: 0))
+                .animation(flip ? .linear : .linear.delay(0.35), value: flip)
             }
         }
         .onTapGesture {
@@ -59,7 +63,7 @@ struct RecordCardOneView: View {
     
     let content: String
     let emojis: [String]
-    
+    let onEdit: () -> Void
     // MARK: - 뒷장 body
     var body: some View {
         ZStack {
@@ -95,7 +99,9 @@ struct RecordCardOneView: View {
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
-                    Button(action: {}) {
+                    Button(action: {
+                        onEdit()
+                    }) {
                         Image("pencil.line")
                             .resizable()
                             .frame(width: 14, height: 14)
@@ -141,6 +147,7 @@ struct RecordCardTwoView: View {
     let imageUrl: String?
     let dday: Int
     let dateText: String
+    let onEdit: () -> Void
     
     // MARK: - 앞장 body
     var body: some View {
@@ -172,7 +179,9 @@ struct RecordCardTwoView: View {
                     
                     Spacer()
                     
-                    Button(action: {}) {
+                    Button(action: {
+                        onEdit()
+                    }) {
                         Image("pencil.line")
                             .resizable()
                             .frame(width: 14, height: 14)
@@ -247,6 +256,7 @@ struct RecordCardTwoView: View {
 #Preview {
     RecordCardFlip(
         model: RecordCardModel(
+            starId: 1,
             galaxyName: "6인팟 스위스",
             travelPeriodText: "25/10/29-25/11/10",
             title: "첫 기록",
@@ -256,7 +266,7 @@ struct RecordCardTwoView: View {
             dateText: "10.31",
             content: "오늘은 정말 좋은 하루였다.\n날씨도 좋고 음식도 맛있었다.",
             emojis: ["smile", "heart"]
-        )
+        ), onEdit: { }
     )
     .padding()
 }

@@ -77,9 +77,12 @@ struct CreateRecordCardView: View {
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
             
-            RecordCardFlip(model: recordModel)
-                .padding(.top, 50)
-                .padding(.bottom, 20)
+            RecordCardFlip(
+                model: recordModel,
+                onEdit: { }
+            )
+            .padding(.top, 50)
+            .padding(.bottom, 20)
             
             Text("카드를 클릭하면 뒷면이 보여요!")
                 .font(.pt13)

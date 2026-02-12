@@ -17,7 +17,10 @@ struct RecordCardOverlayView: View {
         VStack {
             ZStack {
                 
-                RecordCardFlip(model: model)
+                RecordCardFlip(
+                    model: model,
+                    onEdit: { }
+                )
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -43,6 +46,7 @@ private struct RecordCardOverlayPreview: View {
             RecordCardOverlayView(
                 selectedTab: $selectedTab,
                 model: RecordCardModel(
+                    starId: 1,
                     galaxyName: "스위스 여행",
                     travelPeriodText: "25/10/29-25/11/10",
                     title: "첫 기록",

@@ -10,6 +10,7 @@ import PhotosUI
 
 /// 카드 UI 전용 모델
 struct RecordCardModel {
+    let starId: Int
     let galaxyName: String
     let travelPeriodText: String
     let title: String
@@ -29,6 +30,7 @@ extension RecordCardModel {
         travelPeriodText: String
     ) -> RecordCardModel {
         RecordCardModel(
+            starId: 0,
             galaxyName: galaxyName,
             travelPeriodText: travelPeriodText,
             title: draft.title,
@@ -48,6 +50,7 @@ extension RecordCardModel {
     ) -> RecordCardModel {
         
         RecordCardModel(
+            starId: dto.starId, 
             galaxyName: galaxy?.title ?? "",
             travelPeriodText: galaxy?.travelPeriodText ?? "",
             title: dto.title,

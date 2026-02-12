@@ -25,6 +25,9 @@ struct HomeGalaxyView: View {
     @State private var selectedCardTab: CardTab = .pledge
     @State private var showEditGalaxy = false
     
+    // 기록 수정 모드
+    @State private var editingStarId: Int?
+    
     //네비게이션
     @State private var showCreateGalaxy = false
     @State private var showWriteRecord = false
@@ -52,7 +55,7 @@ struct HomeGalaxyView: View {
             // 기록 카드 오버레이 띄우기
             if viewModel.isShowingRecordCard,
                let model = viewModel.selectedRecordCard {
-
+                
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                     .onTapGesture {
@@ -60,9 +63,17 @@ struct HomeGalaxyView: View {
                             viewModel.isShowingRecordCard = false
                         }
                     }
+                
+                RecordCardFlip(
+                    model: model,
+                    onEdit: {
+                        editingStarId = model.starId
+                        showWriteRecord = true
+                    }
 
-                RecordCardFlip(model: model)
-                    .zIndex(10)
+                )
+                .zIndex(10)
+                
             }
 
             // 다짐/회고 오버레이 띄우기
@@ -116,8 +127,6 @@ struct HomeGalaxyView: View {
                 }
             }
         }
-
-
         .onChange(of: appState.currentGalaxyId) { _, newValue in
             guard let galaxyId = newValue else {
                 viewModel.clear()
@@ -139,9 +148,6 @@ struct HomeGalaxyView: View {
                 }
             )
         }
-
-
-
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
         }
@@ -172,7 +178,6 @@ struct HomeGalaxyView: View {
                 }
             }
         }
-
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
                 if let galaxy = viewModel.galaxyData {
@@ -181,14 +186,17 @@ struct HomeGalaxyView: View {
                         dday: galaxy.dDay,
                         galaxyName: galaxy.title,
                         travelPeriodText: galaxy.travelPeriodText,
+                        mode: editingStarId != nil
+                            ? .edit(starId: editingStarId!)
+                            : .create,
                         onFinish: {
+                            editingStarId = nil
                             showWriteRecord = false
                             Task {
                                 await viewModel.loadHome(galaxyId: galaxy.serverId)
                             }
                         }
                     )
-
                 }
             }
         }
@@ -390,9 +398,12 @@ struct HomeGalaxyView: View {
         }
     }
     
-    // MARK: - bottomAddButton
+    // MARK: - bottomAddButton 기록 추가 버튼
     private var bottomAddButton: some View {
-        Button (action: {showWriteRecord = true}) {
+        Button (action: {
+            editingStarId = nil
+            showWriteRecord = true
+        }) {
             ZStack {
                 Circle()
                     .foregroundStyle(Color.white.opacity(0.3))
