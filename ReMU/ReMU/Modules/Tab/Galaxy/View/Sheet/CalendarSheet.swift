@@ -82,6 +82,7 @@ struct CalendarSheet: View {
             // 완료버튼
             PrimaryButton(
                 title: "완료",
+                backgroundColor: .purpleC495E0,
                 isDisabled: startDate == nil || endDate == nil
             ) {
                 dismiss()
@@ -216,10 +217,10 @@ struct CalendarDayCell: View {
 
     private var background: Color {
         if isSelected {
-            return .blue505083
+            return .purpleC495E0
         }
         if isInRange {
-            return Color.blue333368.opacity(0.2)
+            return .purpleD9BCEA50
         }
         return .clear
     }
