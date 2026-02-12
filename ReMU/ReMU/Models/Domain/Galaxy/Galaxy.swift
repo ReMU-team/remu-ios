@@ -17,7 +17,7 @@ struct Galaxy: Identifiable, Hashable {
     let endDate: Date // 여행 종료일
     let totalDay: Int // 전체 여행 일 수
     let galaxyIcon: String // 은하 이미지
-    
+    let dDay: Int 
     let stars: [Star] // 은하의 별들
 }
 
@@ -32,7 +32,7 @@ extension Galaxy {
     
     // 여행 기간 UI
     var travelPeriodText: String {
-        "\(startDate.uiFormat)-\(endDate.uiFormat)"
+        "\(startDate.cardRangeFormat)-\(endDate.cardRangeFormat)"
     }
 }
 

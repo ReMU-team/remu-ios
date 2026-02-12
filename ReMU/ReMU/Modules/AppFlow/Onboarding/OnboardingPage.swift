@@ -15,23 +15,23 @@ struct OnboardingPage {
 
 let onboardingPages: [OnboardingPage] = [
     OnboardingPage(
-        imageName: "logo_primary",
-        title: "나만의 은하",
-        description: "나만의 여행이 은하처럼 펼쳐져요"
+        imageName: "onboarding_1",
+        title: "여행, 그냥 지나치기엔 아쉬울 때",
+        description: "소중했던 작은 순간들조차 놓치고 싶지 않을 때"
     ),
     OnboardingPage(
-        imageName: "logo_text",
-        title: "레뮤에 대한 설명",
-        description: "기록하고, 회고하고"
+        imageName: "onboarding_2",
+        title: "사진만으로는 부족할 때",
+        description: "여행 중, 사진과 감정을 선해 별을 만들고 기록해요"
     ),
     OnboardingPage(
-        imageName: "kakao_icon",
-        title: "레뮤에 대한 설명",
-        description: "여행을 이어가는 나의 다짐"
+        imageName: "onboarding_3",
+        title: "여행의 처음부터 끝까지",
+        description: "여행 흐름 기록하기\n다짐 카드로 시작하고 회고 카드로 마무리해요"
     ),
     OnboardingPage(
-        imageName: "google_icon",
-        title: "레뮤에 대한 설명",
-        description: "여행의 시작, 당신만의 은하로 떠나요"
+        imageName: "onboarding_4",
+        title: "지금 남기지 않으면, 이 순간은 사라져요",
+        description: "당신만의 여정을 시작해보세요"
     )
 ]

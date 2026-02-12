@@ -228,6 +228,7 @@ struct WritePledgeView: View {
         endDate: Date().addingTimeInterval(60*60*24*3),
         totalDay: 4,
         galaxyIcon: "galaxy_1",
+        dDay: 1,
         stars: []
     )
 

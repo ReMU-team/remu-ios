@@ -44,10 +44,15 @@ final class GalaxyCheckViewModel: ObservableObject {
             )
 
             let dto = try JSONDecoder().decode(GalaxyListResponse.self, from: response.data)
-            self.galaxies = dto.result?.galaxies ?? []
+
+            let newList = dto.result?.galaxies ?? []
+
+            self.galaxies.removeAll()
+            self.galaxies = newList
 
         } catch {
             print("❌ 은하 리스트 조회 실패:", error)
         }
     }
+
 }

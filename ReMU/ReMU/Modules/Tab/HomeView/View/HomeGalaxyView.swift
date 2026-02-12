@@ -23,7 +23,10 @@ struct HomeGalaxyView: View {
     // 카드 오버레이
     @State private var showCardOverlay = false
     @State private var selectedCardTab: CardTab = .pledge
+    @State private var showEditGalaxy = false
     
+    // 기록 수정 모드
+    @State private var editingStarId: Int?
     
     //네비게이션
     @State private var showCreateGalaxy = false
@@ -52,7 +55,7 @@ struct HomeGalaxyView: View {
             // 기록 카드 오버레이 띄우기
             if viewModel.isShowingRecordCard,
                let model = viewModel.selectedRecordCard {
-
+                
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                     .onTapGesture {
@@ -60,9 +63,17 @@ struct HomeGalaxyView: View {
                             viewModel.isShowingRecordCard = false
                         }
                     }
+                
+                RecordCardFlip(
+                    model: model,
+                    onEdit: {
+                        editingStarId = model.starId
+                        showWriteRecord = true
+                    }
 
-                RecordCardFlip(model: model)
-                    .zIndex(10)
+                )
+                .zIndex(10)
+                
             }
 
             // 다짐/회고 오버레이 띄우기
@@ -101,15 +112,21 @@ struct HomeGalaxyView: View {
             }
         }
         .onAppear {
-            if viewModel.galaxyData == nil {
-                Task {
-                    if let lastId = LastGalaxyStore.load() {
-                        appState.currentGalaxyId = lastId
+            Task {
+                if let lastId = LastGalaxyStore.load() {
+                    appState.currentGalaxyId = lastId
+                    await viewModel.loadHome(galaxyId: lastId)
+                } else {
+                    let list = await viewModel.fetchGalaxyList()
+
+                    if let first = list.first {
+                        appState.currentGalaxyId = first.galaxyId
+                        LastGalaxyStore.save(first.galaxyId)
+                        await viewModel.loadHome(galaxyId: first.galaxyId)
                     }
                 }
             }
         }
-
         .onChange(of: appState.currentGalaxyId) { _, newValue in
             guard let galaxyId = newValue else {
                 viewModel.clear()
@@ -124,22 +141,13 @@ struct HomeGalaxyView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 mode: .create,
-                onFinish: { name, destination, startDate, endDate, icon in
-
-                    Task {
-                        await viewModel.fetchGalaxyList()
-
-                        if let newest = viewModel.galaxyData?.serverId {
-                            appState.currentGalaxyId = newest
-                            LastGalaxyStore.save(newest)
-                        }
-                    }
+                onFinish: { createdGalaxyId in
+                    appState.currentGalaxyId = createdGalaxyId
+                    LastGalaxyStore.save(createdGalaxyId)
                     showCreateGalaxy = false
                 }
             )
         }
-
-
         .fullScreenCover(isPresented: $showTimeLine) {
             TimeLineView()
         }
@@ -170,14 +178,19 @@ struct HomeGalaxyView: View {
                 }
             }
         }
-
         .fullScreenCover(isPresented: $showWriteRecord) {
             NavigationStack {
                 if let galaxy = viewModel.galaxyData {
                     WriteRecordView(
                         galaxyId: galaxy.serverId,
-                        dday: galaxy.totalDay,
+                        dday: galaxy.dDay,
+                        galaxyName: galaxy.title,
+                        travelPeriodText: galaxy.travelPeriodText,
+                        mode: editingStarId != nil
+                            ? .edit(starId: editingStarId!)
+                            : .create,
                         onFinish: {
+                            editingStarId = nil
                             showWriteRecord = false
                             Task {
                                 await viewModel.loadHome(galaxyId: galaxy.serverId)
@@ -259,11 +272,7 @@ struct HomeGalaxyView: View {
                             onSelectStar: viewModel.onSelectStar
                         )
                         .frame(width: geometry.size.width, height: geometry.size.height)
-                        
                     }
-                    
-                    
-                    
                 }
                 .contentShape(Rectangle())
                 .gesture(MagnificationGesture()
@@ -358,7 +367,7 @@ struct HomeGalaxyView: View {
             .foregroundStyle(Color.white)
             
             if let data = viewModel.galaxyData {
-                Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
+                Text("Day \(data.dDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
                     .foregroundStyle(Color.white)
             }
@@ -389,9 +398,12 @@ struct HomeGalaxyView: View {
         }
     }
     
-    // MARK: - bottomAddButton
+    // MARK: - bottomAddButton 기록 추가 버튼
     private var bottomAddButton: some View {
-        Button (action: {showWriteRecord = true}) {
+        Button (action: {
+            editingStarId = nil
+            showWriteRecord = true
+        }) {
             ZStack {
                 Circle()
                     .foregroundStyle(Color.white.opacity(0.3))

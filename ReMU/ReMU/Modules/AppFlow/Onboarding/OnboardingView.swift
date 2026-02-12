@@ -17,8 +17,11 @@ struct OnboardingView: View {
             navigationBar
             Spacer()
             contents
-            buttons
+                .padding(.top, 80)
             Spacer()
+            buttons
+                .padding(.bottom, 50)
+            
             
         }
         
@@ -48,21 +51,28 @@ struct OnboardingView: View {
     private var contents: some View {
         let page = onboardingPages[currentIndex]
         return VStack {
-            Text(page.title)
-                .font(.pt20)
-                .foregroundStyle(.grayScale9)
-                .padding(.bottom, 12)
-            
-            Text(page.description)
-                .font(.pt15)
-                .padding(.bottom, 48)
-                .foregroundStyle(.grayScale5)
-            
+            VStack (spacing: 12) {
+                Text(page.title)
+                    .font(.pt20)
+                    .foregroundStyle(.grayScale9)
+                
+                Text(page.description)
+                    .font(.pt15)
+                    .foregroundStyle(.grayScale5)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
             Image(page.imageName)
                 .resizable()
                 .frame(width: 313, height: 304)
-                .padding(.bottom, 64)
+            Spacer()
             
+        }
+    }
+    
+    // MARK: - buttons
+    private var buttons: some View {
+        VStack {
             // page indicator
             HStack(spacing: 12) {
                 ForEach(0..<onboardingPages.count, id: \.self) { index in
@@ -72,11 +82,6 @@ struct OnboardingView: View {
                 }
             }
             .padding(.bottom, 24)
-        }
-    }
-    // MARK: - buttons
-    private var buttons: some View {
-        VStack {
             PrimaryButton(title: "다음 단계", backgroundColor: .purpleC495E0) {
                 if currentIndex < onboardingPages.count - 1 {
                     currentIndex += 1
@@ -95,8 +100,17 @@ struct OnboardingView: View {
             
         }
     }
+        
     
 }
+
+#Preview {
+    OnboardingView(
+        onExit: { },
+        onFinish: { }
+    )
+}
+
 
 
 

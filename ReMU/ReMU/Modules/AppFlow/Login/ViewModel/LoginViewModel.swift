@@ -31,9 +31,10 @@ final class LoginViewModel: ObservableObject {
         
     }
     
-    // MARK: - Func
+    // MARK: - Kakao Login
     @MainActor
     func kakaoLogin(onSuccess: @escaping (Bool) -> Void) async {
+
         kakaoLoginManager.kakaoLogin { [weak self] tokens in
             guard
                 let self = self,
@@ -46,7 +47,9 @@ final class LoginViewModel: ObservableObject {
             self.loginProvider.request(
                 .socialLogin(provider: "kakao", token: kakaoAccessToken)
             ) { result in
+
                 switch result {
+
                 case .success(let response):
                     guard
                         let tokenResponse = try? JSONDecoder().decode(
@@ -57,19 +60,23 @@ final class LoginViewModel: ObservableObject {
                         print("❌ 토큰 응답 디코딩 실패")
                         return
                     }
-                    
+
                     let session = UserInfo(
                         accessToken: tokenResponse.result.accessToken,
                         refreshToken: tokenResponse.result.refreshToken
                     )
-                    
+
                     let saved = self.keychain.saveSession(
                         session,
                         for: .userSession
                     )
-                    
+
                     print(saved ? "✅ 세션 저장 성공" : "❌ 세션 저장 실패")
-                    onSuccess(tokenResponse.result.isNewUser ?? false)
+
+                    // ✅ 반드시 메인스레드에서 호출
+                    DispatchQueue.main.async {
+                        onSuccess(tokenResponse.result.isNewUser ?? false)
+                    }
 
                 case .failure(let error):
                     print("❌ 서버 로그인 실패", error)
@@ -77,5 +84,6 @@ final class LoginViewModel: ObservableObject {
             }
         }
     }
+
 
 }

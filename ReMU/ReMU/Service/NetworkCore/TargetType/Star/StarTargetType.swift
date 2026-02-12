@@ -19,8 +19,14 @@ enum StarTargetType {
     )
     case fetchStarsList(accessToken: String, galaxyId: Int)
     case fetchStarDetail(accessToken: String, starId: Int)
-    // TODO: MultiPart-Form 형태로 이미지 수정 필요함
-    case patchStar(accessToken: String, request: PatchStarRequest ,starId: Int, image: Data, fileName: String, mimeType: String)
+    case patchStar(
+        accessToken: String,
+        request: PatchStarRequest,
+        starId: Int,
+        image: Data?,
+        fileName: String?,
+        mimeType: String?
+    )
     case deleteStar(accessToken: String, starId: Int)
 }
 
@@ -101,12 +107,19 @@ extension StarTargetType: APITargetType {
                       fileName: "request.json",
                       mimeType: "application/json")
             ]
-            parts.append(
-                .init(provider: .data(image),
-                      name: MultipartField.cardImage,
-                      fileName: fileName,
-                      mimeType: mimeType)
-            )
+            if let image,
+               let fileName,
+               let mimeType {
+                parts.append(
+                    .init(
+                        provider: .data(image),
+                        name: "image",
+                        fileName: fileName,
+                        mimeType: mimeType
+                    )
+                )
+            }
+            
             return .uploadMultipart(parts)
             
         case .fetchStarsList, .fetchStarDetail, .deleteStar:

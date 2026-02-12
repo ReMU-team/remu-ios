@@ -79,6 +79,7 @@ final class CreateGalaxyViewModel: ObservableObject {
                 endDate: endDate,
                 totalDay: Calendar.current.dateComponents([.day], from: startDate, to: endDate).day! + 1,
                 galaxyIcon: icon,
+                dDay: 0,
                 stars: []
             )
             
@@ -141,6 +142,9 @@ final class CreateGalaxyViewModel: ObservableObject {
                 .patchGalaxy(accessToken: accessToken, galaxyId: galaxyId, request: request)
             )
             print("✅ 수정 성공")
+            
+            await fetchGalaxyDetail()
+            
         } catch {
             print("❌ 수정 실패:", error)
         }

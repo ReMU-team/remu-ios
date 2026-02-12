@@ -8,27 +8,54 @@
 import SwiftUI
 import PhotosUI
 
+/// 작성, 수정 모드
+enum RecordFormMode {
+    case create
+    case edit(starId: Int)
+}
+
+/// 기록 카드 작성, 수정을 담당하는 뷰
 struct WriteRecordView: View {
     
     let galaxyId: Int
     let dday: Int
+    let galaxyName: String
+    let travelPeriodText: String
     let onFinish: () -> Void
     
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var container: DIContainer
     
-    // 뷰모델
+    /// 뷰모델
     @StateObject private var viewModel = WriteRecordViewModel()
     
-    // 다음 버튼
+    /// 다음 버튼
     @State private var goNext = false
     @State private var selectedItem: PhotosPickerItem?
 
+    let mode: RecordFormMode
     
+    init(
+        galaxyId: Int,
+        dday: Int,
+        galaxyName: String,
+        travelPeriodText: String,
+        mode: RecordFormMode = .create,
+        onFinish: @escaping () -> Void
+    ) {
+        self.galaxyId = galaxyId
+        self.dday = dday
+        self.galaxyName = galaxyName
+        self.travelPeriodText = travelPeriodText
+        self.mode = mode
+        self.onFinish = onFinish
+    }
+    
+    // MARK: - body
     var body: some View {
         VStack {
             navigationBar
-            
+            deleteButton
             Group {
                 writeTitle
                 buttonGroup
@@ -39,11 +66,24 @@ struct WriteRecordView: View {
             
             nextButton
         }
+        .onAppear {
+            if case .edit(let starId) = mode {
+                Task {
+                    try? await viewModel.loadStarDetail(
+                        container: container,
+                        starId: starId
+                    )
+                }
+            }
+
+        }
         .navigationDestination(isPresented: $goNext) {
             CreateRecordCardView(
                 draft: viewModel.makeDraft(),
                 galaxyId: galaxyId,
                 dday: dday,
+                galaxyName: galaxyName,
+                travelPeriodText: travelPeriodText,
                 onFinish: onFinish
             )
             .environmentObject(container)
@@ -66,23 +106,61 @@ struct WriteRecordView: View {
                 onClose: { viewModel.isColorSheetPresented = false }
             )
         }
-
-        
     }
+    
     // MARK: - navigationBar
     private var navigationBar: some View {
         CustomNavigationBar(
-                        title: "기록 작성",
-                        onBack: {
-                            dismiss()
-                        }
-                    )
+            title: {
+                /// 타이틀 분기
+                switch mode {
+                case .create: return "기록 작성"
+                case .edit: return "기록 수정"
+                }
+            }(),
+            onBack: {
+                dismiss()
+            }
+        )
     }
+
+    // MARK: - deleteButton
+    private var deleteButton: some View {
+        HStack {
+            Spacer()
+            if case .edit(let starId) = mode {
+                Button (role: .destructive) {
+                    Task {
+                        try? await viewModel.deleteStar(
+                            container: container,
+                            starId: starId
+                        )
+                        
+                        dismiss()
+                        onFinish()   // 홈 reload (오버레이 안 띄우는 건 Home에서 처리)
+                    }
+                } label: {
+                    Text("별 삭제")
+                        .font(.pt12)
+                        .foregroundStyle(.purpleC495E0)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .frame(height: 24, alignment: .center)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 26)
+                                .stroke(.purpleC495E0)
+                        )
+                }
+                .padding(.horizontal, 24)
+            }
+        }
+
+    }
+    
     
     // MARK: - writeTitle
     private var writeTitle: some View {
         VStack (alignment: .leading) {
-            
             // 날짜 표시
             HStack (spacing: 4) {
                 // 오늘 여행 며칠 째
@@ -111,7 +189,7 @@ struct WriteRecordView: View {
             .padding(.bottom, 24)
             
             // 제목 작성칸
-            TextField("제목", text: $viewModel.title) // TODO: 뷰모델로 변경 필요
+            TextField("제목", text: $viewModel.title)
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
                 .textFieldStyle(.plain)
@@ -211,18 +289,40 @@ struct WriteRecordView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
+
             PrimaryButton(
-                title: "다음",
+                title: mode.isEdit ? "완료" : "다음",
                 backgroundColor: viewModel.isValid ? .purpleC495E0 : .purpleD9BCEA50
             ) {
-                goNext = true
+                Task {
+                    switch mode {
+
+                    case .create:
+                        goNext = true
+
+                    case .edit(let starId):
+                        try? await viewModel.patchStar(
+                            container: container,
+                            starId: starId
+                        )
+                        dismiss()
+                        onFinish()   // 홈 reload + 오버레이 다시 띄움
+                    }
+                }
             }
+
             .disabled(!viewModel.isValid)
             .padding(.bottom, 54)
-            
         }
         .padding(.horizontal, 40)
-        
+    }
+    
+}
+
+private extension RecordFormMode {
+    var isEdit: Bool {
+        if case .edit = self { return true }
+        return false
     }
 }
 
@@ -231,6 +331,8 @@ struct WriteRecordView: View {
         WriteRecordView(
             galaxyId: 1,
             dday: 3,
+            galaxyName: "이것은 은하 이름",
+            travelPeriodText: "2026.01.01-2026.03.01",
             onFinish: {
                 print("finish from write")
             }
