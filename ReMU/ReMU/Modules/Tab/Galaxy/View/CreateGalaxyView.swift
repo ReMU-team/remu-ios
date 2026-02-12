@@ -23,23 +23,14 @@ struct CreateGalaxyView: View {
 
     let mode: GalaxyFormMode
 
-    // ✅ 파라미터 5개 받도록 변경
-    let onFinish: (_ name: String,
-                   _ destination: String,
-                   _ startDate: Date,
-                   _ endDate: Date,
-                   _ icon: String) -> Void
+    let onFinish: (_ createdGalaxyId: Int) -> Void
 
     let onDelete: (() -> Void)?
 
     init(
         viewModel: CreateGalaxyViewModel,
         mode: GalaxyFormMode,
-        onFinish: @escaping (_ name: String,
-                             _ destination: String,
-                             _ startDate: Date,
-                             _ endDate: Date,
-                             _ icon: String) -> Void,
+        onFinish: @escaping (_ createdGalaxyId: Int) -> Void,
         onDelete: (() -> Void)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -51,6 +42,7 @@ struct CreateGalaxyView: View {
             viewModel.editingGalaxyId = id
         }
     }
+
 
     var body: some View {
         NavigationStack {
@@ -72,14 +64,8 @@ struct CreateGalaxyView: View {
                     galaxy: galaxy,
                     container: container,
                     onFinish: {
-                        // create 모드용 전달
-                        onFinish(
-                            galaxy.title,
-                            galaxy.destination,
-                            galaxy.startDate,
-                            galaxy.endDate,
-                            galaxy.galaxyIcon
-                        )
+                        onFinish(galaxy.serverId)
+                        dismiss()
                     }
                 )
             }
@@ -211,6 +197,7 @@ struct CreateGalaxyView: View {
 
                     case .create:
                         await viewModel.createGalaxy()
+
                         if let galaxy = viewModel.createdGalaxy {
                             createdGalaxy = galaxy
                         }
@@ -219,20 +206,7 @@ struct CreateGalaxyView: View {
                         viewModel.editingGalaxyId = galaxyId
                         await viewModel.patchGalaxy()
 
-                        guard
-                            let destination = viewModel.destination,
-                            let startDate = viewModel.startDate,
-                            let endDate = viewModel.endDate,
-                            let icon = viewModel.selectedGalaxyImageName
-                        else { return }
-
-                        onFinish(
-                            viewModel.galaxyName,
-                            destination,
-                            startDate,
-                            endDate,
-                            icon
-                        )
+                        onFinish(galaxyId)
                     }
                 }
             }
@@ -267,7 +241,7 @@ struct GalaxySelectableItem: View {
     CreateGalaxyView(
         viewModel: CreateGalaxyViewModel(container: container),
         mode: .create,
-        onFinish: { _, _, _, _, _ in }
+        onFinish: { _ in }
     )
     .environmentObject(appState)
     .environmentObject(container)

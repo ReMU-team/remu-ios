@@ -62,7 +62,7 @@ struct GalaxyCheckView: View {
                     Spacer()
                 }
                 .padding(22)
-              
+                
                 Text("나의 우주")
                     .font(.pt24)
                     .foregroundColor(.white)
@@ -156,14 +156,17 @@ struct GalaxyCheckView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 mode: .create,
-                onFinish: { _, _, _, _, _ in
-                    Task { await viewModel.fetchGalaxyList() }
+                onFinish: { createdGalaxyId in
+                    appState.currentGalaxyId = createdGalaxyId
+                    LastGalaxyStore.save(createdGalaxyId)
                     showCreateGalaxy = false
                 }
+                
             )
         }
         
-        // 수정 화면 (item 방식)
+        
+        // 수정 화면
         .fullScreenCover(item: $selectedGalaxy) { galaxy in
             CreateGalaxyView(
                 viewModel: {
@@ -172,23 +175,21 @@ struct GalaxyCheckView: View {
                     return vm
                 }(),
                 mode: .edit(galaxyId: galaxy.galaxyId),
-                onFinish: { name, destination, startDate, endDate, icon in
-
-                    Task {
-                        await viewModel.fetchGalaxyList()
-                    }
-
-                    if galaxy.galaxyId == appState.currentGalaxyId {
-                        homeViewModel.updateGalaxyLocally(
-                            name: name,
-                            destination: destination,
-                            startDate: startDate,
-                            endDate: endDate,
-                            icon: icon
-                        )
-                    }
-
+                onFinish: { _ in
+                    
+                    // 먼저 화면 닫기
                     selectedGalaxy = nil
+                    
+                    // 화면 완전히 닫힌 후 리스트 재조회
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        Task {
+                            await viewModel.fetchGalaxyList()
+                            
+                            if galaxy.galaxyId == appState.currentGalaxyId {
+                                await homeViewModel.loadHome(galaxyId: galaxy.galaxyId)
+                            }
+                        }
+                    }
                 },
                 onDelete: {
                     Task {

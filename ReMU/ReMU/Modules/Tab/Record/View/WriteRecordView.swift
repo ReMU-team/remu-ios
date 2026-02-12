@@ -12,6 +12,8 @@ struct WriteRecordView: View {
     
     let galaxyId: Int
     let dday: Int
+    let galaxyName: String
+    let travelPeriodText: String
     let onFinish: () -> Void
     
     @Environment(\.dismiss) private var dismiss
@@ -44,6 +46,8 @@ struct WriteRecordView: View {
                 draft: viewModel.makeDraft(),
                 galaxyId: galaxyId,
                 dday: dday,
+                galaxyName: galaxyName,
+                travelPeriodText: travelPeriodText,
                 onFinish: onFinish
             )
             .environmentObject(container)
@@ -66,8 +70,6 @@ struct WriteRecordView: View {
                 onClose: { viewModel.isColorSheetPresented = false }
             )
         }
-
-        
     }
     // MARK: - navigationBar
     private var navigationBar: some View {
@@ -111,7 +113,7 @@ struct WriteRecordView: View {
             .padding(.bottom, 24)
             
             // 제목 작성칸
-            TextField("제목", text: $viewModel.title) // TODO: 뷰모델로 변경 필요
+            TextField("제목", text: $viewModel.title)
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
                 .textFieldStyle(.plain)
@@ -231,6 +233,8 @@ struct WriteRecordView: View {
         WriteRecordView(
             galaxyId: 1,
             dday: 3,
+            galaxyName: "이것은 은하 이름",
+            travelPeriodText: "2026.01.01-2026.03.01",
             onFinish: {
                 print("finish from write")
             }

@@ -16,6 +16,14 @@ extension Date {
         return formatter.string(from: self)
     }
     
+    /// 카드 상단 여행기간용 (yy/MM/dd)
+        var cardRangeFormat: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yy/MM/dd"
+            formatter.locale = Locale(identifier: "ko_KR")
+            return formatter.string(from: self)
+        }
+    
     /// 날짜 선택시 시간 제외 날짜만 고려
     var dayOnly: Date {
         Calendar.current.startOfDay(for: self)

@@ -24,14 +24,16 @@ struct RecordCardModel {
 extension RecordCardModel {
     static func from(
         draft: RecordDraft,
-        dday: Int
+        dday: Int,
+        galaxyName: String,
+        travelPeriodText: String
     ) -> RecordCardModel {
         RecordCardModel(
-            galaxyName: "임시 은하",          // TODO: 실제 값으로 교체
-            travelPeriodText: "",
+            galaxyName: galaxyName,
+            travelPeriodText: travelPeriodText,
             title: draft.title,
             image: draft.image,
-            imageUrl: nil, 
+            imageUrl: nil,
             dday: dday,
             dateText: Date().uiFormat,
             content: draft.content,
@@ -41,21 +43,21 @@ extension RecordCardModel {
     
     // API DTO -> 카드 UI 모델 변환
     static func from(
-            dto: StarDetailResponse,
-            galaxy: Galaxy?
-        ) -> RecordCardModel {
-
-            RecordCardModel(
-                galaxyName: galaxy?.title ?? "",
-                travelPeriodText: "", // 필요하면 start~end 가공
-                title: dto.title,
-                image: nil, // imageUrl → UIImage는 다음 단계
-                imageUrl: dto.imageUrl,
-                dday: dto.dday,
-                dateText: dto.recordDate,
-                content: dto.content,
-                emojis: dto.emojis
-            )
-        }
+        dto: StarDetailResponse,
+        galaxy: Galaxy?
+    ) -> RecordCardModel {
+        
+        RecordCardModel(
+            galaxyName: galaxy?.title ?? "",
+            travelPeriodText: galaxy?.travelPeriodText ?? "",
+            title: dto.title,
+            image: nil, // imageUrl -> UIImage는 다음 단계
+            imageUrl: dto.imageUrl,
+            dday: dto.dday,
+            dateText: dto.recordDate,
+            content: dto.content,
+            emojis: dto.emojis
+        )
+    }
 }
 

@@ -17,6 +17,8 @@ struct CreateRecordCardView: View {
     let draft: RecordDraft
     let galaxyId: Int
     let dday: Int
+    let galaxyName: String
+    let travelPeriodText: String
     let onFinish: () -> Void
 
     @StateObject private var viewModel: CreateRecordCardViewModel
@@ -25,13 +27,17 @@ struct CreateRecordCardView: View {
         draft: RecordDraft,
         galaxyId: Int,
         dday: Int,
+        galaxyName: String,
+        travelPeriodText: String,
         onFinish: @escaping () -> Void
     ) {
         self.draft = draft
         self.galaxyId = galaxyId
         self.dday = dday
+        self.galaxyName = galaxyName
+        self.travelPeriodText = travelPeriodText
         self.onFinish = onFinish
-
+        
         _viewModel = StateObject(
             wrappedValue: CreateRecordCardViewModel.placeholder()
         )
@@ -61,18 +67,20 @@ struct CreateRecordCardView: View {
     private var recordCardView: some View {
         let recordModel = RecordCardModel.from(
             draft: draft,
-            dday: dday
+            dday: dday,
+            galaxyName: galaxyName,
+            travelPeriodText: travelPeriodText
         )
-
+        
         return VStack {
             Text("기록 카드가 생성되었어요!")
                 .font(.pt18)
                 .foregroundStyle(.grayScale9)
-
+            
             RecordCardFlip(model: recordModel)
                 .padding(.top, 50)
                 .padding(.bottom, 20)
-
+            
             Text("카드를 클릭하면 뒷면이 보여요!")
                 .font(.pt13)
                 .foregroundStyle(.grayScale5)

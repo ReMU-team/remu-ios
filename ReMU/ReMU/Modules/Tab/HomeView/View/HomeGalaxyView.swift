@@ -23,7 +23,7 @@ struct HomeGalaxyView: View {
     // 카드 오버레이
     @State private var showCardOverlay = false
     @State private var selectedCardTab: CardTab = .pledge
-    
+    @State private var showEditGalaxy = false
     
     //네비게이션
     @State private var showCreateGalaxy = false
@@ -101,14 +101,22 @@ struct HomeGalaxyView: View {
             }
         }
         .onAppear {
-            if viewModel.galaxyData == nil {
-                Task {
-                    if let lastId = LastGalaxyStore.load() {
-                        appState.currentGalaxyId = lastId
+            Task {
+                if let lastId = LastGalaxyStore.load() {
+                    appState.currentGalaxyId = lastId
+                    await viewModel.loadHome(galaxyId: lastId)
+                } else {
+                    let list = await viewModel.fetchGalaxyList()
+
+                    if let first = list.first {
+                        appState.currentGalaxyId = first.galaxyId
+                        LastGalaxyStore.save(first.galaxyId)
+                        await viewModel.loadHome(galaxyId: first.galaxyId)
                     }
                 }
             }
         }
+
 
         .onChange(of: appState.currentGalaxyId) { _, newValue in
             guard let galaxyId = newValue else {
@@ -124,20 +132,14 @@ struct HomeGalaxyView: View {
             CreateGalaxyView(
                 viewModel: CreateGalaxyViewModel(container: container),
                 mode: .create,
-                onFinish: { name, destination, startDate, endDate, icon in
-
-                    Task {
-                        await viewModel.fetchGalaxyList()
-
-                        if let newest = viewModel.galaxyData?.serverId {
-                            appState.currentGalaxyId = newest
-                            LastGalaxyStore.save(newest)
-                        }
-                    }
+                onFinish: { createdGalaxyId in
+                    appState.currentGalaxyId = createdGalaxyId
+                    LastGalaxyStore.save(createdGalaxyId)
                     showCreateGalaxy = false
                 }
             )
         }
+
 
 
         .fullScreenCover(isPresented: $showTimeLine) {
@@ -176,7 +178,9 @@ struct HomeGalaxyView: View {
                 if let galaxy = viewModel.galaxyData {
                     WriteRecordView(
                         galaxyId: galaxy.serverId,
-                        dday: galaxy.totalDay,
+                        dday: galaxy.dDay,
+                        galaxyName: galaxy.title,
+                        travelPeriodText: galaxy.travelPeriodText,
                         onFinish: {
                             showWriteRecord = false
                             Task {
@@ -184,6 +188,7 @@ struct HomeGalaxyView: View {
                             }
                         }
                     )
+
                 }
             }
         }
@@ -259,11 +264,7 @@ struct HomeGalaxyView: View {
                             onSelectStar: viewModel.onSelectStar
                         )
                         .frame(width: geometry.size.width, height: geometry.size.height)
-                        
                     }
-                    
-                    
-                    
                 }
                 .contentShape(Rectangle())
                 .gesture(MagnificationGesture()
@@ -358,7 +359,7 @@ struct HomeGalaxyView: View {
             .foregroundStyle(Color.white)
             
             if let data = viewModel.galaxyData {
-                Text("Day \(data.totalDay) | \(data.month)월 \(data.day)일")
+                Text("Day \(data.dDay) | \(data.month)월 \(data.day)일")
                     .font(.system(size: 16)) // .pt16 대신 예시
                     .foregroundStyle(Color.white)
             }

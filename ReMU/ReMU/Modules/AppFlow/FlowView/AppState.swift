@@ -22,10 +22,22 @@ final class AppState: ObservableObject {
     @MainActor
     func checkLoginStatus(keychain: UserSessionKeychainService) async {
 
+        let hasSession = keychain.loadSession(for: .userSession) != nil
+
         try? await Task.sleep(nanoseconds: 2_500_000_000)
 
-        let session = keychain.loadSession(for: .userSession)
-
-        self.route = session == nil ? .auth : .main
+        await MainActor.run {
+            if hasSession {
+                self.enterMain()
+            } else {
+                self.route = .auth
+            }
+        }
     }
+
+    
+    func enterMain() {
+        route = .main
+    }
+
 }

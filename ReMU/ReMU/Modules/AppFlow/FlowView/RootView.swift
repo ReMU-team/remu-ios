@@ -26,7 +26,7 @@ struct RootView: View {
         case .auth:
             AuthFlowView(
                 onAuthFinished: {
-                    appState.route = .main
+                    appState.enterMain()
                 }
             )
             

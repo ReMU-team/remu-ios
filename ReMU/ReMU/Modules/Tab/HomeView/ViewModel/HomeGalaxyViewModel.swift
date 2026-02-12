@@ -130,8 +130,10 @@ class HomeViewModel: ObservableObject {
                 destination: result.placeName,
                 startDate: startDate,
                 endDate: endDate,
-                totalDay: result.dDay,
+                totalDay: Calendar.current
+                    .dateComponents([.day], from: startDate, to: endDate).day! + 1,
                 galaxyIcon: result.emojiResourceName,
+                dDay: result.dDay,
                 stars: []
             )
 
@@ -139,8 +141,9 @@ class HomeViewModel: ObservableObject {
                 galaxyData = newGalaxy
             } else {
                 if galaxyData?.title != newGalaxy.title ||
-                   galaxyData?.destination != newGalaxy.destination ||
-                   galaxyData?.galaxyIcon != newGalaxy.galaxyIcon {
+                    galaxyData?.destination != newGalaxy.destination ||
+                    galaxyData?.galaxyIcon != newGalaxy.galaxyIcon ||
+                    galaxyData?.dDay != newGalaxy.dDay {
                     galaxyData = newGalaxy
                 }
             }
@@ -159,14 +162,13 @@ class HomeViewModel: ObservableObject {
 
     // MARK: - 은하 리스트 조회 API
     @MainActor
-    func fetchGalaxyList() async {
+    func fetchGalaxyList() async -> [GalaxySummary] {
+
         guard
             let session = userSession.loadSession(for: .userSession),
             let accessToken = session.accessToken
         else {
-            print("❌ accessToken 없음")
-            galaxyData = nil
-            return
+            return []
         }
 
         let galaxyProvider = container.apiProviderStore.galaxy()
@@ -178,16 +180,11 @@ class HomeViewModel: ObservableObject {
 
             let dto = try JSONDecoder().decode(GalaxyListResponse.self, from: response.data)
 
-            guard let first = dto.result?.galaxies.first else {
-                galaxyData = nil   // 은하 없음
-                return
-            }
-
-            await fetchGalaxyDetail(galaxyId: first.galaxyId)
+            return dto.result?.galaxies ?? []
 
         } catch {
             print("❌ 은하 리스트 조회 실패:", error)
-            galaxyData = nil
+            return []
         }
     }
 
@@ -298,6 +295,7 @@ class HomeViewModel: ObservableObject {
             totalDay: Calendar.current
                 .dateComponents([.day], from: startDate, to: endDate).day! + 1,
             galaxyIcon: icon,
+            dDay: current.dDay,
             stars: current.stars
         )
 

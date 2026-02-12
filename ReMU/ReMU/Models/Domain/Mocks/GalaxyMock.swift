@@ -48,6 +48,7 @@ extension Galaxy {
             endDate: endDate,
             totalDay: 12,
             galaxyIcon: "galaxy_1",
+            dDay: 1,
             stars: stars
         )
     }()

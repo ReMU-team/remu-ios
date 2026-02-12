@@ -97,6 +97,8 @@ struct RecordCardOneView: View {
                     Spacer()
                     Button(action: {}) {
                         Image("pencil.line")
+                            .resizable()
+                            .frame(width: 14, height: 14)
                     }
                 }
             }
