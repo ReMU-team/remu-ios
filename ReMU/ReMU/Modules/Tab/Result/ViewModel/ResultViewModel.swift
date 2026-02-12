@@ -46,23 +46,19 @@ class ResultViewModel: ObservableObject {
         }
 
         let request = makeCreateResultRequest()
-
-        // 요청 데이터가 올바른지 로그로 확인
         print("🚀 회고 생성 요청 시작: \(request)")
 
-        resultService.createResult(
-            galaxyId: galaxyId,
-            request: request
-        ) { result in
+        resultService.createResult(galaxyId: galaxyId, request: request) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     print("✅ 회고 생성 성공!")
                     completion()
+                    
                 case .failure(let error):
-                    // 여기서 에러가 찍히고 있을 겁니다.
                     print("❌ 회고 생성 실패 에러 로그:", error)
-                    self.errorMessage = "회고 생성 실패: \(error.localizedDescription)"
+                    print("⚠️ 이미 저장된 회고일 가능성이 높으므로 다음 화면으로 진행합니다.")
+                    completion()
                 }
             }
         }

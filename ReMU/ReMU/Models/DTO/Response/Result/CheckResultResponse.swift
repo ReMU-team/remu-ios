@@ -8,7 +8,7 @@
 import Foundation
 
 struct CheckResultResponse: Decodable {
-    let galaxyId: Int
+    let galaxyId: Int?
     let galaxyTitle: String?
     let travelDate: String?
     let travelEmojiImageName: String?

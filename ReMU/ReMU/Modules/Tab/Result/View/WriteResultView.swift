@@ -10,35 +10,40 @@ import SwiftUI
 
 struct WriteResultView: View {
     
+    @EnvironmentObject var container: DIContainer
+    
     @StateObject var viewModel: ResultViewModel
     
     let onFinish: () -> Void
     
     @Environment(\.dismiss) private var dismiss
     
+    @State private var goNext = false
+    
     var body: some View {
-        VStack {
+        NavigationStack {
             VStack {
-                navigationBar
-            }
-            //        .navigationDestination(isPresented: $goNext) {
-            //                    CreateResultCardView(onFinish: onFinish)
-            //                }
-            //        .navigationBarBackButtonHidden(true) // 자동 생성되는 뒤로가기 버튼 가리기
-            ScrollView {
-                VStack(spacing: 24) {
-                    top
-                    middle
-                    nextButton
+                VStack {
+                    navigationBar
+                }
+                // 👇 네비게이션 목적지 설정
+                .navigationDestination(isPresented: $goNext) {
+                    CreateResultCardView(resultVM: viewModel, onFinish: onFinish)
+                        .environmentObject(container)
+                }
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        top
+                        middle
+                        nextButton
+                    }
                 }
             }
-    //        bottom
+            .task {
+                viewModel.fetchResult()
+            }
         }
-        .task {
-            viewModel.fetchResult()
-        }
-
-        
     }
     
     // MARK: - navigation
@@ -174,13 +179,16 @@ struct WriteResultView: View {
     private var nextButton: some View {
         VStack {
             Spacer()
-            PrimaryButton(title: "회고 분석하기", backgroundColor: .purpleC495E0) {
+            PrimaryButton(
+                title: viewModel.isLoading ? "저장 중..." : "회고 분석하기", // 로딩 문구 변경
+                backgroundColor: viewModel.isLoading ? .grayScale4 : .purpleC495E0 // 로딩 중 색상 변경
+            ) {
                 viewModel.submitResult {
-                    onFinish()
+                    goNext = true
                 }
             }
+            .disabled(viewModel.isLoading)
             .padding(.bottom, 54)
-            
         }
         .padding(.horizontal, 40)
         
