@@ -95,15 +95,28 @@ struct CreateGalaxyView: View {
             .padding(.bottom, 48)
 
             if case .edit = mode {
-                Button("은하 삭제") {
-                    Task {
-                        await viewModel.deleteGalaxy()
-                        onDelete?()
-                        dismiss()
+                HStack {
+                    Spacer()
+                    Button {
+                        Task {
+                            await viewModel.deleteGalaxy()
+                            onDelete?()
+                            dismiss()
+                        }
+                    } label: {
+                        Text("은하 삭제")
+                            .font(.pt12)
+                            .foregroundStyle(.purpleC495E0)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .frame(height: 24, alignment: .center)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 26)
+                                    .stroke(.purpleC495E0)
+                            )
                     }
                 }
-                .foregroundColor(.purple)
-                .padding(.trailing, 22)
+                .padding(.horizontal, 24)
             }
         }
     }
