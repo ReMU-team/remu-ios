@@ -112,7 +112,7 @@ class HomeViewModel: ObservableObject {
 
         do {
             let response = try await galaxyProvider.requestAsync(
-                .fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
+                .fetchGalaxyDetail(galaxyId: galaxyId)
             )
 
             let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)

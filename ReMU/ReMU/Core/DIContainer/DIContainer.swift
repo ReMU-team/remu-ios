@@ -50,14 +50,18 @@ final class DIContainer: ObservableObject{
     func makeResultViewModel() -> ResultViewModel {
         ResultViewModel(
             appState: appState,
-            resultService: apiProviderStore.resultService()
+            resultService: apiProviderStore.resultService(),
+            pledgeService: apiProviderStore.pledgeService(),
+            galaxyService: apiProviderStore.galaxyService()
         )
     }
     
     func makeResultViewModel(appState: AppState) -> ResultViewModel {
         ResultViewModel(
             appState: appState,
-            resultService: apiProviderStore.resultService()
+            resultService: apiProviderStore.resultService(),
+            pledgeService: apiProviderStore.pledgeService(),
+            galaxyService: apiProviderStore.galaxyService()
         )
     }
 

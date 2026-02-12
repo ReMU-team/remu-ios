@@ -98,7 +98,7 @@ final class CreateGalaxyViewModel: ObservableObject {
 
         do {
             let response = try await provider.requestAsync(
-                .fetchGalaxyDetail(accessToken: accessToken, galaxyId: galaxyId)
+                .fetchGalaxyDetail(galaxyId: galaxyId)
             )
 
             let dto = try JSONDecoder().decode(GalaxyDetailResponse.self, from: response.data)

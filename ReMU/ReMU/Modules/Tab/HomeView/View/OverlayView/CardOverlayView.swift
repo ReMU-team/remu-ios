@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct CardOverlayView: View {
+    @EnvironmentObject var container: DIContainer
     @Binding var selectedTab: CardTab
+    
     let pledgeCard: PledgeCardModel?
     let onClose: () -> Void
     let onWriteResult: () -> Void
@@ -29,6 +31,14 @@ struct CardOverlayView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture { } // 닫힘 방지
+        }
+        .task {
+            if let serverId = pledgeCard?.galaxy.serverId {
+                print("✅ [CardOverlayView] DIContainer를 통해 GalaxyID(\(serverId)) 저장 완료")
+                container.appState.currentGalaxyId = serverId
+            } else {
+                print("⚠️ [CardOverlayView] pledgeCard가 없거나 serverId를 찾을 수 없음")
+            }
         }
     }
     

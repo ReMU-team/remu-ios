@@ -34,6 +34,10 @@ struct WriteResultView: View {
             }
     //        bottom
         }
+        .task {
+            viewModel.fetchResult()
+        }
+
         
     }
     
@@ -87,12 +91,24 @@ struct WriteResultView: View {
     
     var emoji: some View {
         HStack {
-            Circle()
-                .fill(.blue5050AE)
-                .frame(width: 45, height: 45)
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 45, height: 45)
+                
+                if let emoji = viewModel.selectedEmoji {
+                    Image(emoji.id)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 45, height: 45)
+                        .clipShape(Circle())
+                }
+            }
+        
+
             VStack(alignment: .leading) {
                 HStack {
-                    Text("6인팟 스위스")
+                    Text(viewModel.galaxyTitle)
                         .foregroundStyle(.grayScale9)
                         .font(.pt20)
                     Spacer()
@@ -130,7 +146,7 @@ struct WriteResultView: View {
                     
                     
                 }
-                Text("25/10/29-25/11/10")
+                Text(viewModel.travelDate)
                     .foregroundStyle(.grayScale5)
                     .font(.pt12)
             }
