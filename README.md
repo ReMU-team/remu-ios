@@ -295,33 +295,50 @@ let value: Int
 
 ## 🗂️ 폴더 컨벤션
 ```
-.
-├── App/ # 앱 진입점 및 생명주기 관리
-├── Common/ # 공통 공유 자원
-│   ├── Enum/ # 상수 및 상태 타입
-│   ├── Protocol/ # 인터페이스 규격
-│   └── UIComponents/ # 재사용 UI 컴포넌트
-├── Core/ # 앱 핵심 인프라
-│   ├── Actor/ # 데이터 관리 및 동시성 제어
-│   ├── DIContainer/ # 의존성 주입 관리
-│   ├── Navigation/ # 화면 전환 및 라우팅
-│   └── Utils/ # 설정 및 유틸리티
-├── Models/ # 데이터 모델링
-│   ├── Domain/ # 비즈니스 로직용 모델
-│   └── DTO/ # API 통신용 데이터 객체
-├── Modules/ # 기능 단위 모듈 (View/VM)
-│   ├── AppFlow/ # 초기 진입 흐름 (로그인 등)
-│   └── Tab/ # 메인 기능별 화면 (홈, 주문 등)
-├── Resource/ # 정적 자원 및 기능 확장
-│   ├── Assets/ # 이미지 및 컬러 에셋
-│   ├── Extension/ # 기본 타입 기능 확장
-│   ├── Font/ # 커스텀 폰트
-│   ├── Keychain/ # 보안 데이터 저장
-│   ├── Modifier/ # SwiftUI 커스텀 수식어
-│   └── UIConstants/ # UI 수치 상수
-└── Service/ # 외부 연동 계층
-    ├── MoyaRouter/ # API 경로 정의
-    ├── MoyaService/ # 네트워크 통신 실행
-    └── Social/ # 소셜 로그인 및 외부 SDK
+ReMU
+├── App
+│   ├── AppDelegate.swift
+│   └── ReMUApp.swift
+├── Common
+│   ├── Enum
+│   ├── Protocol
+│   └── UIComponents
+├── Core
+│   ├── Actor
+│   ├── DIContainer
+│   ├── Image
+│   ├── Keychain
+│   ├── MediaPicker
+│   ├── Navigation
+│   ├── Notification
+│   ├── Utils
+│   └── APIProviderStore.swift
+├── Models
+│   ├── Domain
+│   └── DTO
+├── Modules
+│   ├── AppFlow
+│   └── Tab
+├── Resource
+│   ├── Extension
+│   ├── Font
+│   ├── Modifier
+│   ├── UIConstants
+│   └── Assets.xcassets
+├── Service
+│   ├── Feedback
+│   ├── Galaxy
+│   ├── Manager
+│   ├── NetworkCore
+│   ├── Notification
+│   ├── Pledge
+│   ├── Result
+│   ├── Social
+│   └── AccessTokenRefresher.swift
+├── ContentView.swift
+├── Info.plist
+├── NextView.swift
+├── testView.swift
+└── ReMU_Tests
 ```
 # ReMU-Frontend
