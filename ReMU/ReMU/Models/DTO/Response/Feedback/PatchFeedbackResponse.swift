@@ -1,15 +1,15 @@
-////
-////  PatchFeedbackResponse.swift
-////  ReMU
-////
-////  Created by 김종수 on 2/4/26.
-////
 //
-//import Foundation
+//  PatchFeedbackResponse.swift
+//  ReMU
 //
-//struct PatchFeedbackResult: Codable {
-//    let content: String
-//    let updatedAt: String
-//}
+//  Created by 김종수 on 2/4/26.
 //
-//typealias PatchFeedbackResponse = BaseResponse<PatchFeedbackResult>
+
+import Foundation
+
+struct PatchFeedbackResult: Codable {
+    let content: String
+    let updatedAt: String
+}
+
+typealias PatchFeedbackResponse = BaseResponse<PatchFeedbackResult>

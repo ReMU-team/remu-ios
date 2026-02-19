@@ -24,18 +24,21 @@ class ResultViewModel: ObservableObject {
     private let resultService: ResultServiceProtocol
     private let pledgeService: PledgeServiceProtocol
     private let galaxyService: GalaxyServiceProtocol
+    private let feedbackService: FeedbackServiceProtocol
     
     // MARK: - Network Service
     init(
         appState: AppState,
         resultService: ResultServiceProtocol,
         pledgeService: PledgeServiceProtocol,
-        galaxyService: GalaxyServiceProtocol
+        galaxyService: GalaxyServiceProtocol,
+        feedbackService: FeedbackServiceProtocol
     ) {
         self.appState = appState
         self.resultService = resultService
         self.pledgeService = pledgeService
         self.galaxyService = galaxyService
+        self.feedbackService = feedbackService
     }
 
     // MARK: - Result API 생성 함수
@@ -70,40 +73,47 @@ class ResultViewModel: ObservableObject {
             guard let galaxyId = appState.currentGalaxyId else { return }
             isLoading = true
             
-            // 1. 은하 정보(제목, 날짜) 먼저 가져오기 (Review API가 빈값일 때를 대비)
+            // 은하 정보
             fetchGalaxyInfo(galaxyId: galaxyId)
+            // AI피드백
+            fetchAIFeedback(galaxyId: galaxyId)
             
-            // 2. 회고 조회
+            // 회고 조회
             resultService.checkResult(galaxyId: galaxyId) { [weak self] result in
                 guard let self else { return }
                 
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let response):
-                        // 회고가 비어있으면 -> 다짐 불러오기
-                        if response.reviews.isEmpty {
-                            print("ℹ️ 회고 없음. 다짐 불러오기 시작")
+
+                        guard let data = response.result else {
+                            self.fetchOriginalPledges(galaxyId: galaxyId)
+                            return
+                        }
+
+                        if data.reviewList.isEmpty {
                             self.fetchOriginalPledges(galaxyId: galaxyId)
                         } else {
-                            print("✅ 회고 로드 성공")
                             self.isLoading = false
-                            // 기존 로직 유지 (response.galaxyTitle이 Optional이면 ?? "" 처리)
-                            self.galaxyTitle = response.galaxyTitle ?? self.galaxyTitle
-                            self.travelDate = response.travelDate ?? self.travelDate
-                            self.reviewResult = self.makeReviewResult(from: response)
-                            self.aiFeedback = response.aiFeedback
-                            self.pledges = self.mapReviewsToPledges(from: response)
-                            
-                            // 이모지 매칭
-                            if let matched = self.emojis.first(where: { $0.id == response.travelEmojiImageName }) {
+                            self.review = data.reflection
+                            self.pledges = data.reviewList.map {
+                                PledgeItem(
+                                    reviewId: $0.reviewId,
+                                    resolutionId: $0.resolutionId,
+                                    title: $0.resolutionContent,
+                                    content: $0.reviewContent,
+                                    status: $0.isResolutionFulfilled ? .success : .fail
+                                )
+                            }
+
+                            if let matched = self.emojis.first(where: { $0.id == data.reviewEmojiId }) {
                                 self.selectedEmojis = [matched]
                             }
                         }
+
                         
                     case .failure(let error):
                         print("⚠️ 회고 조회 실패 (Decoding Error 가능성): \(error)")
-                        // Decoding Error가 나더라도, 아직 작성을 안 해서 그런 것일 수 있으므로
-                        // 강제로 다짐을 불러오도록 처리합니다.
                         self.fetchOriginalPledges(galaxyId: galaxyId)
                     }
                 }
@@ -139,15 +149,17 @@ class ResultViewModel: ObservableObject {
                         // 1. 다짐 매핑
                         self.pledges = data.resolutionList.map { res in
                             PledgeItem(
-                                reviewId: res.resolutionId ?? 0,
+                                reviewId: 0,
+                                resolutionId: res.resolutionId ?? 0,
                                 title: res.content,
                                 content: "",
                                 status: .fail
                             )
                         }
+
                         
                         // 2. [중요] 이모지 매핑 (이게 없어서 회색 원으로 떴던 것!)
-                        // data.emojiId는 "happy_emoji" 같은 문자열입니다.
+                        // data.emojiId는 "happy_emoji" 같은 문자열
                         if let matchedEmoji = self.emojis.first(where: { $0.id == data.emojiId }) {
                             self.selectedEmojis = [matchedEmoji]
                         } else {
@@ -160,6 +172,25 @@ class ResultViewModel: ObservableObject {
                 }
             }
         }
+    
+    private func createFeedback(galaxyId: Int) {
+        feedbackService.createFeedback(galaxyId: galaxyId) { [weak self] result in
+            guard let self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("✅ AI 피드백 생성 성공")
+                    self.fetchAIFeedback(galaxyId: galaxyId) // 다시 조회
+
+                case .failure(let error):
+                    print("❌ 피드백 생성 실패:", error)
+                    self.aiFeedback = "AI 피드백 생성에 실패했습니다."
+                }
+            }
+        }
+    }
+
     
     // MARK: - Result API 수정 함수
 func patchResult(completion: @escaping () -> Void = {}) {
@@ -184,6 +215,35 @@ func patchResult(completion: @escaping () -> Void = {}) {
     }
 }
 
+    // MARK: - AI 피드백 조회
+    func fetchAIFeedback(galaxyId: Int) {
+        feedbackService.fetchFeedback(galaxyId: galaxyId) { [weak self] result in
+            guard let self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    if let content = response.result?.content {
+                        self.aiFeedback = content
+                    } else {
+                        self.aiFeedback = "AI 피드백이 아직 생성되지 않았습니다."
+                    }
+
+                case .failure(let error):
+                    print("❌ AI 피드백 조회 실패:", error)
+
+                    // 🔥 404면 생성
+                    if error.localizedDescription.contains("404") {
+                        self.createFeedback(galaxyId: galaxyId)
+                    } else {
+                        self.aiFeedback = "AI 피드백을 불러오지 못했습니다."
+                    }
+                }
+            }
+        }
+    }
+
+
     
     // MARK: - 생성 Mapping
     func makeCreateResultRequest() -> createResultRequest {
@@ -192,21 +252,11 @@ func patchResult(completion: @escaping () -> Void = {}) {
             reflection: review,
             reviews: pledges.map { item in
                 reviewItem(
-                    resolutionId: item.reviewId,
+                    resolutionId: item.resolutionId,
                     reviewContent: item.content,
                     isResolutionFulfilled: item.status == .success
                 )
             }
-        )
-    }
-    
-    // MARK: - 조회 Mapping
-    private func makeReviewResult(from response: CheckResultResponse) -> ReviewResult {
-        return ReviewResult(
-            galaxyId: response.galaxyId,
-            travelEmojiImageName: response.travelEmojiImageName ?? "",
-            overallContent: response.overallContent ?? "",
-            hasAIFeedback: response.aiFeedback != nil
         )
     }
 
@@ -226,21 +276,6 @@ func patchResult(completion: @escaping () -> Void = {}) {
         )
     }
 
-    
-    private func mapReviewsToPledges(from response: CheckResultResponse) -> [PledgeItem] {
-        response.reviews.map {
-            PledgeItem(
-                reviewId: $0.reviewId,
-                title: $0.title,
-                content: $0.content,
-                status: $0.isResolutionFulfilled ? .success : .fail
-            )
-        }
-    }
-
-
-
-
 
     // MARK: - UI용 변환 함수
 //    func createFinalResult() -> ReviewResult {
@@ -258,6 +293,13 @@ func patchResult(completion: @escaping () -> Void = {}) {
     
     // 여행 후기
     @Published var review: String = ""
+    
+    // MARK: - 여행 전 다짐 텍스트박스 프로퍼티
+    var pledgeCombinedText: String {
+        pledges
+            .map { "• \($0.title)" }
+            .joined(separator: "\n")
+    }
     
     // MARK: - Emoji
     @Published var isEmojiSheetPresented = false

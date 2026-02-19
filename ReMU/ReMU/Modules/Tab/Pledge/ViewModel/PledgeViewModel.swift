@@ -200,7 +200,7 @@ final class PledgeViewModel: ObservableObject {
             emojiImageName: result.emojiId,
             pledges: result.resolutions.map {
                 Pledge(
-                    resolutionId: $0.resolutionId,
+                    resolutionId: $0.resolutionId ?? 0,
                     content: $0.content
                 )
 
@@ -219,7 +219,7 @@ final class PledgeViewModel: ObservableObject {
             emojiImageName: result.emojiId,
             pledges: result.resolutionList.map {
                 Pledge(
-                    resolutionId: $0.resolutionId,
+                    resolutionId: $0.resolutionId ?? 0,
                     content: $0.content
                 )
             }
@@ -237,7 +237,7 @@ final class PledgeViewModel: ObservableObject {
             emojiImageName: result.emojiId,
             pledges: result.contents.map {
                 Pledge(
-                    resolutionId: nil,
+                    resolutionId: 0,   // nil 대신 기본값 사용
                     content: $0
                 )
             }
@@ -329,7 +329,7 @@ final class PledgeViewModel: ObservableObject {
             emojiImageName: selectedEmoji?.id ?? "",
             pledges: pledges.map {
                 Pledge(
-                    resolutionId: $0.resolutionId,
+                    resolutionId: $0.resolutionId ?? 0,
                     content: $0.content
                 )
             }

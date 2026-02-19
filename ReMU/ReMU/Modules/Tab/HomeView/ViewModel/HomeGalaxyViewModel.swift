@@ -84,7 +84,7 @@ class HomeViewModel: ObservableObject {
                 emojiImageName: result.emojiId,
                 pledges: result.resolutionList.map {
                     Pledge(
-                        resolutionId: $0.resolutionId,
+                        resolutionId: $0.resolutionId ?? 0,
                         content: $0.content
                     )
                 }
@@ -124,18 +124,21 @@ class HomeViewModel: ObservableObject {
                 return false
             }
 
+            let totalDays = Calendar.current
+                .dateComponents([.day], from: startDate, to: endDate).day ?? 0
+
             let newGalaxy = Galaxy(
                 serverId: result.galaxyId,
                 title: result.name,
                 destination: result.placeName,
                 startDate: startDate,
                 endDate: endDate,
-                totalDay: Calendar.current
-                    .dateComponents([.day], from: startDate, to: endDate).day! + 1,
+                totalDay: totalDays + 1,
                 galaxyIcon: result.emojiResourceName,
                 dDay: result.dDay,
                 stars: []
             )
+
 
             if galaxyData?.serverId != newGalaxy.serverId {
                 galaxyData = newGalaxy
@@ -286,14 +289,16 @@ class HomeViewModel: ObservableObject {
     ) {
         guard var current = galaxyData else { return }
 
+        let totalDays = Calendar.current
+            .dateComponents([.day], from: startDate, to: endDate).day ?? 0
+
         current = Galaxy(
             serverId: current.serverId,
             title: name,
             destination: destination,
             startDate: startDate,
             endDate: endDate,
-            totalDay: Calendar.current
-                .dateComponents([.day], from: startDate, to: endDate).day! + 1,
+            totalDay: totalDays + 1,
             galaxyIcon: icon,
             dDay: current.dDay,
             stars: current.stars

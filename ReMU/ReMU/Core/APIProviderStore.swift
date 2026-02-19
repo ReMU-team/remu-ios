@@ -49,6 +49,8 @@ extension APIProviderStore {
     func resultService() -> ResultServiceProtocol {
         return ResultServiceImpl(provider: result())
     }
-    
+    func feedbackService() -> FeedbackServiceProtocol {
+        FeedbackServiceImpl(provider: feedback())
+    }
 
 }

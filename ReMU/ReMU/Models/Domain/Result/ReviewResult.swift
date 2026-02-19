@@ -18,6 +18,7 @@ enum PledgeStatus {
 struct PledgeItem: Identifiable {
     var id: Int { reviewId }       // UI용
     let reviewId: Int        // 서버용 (PATCH 필수)
+    let resolutionId: Int
     let title: String
     var content: String
     var status: PledgeStatus = .none

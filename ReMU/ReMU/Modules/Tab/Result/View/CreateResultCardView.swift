@@ -26,6 +26,7 @@ struct CreateResultCardView: View {
             bottom
             Spacer()
         }
+        .navigationBarBackButtonHidden(true) 
         .task {
             print("🔄 결과 카드 화면 진입: 데이터 다시 조회 시작")
             resultVM.fetchResult()

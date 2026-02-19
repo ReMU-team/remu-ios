@@ -32,6 +32,17 @@ import Foundation
 /// 실제 다짐 카드에 저장/표시되는 단일 다짐
 struct Pledge: Identifiable {
     let id: UUID = UUID()
-    let resolutionId: Int?
+    let resolutionId: Int
     let content: String
+    var status: ResolutionStatus = .fail
 }
+
+enum ResolutionStatus {
+    case success
+    case fail
+    
+    init(isFulfilled: Bool) {
+        self = isFulfilled ? .success : .fail
+    }
+}
+

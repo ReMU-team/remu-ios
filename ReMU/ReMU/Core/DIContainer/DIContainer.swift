@@ -52,7 +52,8 @@ final class DIContainer: ObservableObject{
             appState: appState,
             resultService: apiProviderStore.resultService(),
             pledgeService: apiProviderStore.pledgeService(),
-            galaxyService: apiProviderStore.galaxyService()
+            galaxyService: apiProviderStore.galaxyService(),
+            feedbackService: apiProviderStore.feedbackService()
         )
     }
     
@@ -61,7 +62,9 @@ final class DIContainer: ObservableObject{
             appState: appState,
             resultService: apiProviderStore.resultService(),
             pledgeService: apiProviderStore.pledgeService(),
-            galaxyService: apiProviderStore.galaxyService()
+            galaxyService: apiProviderStore.galaxyService(),
+            feedbackService: apiProviderStore.feedbackService()
+
         )
     }
 
